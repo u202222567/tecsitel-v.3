@@ -1,0 +1,100 @@
+{
+  "name": "tecsitel-v3",
+  "version": "3.0.1",
+  "description": "Sistema de Gestión Empresarial Integral con facturación electrónica, contabilidad PCGE, gestión humana y cumplimiento normativo para Perú",
+  "main": "index.html",
+  "scripts": {
+    "start": "netlify dev",
+    "build": "echo 'Static site - no build required'",
+    "test": "echo 'No tests configured'",
+    "dev": "netlify dev",
+    "deploy": "netlify deploy",
+    "deploy:prod": "netlify deploy --prod"
+  },
+  "keywords": [
+    "facturacion-electronica",
+    "contabilidad",
+    "pcge",
+    "sunat",
+    "planilla",
+    "plame",
+    "ple",
+    "gestion-empresarial",
+    "peru",
+    "normativas"
+  ],
+  "author": {
+    "name": "Tecsitel",
+    "email": "contacto@tecsitel.com",
+    "url": "https://tecsitel.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tu-usuario/tecsitel-v3.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tu-usuario/tecsitel-v3/issues"
+  },
+  "homepage": "https://tecsitel-v3.netlify.app",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.5",
+    "serverless-http": "^3.2.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.10.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "netlify": {
+    "functions": "netlify/functions",
+    "publish": ".",
+    "command": "echo 'Static deployment'"
+  },
+  "features": {
+    "facturacion": {
+      "electronica": true,
+      "sunat": true,
+      "xml": true,
+      "pdf": true
+    },
+    "contabilidad": {
+      "pcge": true,
+      "asientos": true,
+      "reportes": true,
+      "ple": true
+    },
+    "rrhh": {
+      "planilla": true,
+      "boletas": true,
+      "plame": true,
+      "t-registro": true
+    },
+    "cumplimiento": {
+      "sunat": true,
+      "sunafil": true,
+      "mintra": true
+    },
+    "exportacion": {
+      "csv": true,
+      "json": true,
+      "txt": true,
+      "ple": true,
+      "plame": true
+    }
+  },
+  "normativas": {
+    "peru": {
+      "sunat": "2024",
+      "pcge": "2024",
+      "uit": 5150,
+      "rmv": 1025
+    }
+  }
+}

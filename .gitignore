@@ -1,0 +1,191 @@
+# ===================================
+# TECSITEL V.3 - ARCHIVOS A IGNORAR
+# ===================================
+
+# Variables de entorno y configuración sensible
+.env
+.env.local
+.env.production
+.env.staging
+.env.development
+config/production.json
+config/local.json
+
+# Dependencias de Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Base de datos local
+*.db
+*.sqlite
+*.sqlite3
+database.db
+local.db
+
+# Archivos de respaldo
+backups/
+*.backup
+*.bak
+exports/
+*.csv
+*.json.backup
+
+# Archivos temporales
+temp/
+tmp/
+*.tmp
+*.temp
+.cache/
+
+# Archivos del sistema operativo
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+
+# Netlify
+.netlify/
+dist/
+build/
+
+# Vercel
+.vercel/
+
+# Local Netlify folder
+.netlify
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# ESLint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.test
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# next.js build output
+.next
+
+# nuxt.js build output
+.nuxt
+
+# vuepress build output
+.vuepress/dist
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# Archivos específicos de Tecsitel
+uploads/
+files/
+documents/
+reports/
+invoices/
+payslips/
+
+# Archivos de desarrollo
+test-data/
+mock-data/
+development/
+
+# Archivos de configuración local
+config.local.js
+settings.local.json
+
+# Certificados y claves
+*.pem
+*.key
+*.crt
+*.p12
+certificates/
+
+# Archivos grandes que no deben estar en Git
+*.pdf
+*.zip
+*.rar
+*.7z
+*.tar.gz
+
+# Archivos de auditoría local
+audit-logs/
+security-logs/
+
+# Archivos de prueba
+test-uploads/
+test-exports/
+sandbox/
+
+# ===================================
+# NOTAS IMPORTANTES:
+# ===================================
+# - NUNCA incluir archivos .env en Git
+# - Los respaldos deben guardarse externamente
+# - Las claves y certificados son sensibles
+# - Los logs pueden contener información sensible
