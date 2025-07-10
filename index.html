@@ -64,20 +64,25 @@
             background: linear-gradient(90deg, var(--primary), var(--primary-dark), var(--primary));
         }
         
-        .login-logo { 
-            text-align: center; margin-bottom: 30px; 
-            width: 100px; height: 100px; margin: 0 auto 30px;
-            background: var(--white); border-radius: var(--radius-full);
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--shadow-lg); position: relative;
-            border: 3px solid var(--primary);
-        }
-        
-        .login-logo img { 
-            width: 70px; height: 70px; object-fit: contain;
-            border-radius: var(--radius-full);
-            padding: 5px; /* Espaciado para mejor visualización */
-        }
+        .login-logo {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 30px; /* Centra horizontalmente y añade margen inferior */
+    background: var(--white);
+    border-radius: var(--radius-full); /* Lo hace perfectamente redondo */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1), 0 3px 6px rgba(0,0,0,0.08); /* Sombra mejorada */
+    position: relative;
+    border: 3px solid var(--primary); /* Borde con el color primario */
+}
+
+.login-logo img {
+    width: 70px; /* Tamaño ajustado para tener un margen interior */
+    height: 70px;
+    object-fit: contain; /* Asegura que el logo no se deforme */
+}
         
         .login-title { 
             text-align: center; font-size: 28px; font-weight: 700; 
