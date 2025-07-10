@@ -188,4 +188,8 @@ sandbox/
 # - NUNCA incluir archivos .env en Git
 # - Los respaldos deben guardarse externamente
 # - Las claves y certificados son sensibles
+<<<<<<< HEAD
 # - Los logs pueden contener información sensible
+=======
+# - Los logs pueden contener información sensible
+>>>>>>> d9eedb43289122ca398703decd30c6b43f98d340
