@@ -208,59 +208,214 @@
         .role-welcome { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
 
         /* ===========================
+           NAVEGACIÓN MÓVIL - BOTTOM NAV
+        =========================== */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            right: 0; 
+            height: 70px; 
+            background: var(--white); 
+            display: none; 
+            box-shadow: 0 -2px 10px rgba(0,0,0,.1); 
+            z-index: 1000; 
+            border-top: 1px solid var(--gray-200);
+        }
+        
+        .bottom-nav-container { 
+            display: flex; 
+            height: 100%; 
+            max-width: 100%; 
+            overflow-x: auto; 
+            scrollbar-width: none; 
+        }
+        
+        .bottom-nav-container::-webkit-scrollbar { display: none; }
+        
+        .bottom-nav-item { 
+            flex: 1; 
+            min-width: 80px;
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            color: var(--gray-600); 
+            text-decoration: none; 
+            font-size: 11px; 
+            gap: 4px; 
+            position: relative; 
+            cursor: pointer;
+            transition: all var(--transition);
+            padding: 8px 4px;
+        }
+        
+        .bottom-nav-item.active { 
+            color: var(--primary); 
+            background: var(--primary-alpha);
+        }
+        
+        .bottom-nav-item.active::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            width: 30px; 
+            height: 3px; 
+            background: var(--primary); 
+            border-radius: 0 0 3px 3px; 
+        }
+        
+        .bottom-nav-icon { 
+            font-size: 20px; 
+            margin-bottom: 2px;
+        }
+        
+        .bottom-nav-label {
+            font-size: 10px;
+            font-weight: 500;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        /* Supervisor special button para móvil */
+        .bottom-nav-item.supervisor-special {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white !important;
+            border-radius: 12px 12px 0 0;
+            margin: 0 4px;
+            animation: pulse 2s infinite;
+        }
+
+        /* ===========================
            Media Queries para Responsividad COMPLETA
         =========================== */
-        @media (max-width: 1024px) {
+        
+        /* TABLET - 1024px a 768px */
+        @media (max-width: 1024px) and (min-width: 769px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.active { transform: translateX(0); box-shadow: var(--shadow-xl); }
             .main-content { margin-left: 0; width: 100%; }
             .menu-toggle { display: block !important; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .quick-actions-grid { grid-template-columns: repeat(3, 1fr); }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+            .quick-actions-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+            .content { padding: 20px; }
+            .header { padding: 0 20px; }
+            .page-title { font-size: 22px; }
+            .card { padding: 20px; }
         }
 
-        @media (max-width: 768px) {
-            .content { padding: 16px; }
+        /* MÓVIL GRANDE - 768px a 481px */
+        @media (max-width: 768px) and (min-width: 481px) {
+            .sidebar { display: none !important; } /* Ocultar sidebar completamente */
+            .main-content { margin-left: 0; width: 100%; }
+            .menu-toggle { display: none !important; } /* No necesario en móvil */
+            .bottom-nav { display: block; } /* Activar navegación inferior */
+            .content { padding: 16px; padding-bottom: 90px; } /* Espacio para bottom nav */
             .header { padding: 0 16px; }
             .page-title { font-size: 20px; }
             .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
             .quick-actions-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .form-row { grid-template-columns: 1fr; }
             .table { font-size: 14px; }
-            .table th, .table td { padding: 10px 8px; }
+            .table th, .table td { padding: 12px 8px; }
             .btn { padding: 10px 16px; font-size: 14px; }
-            .modal-content { width: 95%; }
+            .modal-content { width: 95%; margin: 20px auto; }
             .toast { min-width: 250px; margin: 0 10px; }
-        }
-
-        @media (max-width: 480px) {
+            .card { margin-bottom: 16px; }
             .user-info .user-name { display: none; }
-            .stats-grid, .quick-actions-grid { grid-template-columns: 1fr; }
-            .login-form { padding: 30px 20px; }
-            .users-scroll-container { gap: 8px; }
-            .user-card { width: 100px; padding: 10px; }
+        }
+
+        /* MÓVIL PEQUEÑO - 480px a 361px */
+        @media (max-width: 480px) and (min-width: 361px) {
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0; width: 100%; }
+            .bottom-nav { display: block; }
+            .content { padding: 12px; padding-bottom: 90px; }
             .header { padding: 0 12px; }
-            .content { padding: 12px; }
-            .card { padding: 16px; }
+            .page-title { font-size: 18px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 12px; }
+            .quick-actions-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .login-form { padding: 25px 20px; max-width: 90%; }
+            .users-scroll-container { gap: 6px; }
+            .user-card { width: 90px; padding: 8px; }
+            .user-badge { width: 35px; height: 35px; font-size: 16px; }
+            .card { padding: 16px; margin-bottom: 12px; }
             .btn-sm { padding: 4px 8px; font-size: 10px; }
-        }
-
-        @media (max-width: 360px) {
-            .sidebar-width: 250px;
-            .login-form { max-width: 300px; }
+            .stat-value { font-size: 28px; }
             .quick-action-icon { font-size: 24px; }
+            .modal-content { width: 98%; margin: 10px auto; }
+            .modal-body { padding: 16px; }
+            .form-group { margin-bottom: 16px; }
+        }
+
+        /* MÓVIL MUY PEQUEÑO - 360px y menos */
+        @media (max-width: 360px) {
+            .sidebar { display: none !important; }
+            .main-content { margin-left: 0; width: 100%; }
+            .bottom-nav { display: block; height: 65px; }
+            .content { padding: 10px; padding-bottom: 85px; }
+            .header { padding: 0 10px; }
+            .page-title { font-size: 16px; }
+            .stats-grid { grid-template-columns: 1fr; gap: 10px; }
+            .quick-actions-grid { grid-template-columns: 1fr; gap: 8px; }
+            .login-form { max-width: 95%; padding: 20px 15px; }
+            .login-title { font-size: 20px; }
+            .users-scroll-container { gap: 4px; }
+            .user-card { width: 80px; padding: 6px; }
+            .user-badge { width: 30px; height: 30px; font-size: 14px; }
+            .user-details strong { font-size: 11px; }
+            .user-details small { font-size: 9px; }
+            .card { padding: 12px; margin-bottom: 10px; }
+            .card-title { font-size: 18px; }
             .stat-value { font-size: 24px; }
+            .stat-label { font-size: 12px; }
+            .quick-action-icon { font-size: 20px; }
+            .quick-action-label { font-size: 12px; }
+            .btn { padding: 8px 12px; font-size: 12px; }
+            .btn-sm { padding: 3px 6px; font-size: 9px; }
+            .form-input, .form-select { padding: 10px 12px; font-size: 14px; }
+            .table { font-size: 12px; }
+            .table th, .table td { padding: 8px 4px; }
+            .bottom-nav-item { min-width: 60px; }
+            .bottom-nav-icon { font-size: 18px; }
+            .bottom-nav-label { font-size: 9px; }
         }
 
-        /* Landscape phone */
-        @media (max-height: 500px) and (orientation: landscape) {
-            .login-screen { align-items: flex-start; padding-top: 20px; }
-            .loading-screen { align-items: flex-start; padding-top: 50px; }
+        /* LANDSCAPE MÓVIL */
+        @media (max-height: 500px) and (orientation: landscape) and (max-width: 768px) {
+            .login-screen { align-items: flex-start; padding-top: 10px; }
+            .loading-screen { align-items: flex-start; padding-top: 30px; }
+            .login-form { max-height: 90vh; overflow-y: auto; }
+            .header { height: 50px; }
+            .content { padding-top: 10px; }
+            .bottom-nav { height: 60px; }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+            .quick-actions-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
         }
 
-        /* High DPI screens */
+        /* HIGH DPI SCREENS */
         @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            .logo img, .login-logo img, .loading-logo img { image-rendering: -webkit-optimize-contrast; }
+            .logo img, .login-logo img, .loading-logo img { 
+                image-rendering: -webkit-optimize-contrast; 
+                image-rendering: crisp-edges; 
+            }
+        }
+
+        /* VERY WIDE SCREENS */
+        @media (min-width: 1920px) {
+            .app-container { max-width: 1920px; margin: 0 auto; }
+            .stats-grid { grid-template-columns: repeat(4, 1fr); max-width: 1200px; margin: 0 auto 24px; }
+            .quick-actions-grid { max-width: 1000px; margin: 0 auto; }
+        }
+
+        /* PRINT STYLES */
+        @media print {
+            .sidebar, .header, .bottom-nav, .btn, .modal, .toast-container { display: none !important; }
+            .main-content { margin-left: 0; width: 100%; }
+            .content { padding: 0; }
+            .card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 20px; }
+            .table { border: 1px solid #000; }
+            .table th, .table td { border: 1px solid #000; }
         }
     </style>
 </head>
@@ -553,6 +708,13 @@
                 </div>
             </div>
         </main>
+        
+        <!-- Navegación Móvil - Bottom Nav -->
+        <nav class="bottom-nav" id="bottomNav">
+            <div class="bottom-nav-container" id="bottomNavContainer">
+                <!-- Se llena dinámicamente según permisos del usuario -->
+            </div>
+        </nav>
     </div>
 
     <!-- Modals -->
@@ -920,15 +1082,14 @@
 
     function setupNavigation() {
         const navMenu = document.getElementById('navMenu');
+        const bottomNavContainer = document.getElementById('bottomNavContainer');
+        
         navMenu.innerHTML = '';
+        bottomNavContainer.innerHTML = '';
 
         if (AppState.user.role === 'SUPERVISOR') {
-            // Solo botón de marcar asistencia para supervisor
-            const timeEntryNav = document.createElement('button');
-            timeEntryNav.className = 'nav-item active special-supervisor';
-            timeEntryNav.innerHTML = `<span class="nav-icon">⏰</span><span class="nav-text">Marcar Asistencia</span>`;
-            timeEntryNav.onclick = () => openModal('timeEntry');
-            navMenu.appendChild(timeEntryNav);
+            // Navegación especial para supervisor
+            setupSupervisorNavigation(navMenu, bottomNavContainer);
             return;
         }
 
@@ -936,14 +1097,45 @@
         AppState.user.permissions.forEach(perm => {
             const module = MODULES[perm];
             if (module) {
+                // Sidebar navigation
                 const navItem = document.createElement('button');
                 navItem.className = 'nav-item';
                 navItem.dataset.tab = perm;
                 navItem.innerHTML = `<span class="nav-icon">${module.icon}</span><span class="nav-text">${module.name}</span>`;
                 navItem.onclick = () => showTab(perm);
                 navMenu.appendChild(navItem);
+
+                // Bottom navigation para móvil
+                const bottomNavItem = document.createElement('div');
+                bottomNavItem.className = 'bottom-nav-item';
+                bottomNavItem.dataset.tab = perm;
+                bottomNavItem.innerHTML = `
+                    <div class="bottom-nav-icon">${module.icon}</div>
+                    <div class="bottom-nav-label">${module.name}</div>
+                `;
+                bottomNavItem.onclick = () => showTab(perm);
+                bottomNavContainer.appendChild(bottomNavItem);
             }
         });
+    }
+
+    function setupSupervisorNavigation(navMenu, bottomNavContainer) {
+        // Sidebar para supervisor (tablet/desktop)
+        const timeEntryNav = document.createElement('button');
+        timeEntryNav.className = 'nav-item active special-supervisor';
+        timeEntryNav.innerHTML = `<span class="nav-icon">⏰</span><span class="nav-text">Marcar Asistencia</span>`;
+        timeEntryNav.onclick = () => openModal('timeEntry');
+        navMenu.appendChild(timeEntryNav);
+
+        // Bottom nav para supervisor (móvil)
+        const bottomTimeEntry = document.createElement('div');
+        bottomTimeEntry.className = 'bottom-nav-item supervisor-special active';
+        bottomTimeEntry.innerHTML = `
+            <div class="bottom-nav-icon">⏰</div>
+            <div class="bottom-nav-label">Marcar Asistencia</div>
+        `;
+        bottomTimeEntry.onclick = () => openModal('timeEntry');
+        bottomNavContainer.appendChild(bottomTimeEntry);
     }
 
     function setupQuickActions() {
@@ -1028,7 +1220,7 @@
     }
 
     // ========================================
-    // NAVEGACIÓN Y PESTAÑAS
+    // NAVEGACIÓN Y PESTAÑAS MEJORADAS
     // ========================================
     function showTab(tabName) {
         if (AppState.user.role === 'SUPERVISOR') {
@@ -1048,8 +1240,13 @@
         const targetTab = document.getElementById(tabName);
         if (targetTab) targetTab.classList.add('active');
         
-        // Actualizar navegación activa
+        // Actualizar navegación activa en sidebar
         document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.toggle('active', item.dataset.tab === tabName);
+        });
+        
+        // Actualizar navegación activa en bottom nav
+        document.querySelectorAll('.bottom-nav-item').forEach(item => {
             item.classList.toggle('active', item.dataset.tab === tabName);
         });
         
@@ -1057,6 +1254,12 @@
         const module = MODULES[tabName];
         if (module) {
             document.getElementById('pageTitle').textContent = module.name;
+        }
+        
+        // Cerrar sidebar en móvil/tablet después de seleccionar
+        if (window.innerWidth <= 1024) {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.remove('active');
         }
         
         // Cargar datos específicos si es necesario
@@ -1842,35 +2045,322 @@
     }
 
     // ========================================
-    // OPTIMIZACIONES PARA RESPONSIVE
+    // OPTIMIZACIONES PARA RESPONSIVE Y MÓVIL
     // ========================================
     function handleResponsiveChanges() {
         const isMobile = window.innerWidth <= 768;
         const isTablet = window.innerWidth <= 1024 && window.innerWidth > 768;
+        const isDesktop = window.innerWidth > 1024;
+        
+        // Manejar visibilidad de navegaciones
+        const sidebar = document.getElementById('sidebar');
+        const bottomNav = document.getElementById('bottomNav');
+        const menuToggle = document.querySelector('.menu-toggle');
         
         if (isMobile) {
-            // Ajustes específicos para móvil
-            document.querySelectorAll('.quick-actions-grid').forEach(grid => {
-                grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-            });
+            // MÓVIL: Bottom nav activo, sidebar oculto
+            sidebar.style.display = 'none';
+            bottomNav.style.display = 'block';
+            if (menuToggle) menuToggle.style.display = 'none';
             
-            document.querySelectorAll('.stats-grid').forEach(grid => {
-                grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-            });
+            // Ajustar padding del contenido
+            const content = document.querySelector('.content');
+            if (content) content.style.paddingBottom = '90px';
+            
+            // Optimizar grids para móvil
+            optimizeGridsForMobile();
+            
         } else if (isTablet) {
-            // Ajustes específicos para tablet
-            document.querySelectorAll('.quick-actions-grid').forEach(grid => {
-                grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
-            });
+            // TABLET: Sidebar colapsable, no bottom nav
+            sidebar.style.display = 'flex';
+            bottomNav.style.display = 'none';
+            if (menuToggle) menuToggle.style.display = 'block';
+            sidebar.classList.remove('active'); // Colapsado por defecto
+            
+            // Restaurar padding normal
+            const content = document.querySelector('.content');
+            if (content) content.style.paddingBottom = '';
+            
+            // Optimizar grids para tablet
+            optimizeGridsForTablet();
+            
         } else {
-            // Resetear a desktop
-            document.querySelectorAll('.quick-actions-grid').forEach(grid => {
-                grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+            // DESKTOP: Sidebar fijo, no bottom nav
+            sidebar.style.display = 'flex';
+            bottomNav.style.display = 'none';
+            if (menuToggle) menuToggle.style.display = 'none';
+            sidebar.classList.remove('active'); // Visible por defecto
+            
+            // Restaurar padding normal
+            const content = document.querySelector('.content');
+            if (content) content.style.paddingBottom = '';
+            
+            // Restaurar grids originales
+            restoreOriginalGrids();
+        }
+        
+        // Ajustar modales según tamaño
+        adjustModalsForScreen(isMobile, isTablet);
+        
+        // Optimizar tablas
+        optimizeTablesForScreen(isMobile);
+    }
+
+    function optimizeGridsForMobile() {
+        document.querySelectorAll('.stats-grid').forEach(grid => {
+            if (window.innerWidth <= 480) {
+                grid.style.gridTemplateColumns = '1fr';
+                grid.style.gap = '12px';
+            } else {
+                grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                grid.style.gap = '16px';
+            }
+        });
+        
+        document.querySelectorAll('.quick-actions-grid').forEach(grid => {
+            if (window.innerWidth <= 360) {
+                grid.style.gridTemplateColumns = '1fr';
+                grid.style.gap = '8px';
+            } else if (window.innerWidth <= 480) {
+                grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                grid.style.gap = '10px';
+            } else {
+                grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+                grid.style.gap = '12px';
+            }
+        });
+    }
+
+    function optimizeGridsForTablet() {
+        document.querySelectorAll('.stats-grid').forEach(grid => {
+            grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
+            grid.style.gap = '20px';
+        });
+        
+        document.querySelectorAll('.quick-actions-grid').forEach(grid => {
+            grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
+            grid.style.gap = '16px';
+        });
+    }
+
+    function restoreOriginalGrids() {
+        document.querySelectorAll('.stats-grid').forEach(grid => {
+            grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(220px, 1fr))';
+            grid.style.gap = '24px';
+        });
+        
+        document.querySelectorAll('.quick-actions-grid').forEach(grid => {
+            grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+            grid.style.gap = '16px';
+        });
+    }
+
+    function adjustModalsForScreen(isMobile, isTablet) {
+        document.querySelectorAll('.modal-content').forEach(modal => {
+            if (isMobile) {
+                modal.style.width = window.innerWidth <= 360 ? '98%' : '95%';
+                modal.style.margin = window.innerWidth <= 360 ? '10px auto' : '20px auto';
+                modal.style.maxHeight = '90vh';
+            } else if (isTablet) {
+                modal.style.width = '85%';
+                modal.style.margin = '50px auto';
+                modal.style.maxHeight = '85vh';
+            } else {
+                modal.style.width = '';
+                modal.style.margin = '';
+                modal.style.maxHeight = '90vh';
+            }
+        });
+    }
+
+    function optimizeTablesForScreen(isMobile) {
+        document.querySelectorAll('.table-container').forEach(container => {
+            if (isMobile) {
+                container.style.fontSize = window.innerWidth <= 360 ? '12px' : '14px';
+                // En móviles muy pequeños, podríamos convertir tablas a cards
+                if (window.innerWidth <= 360) {
+                    // Aquí se podría implementar una vista de cards para móviles muy pequeños
+                }
+            } else {
+                container.style.fontSize = '';
+            }
+        });
+    }
+
+    // ========================================
+    // MEJORAS DE UX TÁCTIL PARA MÓVIL
+    // ========================================
+    function setupTouchOptimizations() {
+        // Mejorar área táctil para elementos pequeños
+        const style = document.createElement('style');
+        style.textContent = `
+            @media (max-width: 768px) {
+                .btn-sm {
+                    min-height: 44px;
+                    min-width: 44px;
+                    padding: 8px 12px;
+                }
+                
+                .bottom-nav-item {
+                    min-height: 70px;
+                    min-width: 70px;
+                }
+                
+                .quick-action-card {
+                    min-height: 80px;
+                    padding: 20px 16px;
+                }
+                
+                .user-card {
+                    min-height: 80px;
+                    min-width: 80px;
+                }
+                
+                .form-input, .form-select {
+                    min-height: 44px;
+                }
+                
+                .nav-item {
+                    min-height: 50px;
+                }
+            }
+            
+            @media (max-width: 360px) {
+                .btn-sm {
+                    min-height: 40px;
+                    min-width: 40px;
+                }
+                
+                .bottom-nav-item {
+                    min-height: 65px;
+                    min-width: 60px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // ========================================
+    // DETECCIÓN DE ORIENTACIÓN Y AJUSTES
+    // ========================================
+    function handleOrientationChange() {
+        setTimeout(() => {
+            handleResponsiveChanges();
+            
+            // Ajustes específicos para landscape en móvil
+            if (window.innerHeight < 500 && window.innerWidth > window.innerHeight) {
+                // Modo landscape en móvil
+                const header = document.querySelector('.header');
+                if (header && window.innerWidth <= 768) {
+                    header.style.height = '50px';
+                }
+                
+                const bottomNav = document.getElementById('bottomNav');
+                if (bottomNav && window.innerWidth <= 768) {
+                    bottomNav.style.height = '60px';
+                }
+                
+                // Ajustar stats grid para landscape
+                document.querySelectorAll('.stats-grid').forEach(grid => {
+                    if (window.innerWidth <= 768) {
+                        grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+                        grid.style.gap = '8px';
+                    }
+                });
+            } else {
+                // Restaurar alturas normales
+                const header = document.querySelector('.header');
+                if (header) header.style.height = '';
+                
+                const bottomNav = document.getElementById('bottomNav');
+                if (bottomNav) bottomNav.style.height = '';
+            }
+        }, 100);
+    }
+
+    // ========================================
+    // FUNCIONES DE SWIPE PARA MÓVIL
+    // ========================================
+    function setupSwipeNavigation() {
+        if (window.innerWidth > 768) return;
+        
+        let startX = 0;
+        let endX = 0;
+        
+        const content = document.querySelector('.content');
+        if (!content) return;
+        
+        content.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+        }, { passive: true });
+        
+        content.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].clientX;
+            handleSwipe();
+        }, { passive: true });
+        
+        function handleSwipe() {
+            const diffX = startX - endX;
+            const minSwipeDistance = 50;
+            
+            if (Math.abs(diffX) < minSwipeDistance) return;
+            
+            const currentTabIndex = getCurrentTabIndex();
+            const permissions = AppState.user.permissions;
+            
+            if (diffX > 0 && currentTabIndex < permissions.length - 1) {
+                // Swipe left - next tab
+                showTab(permissions[currentTabIndex + 1]);
+            } else if (diffX < 0 && currentTabIndex > 0) {
+                // Swipe right - previous tab
+                showTab(permissions[currentTabIndex - 1]);
+            }
+        }
+        
+        function getCurrentTabIndex() {
+            const activeTab = document.querySelector('.tab-content.active');
+            if (!activeTab) return 0;
+            
+            const currentTabName = activeTab.id;
+            return AppState.user.permissions.indexOf(currentTabName);
+        }
+    }
+
+    // ========================================
+    // MEJORAS DE PERFORMANCE PARA MÓVIL
+    // ========================================
+    function optimizePerformanceForMobile() {
+        if (window.innerWidth > 768) return;
+        
+        // Reducir animaciones en dispositivos lentos
+        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) {
+            const style = document.createElement('style');
+            style.textContent = `
+                * {
+                    animation-duration: 0.1s !important;
+                    transition-duration: 0.1s !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Lazy loading para elementos pesados
+        const images = document.querySelectorAll('img');
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            imageObserver.unobserve(img);
+                        }
+                    }
+                });
             });
             
-            document.querySelectorAll('.stats-grid').forEach(grid => {
-                grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(220px, 1fr))';
-            });
+            images.forEach(img => imageObserver.observe(img));
         }
     }
 
