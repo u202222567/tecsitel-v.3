@@ -1,0 +1,185 @@
+# ============================================
+# DOCKER-COMPOSE.YML - Desarrollo Local
+# ============================================
+
+version: '3.8'
+
+services:
+  # Base de datos PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: tecsitel_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tecsitel
+      POSTGRES_USER: tecsitel_user
+      POSTGRES_PASSWORD: tecsitel_pass
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/data.sql:/docker-entrypoint-initdb.d/02-data.sql:ro
+    networks:
+      - tecsitel_network
+
+  # Redis para cache (opcional)
+  redis:
+    image: redis:7-alpine
+    container_name: tecsitel_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - tecsitel_network
+
+  # Aplicación Node.js para desarrollo
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: tecsitel_app
+    restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://tecsitel_user:tecsitel_pass@postgres:5432/tecsitel
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: your-super-secret-jwt-key
+      PORT: 3000
+    ports:
+      - "3000:3000"
+      - "8888:8888"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - tecsitel_network
+
+  # Adminer para administrar la base de datos
+  adminer:
+    image: adminer:4.8.1
+    container_name: tecsitel_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: postgres
+    depends_on:
+      - postgres
+    networks:
+      - tecsitel_network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  tecsitel_network:
+    driver: bridge
+
+---
+
+# ============================================
+# DOCKERFILE.DEV - Imagen de Desarrollo
+# ============================================
+
+FROM node:18-alpine
+
+# Instalar dependencias del sistema
+RUN apk add --no-cache \
+    git \
+    curl \
+    bash \
+    postgresql-client
+
+# Crear directorio de trabajo
+WORKDIR /app
+
+# Copiar archivos de dependencias
+COPY package*.json ./
+
+# Instalar dependencias
+RUN npm install
+
+# Copiar código fuente
+COPY . .
+
+# Crear directorios necesarios
+RUN mkdir -p logs backups uploads exports temp
+
+# Exponer puertos
+EXPOSE 3000 8888
+
+# Variables de entorno por defecto
+ENV NODE_ENV=development
+ENV PORT=3000
+
+# Comando por defecto
+CMD ["npm", "run", "dev"]
+
+---
+
+# ============================================
+# DOCKERFILE - Imagen de Producción
+# ============================================
+
+FROM node:18-alpine AS builder
+
+# Instalar dependencias de build
+RUN apk add --no-cache git
+
+WORKDIR /app
+
+# Copiar archivos de dependencias
+COPY package*.json ./
+
+# Instalar dependencias de producción
+RUN npm ci --only=production && npm cache clean --force
+
+# Etapa de producción
+FROM node:18-alpine AS production
+
+# Crear usuario no-root
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S tecsitel -u 1001
+
+# Instalar dependencias del sistema
+RUN apk add --no-cache \
+    curl \
+    dumb-init \
+    postgresql-client
+
+WORKDIR /app
+
+# Copiar archivos desde el builder
+COPY --from=builder --chown=tecsitel:nodejs /app/node_modules ./node_modules
+COPY --chown=tecsitel:nodejs . .
+
+# Crear directorios con permisos
+RUN mkdir -p logs backups uploads exports temp && \
+    chown -R tecsitel:nodejs logs backups uploads exports temp
+
+# Cambiar al usuario no-root
+USER tecsitel
+
+# Exponer puerto
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Usar dumb-init para manejo de señales
+ENTRYPOINT ["dumb-init", "--"]
+
+# Comando por defecto
+CMD ["node", "server.js"]

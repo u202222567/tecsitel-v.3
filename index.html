@@ -39,103 +39,365 @@
             --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { -webkit-font-smoothing: antialiased; }
-        body { font-family: var(--font-sans); background: var(--gray-100); color: var(--dark); overflow-x: hidden; }
-
-        /* ===========================
-           LOGIN SCREEN (Nuevo)
-        =========================== */
-        .login-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 11000; transition: opacity var(--transition-slow);
-        }
-        .login-form {
-            background: var(--white); padding: 40px; border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-2xl); width: 90%; max-width: 400px;
-            animation: slideUp 0.5s ease;
-        }
-        .login-logo { text-align: center; margin-bottom: 30px; }
-        .login-logo img { width: 80px; height: 80px; }
-        .login-title { text-align: center; font-size: 24px; font-weight: 700; margin-bottom: 30px; }
+        body { font-family: var(--font-sans); background: var(--gray-100); line-height: 1.6; overflow-x: hidden; }
         
         /* ===========================
-           PANTALLA DE CARGA
+           Layout Principal
         =========================== */
-        .loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-            display: none; align-items: center; justify-content: center;
-            z-index: 10000; transition: opacity var(--transition-slow), visibility var(--transition-slow);
-            overflow: hidden;
-        }
-        .loading-particles { position: absolute; width: 100%; height: 100%; pointer-events: none; }
-        .loading-particles .particle {
-            position: absolute; background: rgba(255, 255, 255, 0.1); border-radius: 50%;
-            animation: float 8s infinite ease-in-out; 
-            bottom: -200px; 
-        }
-        @keyframes float {
-            from { transform: translateY(0) rotate(0deg); opacity: 1; }
-            to { transform: translateY(-120vh) rotate(720deg); opacity: 0; }
-        }
-        .loading-content { text-align: center; position: relative; z-index: 1; animation: fadeIn 1s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        .loading-logo {
-            width: 140px; height: 140px; background: rgba(255, 255, 255, 0.95); border-radius: var(--radius-2xl);
-            padding: 25px; margin: 0 auto 20px; box-shadow: var(--shadow-2xl);
-            animation: pulse 2.5s infinite ease-in-out; display: flex; align-items: center; justify-content: center;
-        }
-        @keyframes pulse { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,255,255,0.4); } 50% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255,255,255,0); } }
-        .loading-logo img { width: 100%; height: 100%; object-fit: contain; }
-        .loading-title { color: var(--white); font-size: 28px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .loading-status { color: rgba(255, 255, 255, 0.8); font-size: 16px; min-height: 24px; margin-top: 8px; transition: all var(--transition); }
-        .loading-status.error { color: #ffcdd2; font-weight: 600; }
-
+        .app-container { display: flex; min-height: 100vh; }
+        .sidebar { width: var(--sidebar-width); background: var(--white); box-shadow: var(--shadow-lg); position: fixed; height: 100vh; z-index: 1000; overflow-y: auto; transition: transform var(--transition); }
+        .main-content { margin-left: var(--sidebar-width); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+        .header { height: var(--header-height); background: var(--white); box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; position: sticky; top: 0; z-index: 100; }
+        .content { flex: 1; padding: 30px; overflow-y: auto; }
+        
         /* ===========================
-           App Container y UI General
+           Sidebar
         =========================== */
-        .app-container { display: none; min-height: 100vh; opacity: 0; transition: opacity var(--transition-slow); }
-        .app-container.loaded { opacity: 1; display: flex; }
-        .sidebar{width:var(--sidebar-width);background:linear-gradient(180deg, var(--primary) 0%, var(--primary-dark) 100%);color:var(--white);position:fixed;height:100vh;transition:all var(--transition);z-index:1000;display:flex;flex-direction:column}
-        .sidebar-header{padding:30px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,.1)}.logo{width:80px;height:80px;background:var(--white);border-radius:var(--radius-xl);margin:0 auto 15px;padding:15px;cursor:pointer}.logo img{width:100%;height:100%}.sidebar-title{font-size:20px;font-weight:700;margin:0}.sidebar-subtitle{font-size:14px;opacity:.8;margin-top:4px}.nav-menu{padding:20px 0;flex-grow:1;overflow-y:auto}.nav-item{display:flex;align-items:center;gap:15px;padding:15px 25px;cursor:pointer;transition:background .2s ease, padding-left .2s ease;border:none;background:0 0;color:var(--white);width:100%;text-align:left;font-size:15px}.nav-item .nav-icon{font-size:24px;width:28px;text-align:center}.nav-item.active,.nav-item:hover{background:rgba(255,255,255,.1);padding-left:30px}.main-content{margin-left:var(--sidebar-width);transition:margin-left var(--transition);width:calc(100% - var(--sidebar-width));display:flex;flex-direction:column;min-height:100vh}.header{height:var(--header-height);background:var(--white);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:space-between;padding:0 30px;position:sticky;top:0;z-index:999}.page-title{font-size:24px;font-weight:700}.header-right{display:flex;align-items:center;gap:20px}.user-avatar{width:40px;height:40px;background:var(--primary);color:var(--white);border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer}.content{padding:30px;flex-grow:1}.tab-content{display:none}.tab-content.active{display:block;animation:fadeIn .5s ease}.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;margin-bottom:30px}.stat-card{background:var(--white);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow)}.stat-header{display:flex;justify-content:space-between;align-items:flex-start}.stat-value{font-size:28px;font-weight:700}.stat-label{color:var(--gray-600)}.stat-icon{width:48px;height:48px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:24px}.panel{background:var(--white);border-radius:var(--radius-lg);box-shadow:var(--shadow);margin-bottom:24px}.panel-header{padding:20px 24px;border-bottom:1px solid var(--gray-200);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}.panel-title{font-size:18px;font-weight:700}.panel-body{padding:24px}.table-responsive{overflow-x:auto}.table{width:100%;border-collapse:collapse;min-width:600px}.table th,.table td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--gray-200)}.table th{background:var(--gray-100)}.badge{padding:4px 10px;border-radius:var(--radius-full);font-size:12px;font-weight:600}.badge-success{background:var(--success-alpha);color:var(--success)}.badge-warning{background:var(--warning-alpha);color:var(--warning)}.badge-danger{background:var(--danger-alpha);color:var(--danger)}.badge-info{background:var(--info-alpha);color:var(--info)}.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:2000}.modal.active{display:flex;align-items:center;justify-content:center;animation:fadeIn .3s ease}.modal-overlay{position:absolute;width:100%;height:100%;background:rgba(0,0,0,.5)}.modal-content{background:var(--white);padding:30px;border-radius:var(--radius-lg);z-index:1;width:90%;max-width:600px;max-height:90vh;display:flex;flex-direction:column;animation:slideUp .3s ease}@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid var(--gray-200)}.modal-title{font-size:20px;font-weight:700}.modal-body{overflow-y:auto;padding-right:15px;margin-right:-15px}.modal-close{background:0 0;border:none;font-size:24px;cursor:pointer}.modal-footer{margin-top:20px;padding-top:15px;border-top:1px solid var(--gray-200);display:flex;justify-content:flex-end;gap:10px}.btn{padding:10px 20px;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;transition:all var(--transition)}.btn-primary{background:var(--primary);color:var(--white)}.btn-primary:hover{background:var(--primary-dark)}.btn-secondary{background:var(--gray-200)}.btn-danger{background:var(--danger-alpha);color:var(--danger)}.btn-danger:hover{background:var(--danger);color:var(--white)}.btn-success{background:var(--success);color:var(--white)}.btn-success:hover{opacity:0.9}.btn-sm{padding:6px 12px;font-size:12px}.form-group{margin-bottom:20px}.form-label{display:block;margin-bottom:8px;font-weight:600}.form-input,.form-select,.form-textarea{width:100%;padding:10px;border:1px solid var(--gray-300);border-radius:var(--radius)}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px}.toast-container{position:fixed;bottom:20px;right:20px;z-index:3000}.toast{padding:15px;margin-top:10px;border-radius:var(--radius);color:var(--white);box-shadow:var(--shadow-lg);animation:fadeIn .3s}.toast-success{background:var(--success)}.toast-error{background:var(--danger)}.toast-info{background:var(--info)}.loading-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(255,255,255,.8);display:flex;align-items:center;justify-content:center;z-index:9999;backdrop-filter:blur(2px)}.loading-spinner{width:40px;height:40px;border:4px solid var(--primary-dark);border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
-        .alert{padding:16px 20px;border-radius:var(--radius);margin-bottom:20px;display:flex;gap:12px;border:1px solid transparent}.alert-info{background:var(--info-alpha);color:var(--info);border-color:rgba(59,130,246,.2)}.alert-icon{font-size:20px;flex-shrink:0}.alert-content strong{display:block;margin-bottom:4px}.quick-actions{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-top:30px}.action-card{background:var(--white);border:2px dashed var(--gray-300);border-radius:var(--radius-lg);padding:24px;text-align:center;cursor:pointer;transition:all var(--transition)}.action-card:hover{border-color:var(--primary);border-style:solid;transform:translateY(-2px);box-shadow:var(--shadow-md)}.action-icon{font-size:32px;margin-bottom:12px}.action-title{font-weight:700;margin-bottom:4px;font-size:16px}.action-desc{font-size:13px;color:var(--gray-600)}.compliance-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin-bottom:24px}.compliance-card{background:var(--white);border-radius:var(--radius-lg);padding:24px;box-shadow:var(--shadow)}.compliance-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}.compliance-icon{width:60px;height:60px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:32px}.compliance-info h3{margin:0;font-size:20px}.compliance-info p{color:var(--gray-600);margin:0;font-size:14px}.compliance-list{display:flex;flex-direction:column;gap:12px}.compliance-item{display:flex;align-items:center;gap:12px}.check-icon{width:24px;height:24px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;color:var(--white);font-size:14px}.compliance-progress{margin-top:20px}.progress-header{display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px}.progress{height:8px;background:var(--gray-200);border-radius:var(--radius-full);overflow:hidden}.progress-bar{height:100%;background:var(--primary);border-radius:var(--radius-full);transition:width var(--transition)}.employee-info{display:flex;align-items:center;gap:12px}.employee-avatar{width:40px;height:40px;border-radius:var(--radius-full);display:flex;align-items:center;justify-content:center;font-weight:700}.employee-details .employee-name{font-weight:600}.employee-details .employee-role{font-size:12px;color:var(--gray-600)}
-        .balance-sheet{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}.balance-section{background:var(--gray-100);padding:20px;border-radius:var(--radius);border-left:4px solid var(--primary)}.balance-section h4{margin:0 0 16px;color:var(--dark);font-size:16px;font-weight:700}.balance-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--gray-200)}.balance-item:last-child{border-bottom:none}.balance-total{font-weight:700;margin-top:12px;padding-top:12px;border-top:2px solid var(--primary);color:var(--dark);display:flex;justify-content:space-between}
-        .bottom-nav{display:none}
-        .hidden { display: none !important; }
-        .checkbox-group { display: flex; align-items: center; gap: 10px; }
-        .error { border-color: var(--danger) !important; }
-        .form-error { color: var(--danger); font-size: 12px; margin-top: 5px; }
+        .sidebar-header { padding: 25px 20px; text-align: center; border-bottom: 1px solid var(--gray-200); }
+        .logo { width: 60px; height: 60px; margin: 0 auto 15px; border-radius: var(--radius-full); overflow: hidden; cursor: pointer; transition: transform var(--transition); }
+        .logo:hover { transform: scale(1.05); }
+        .logo img { width: 100%; height: 100%; object-fit: cover; }
+        .sidebar-title { font-size: 22px; font-weight: 700; color: var(--primary); margin: 0; }
+        .sidebar-subtitle { font-size: 12px; color: var(--gray-600); margin: 5px 0 0; }
+        
+        /* ===========================
+           Navegación
+        =========================== */
+        .nav-menu { padding: 10px 0; }
+        .nav-item { width: 100%; padding: 15px 25px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; text-align: left; font-size: 15px; color: var(--gray-600); transition: all var(--transition); border-left: 3px solid transparent; }
+        .nav-item:hover { background: var(--gray-100); color: var(--primary); }
+        .nav-item.active { background: var(--primary-alpha); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+        .nav-icon { margin-right: 12px; font-size: 18px; }
+        .nav-text { flex: 1; }
+        
+        /* ===========================
+           Header
+        =========================== */
+        .menu-toggle { display: none; background: none; border: none; font-size: 20px; cursor: pointer; color: var(--gray-600); }
+        .page-title { font-size: 28px; font-weight: 700; color: var(--dark); margin: 0; }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: var(--radius-full); background: var(--primary); color: var(--white); display: flex; align-items: center; justify-content: center; font-weight: 600; cursor: pointer; transition: all var(--transition); }
+        .user-avatar:hover { transform: scale(1.1); background: var(--primary-dark); }
+        
+        /* ===========================
+           Panels y Cards
+        =========================== */
+        .panel { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); margin-bottom: 25px; overflow: hidden; }
+        .panel-header { padding: 20px 25px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: between; align-items: center; }
+        .panel-title { font-size: 20px; font-weight: 600; color: var(--dark); margin: 0; }
+        .panel-body { padding: 25px; }
+        
+        /* ===========================
+           Stats Grid
+        =========================== */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .stat-card { background: var(--white); border-radius: var(--radius-lg); padding: 25px; box-shadow: var(--shadow); transition: transform var(--transition); }
+        .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .stat-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .stat-info { flex: 1; }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--dark); margin-bottom: 5px; }
+        .stat-label { font-size: 14px; color: var(--gray-600); }
+        .stat-icon { width: 50px; height: 50px; border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        
+        /* ===========================
+           Botones
+        =========================== */
+        .btn { padding: 12px 20px; border: none; border-radius: var(--radius); cursor: pointer; font-size: 14px; font-weight: 500; display: inline-flex; align-items: center; gap: 8px; transition: all var(--transition); text-decoration: none; }
+        .btn-primary { background: var(--primary); color: var(--white); }
+        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
+        .btn-secondary { background: var(--gray-200); color: var(--gray-700); }
+        .btn-secondary:hover { background: var(--gray-300); }
+        .btn-success { background: var(--success); color: var(--white); }
+        .btn-success:hover { background: #059669; }
+        .btn-warning { background: var(--warning); color: var(--white); }
+        .btn-warning:hover { background: #d97706; }
+        .btn-danger { background: var(--danger); color: var(--white); }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-info { background: var(--info); color: var(--white); }
+        .btn-info:hover { background: #2563eb; }
+        .btn-icon { font-size: 16px; }
+        .btn-text { }
+        
+        /* ===========================
+           Formularios
+        =========================== */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: var(--gray-700); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 15px; border: 1px solid var(--gray-300); border-radius: var(--radius); font-size: 14px; transition: border-color var(--transition); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.1); }
+        
+        /* ===========================
+           Tablas
+        =========================== */
+        .table-responsive { overflow-x: auto; }
+        .table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+        .table th { font-weight: 600; color: var(--gray-700); background: var(--gray-50); }
+        .table tbody tr:hover { background: var(--gray-50); }
+        
+        /* ===========================
+           Modales
+        =========================== */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); overflow-y: auto; }
+        .modal.active { display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow-2xl); max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 20px 25px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { margin: 0; color: var(--dark); }
+        .close { font-size: 24px; cursor: pointer; color: var(--gray-600); }
+        .close:hover { color: var(--danger); }
+        .modal-body { padding: 25px; }
+        .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+        
+        /* ===========================
+           Alertas y Notificaciones
+        =========================== */
+        .alert { padding: 15px 20px; border-radius: var(--radius); margin-bottom: 20px; display: flex; align-items: flex-start; gap: 12px; }
+        .alert-info { background: var(--info-alpha); border: 1px solid rgba(59, 130, 246, 0.2); }
+        .alert-success { background: var(--success-alpha); border: 1px solid rgba(16, 185, 129, 0.2); }
+        .alert-warning { background: var(--warning-alpha); border: 1px solid rgba(245, 158, 11, 0.2); }
+        .alert-danger { background: var(--danger-alpha); border: 1px solid rgba(239, 68, 68, 0.2); }
+        .alert-icon { font-size: 18px; flex-shrink: 0; }
+        .alert-content { flex: 1; }
+        .alert-content strong { font-weight: 600; }
+        
+        /* ===========================
+           Toast Notifications
+        =========================== */
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 3000; }
+        .toast { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 15px 20px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; max-width: 350px; transform: translateX(400px); transition: transform var(--transition); border-left: 4px solid var(--info); }
+        .toast.show { transform: translateX(0); }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.warning { border-left-color: var(--warning); }
+        .toast-icon { font-size: 18px; }
+        .toast-message { flex: 1; font-size: 14px; }
+        
+        /* ===========================
+           Pantalla de Carga
+        =========================== */
+        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .loading-particles { position: absolute; width: 100%; height: 100%; }
+        .loading-content { text-align: center; z-index: 10; }
+        .loading-logo { width: 100px; height: 100px; margin: 0 auto 30px; border-radius: var(--radius-full); overflow: hidden; box-shadow: var(--shadow-2xl); }
+        .loading-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .loading-title { font-size: 48px; font-weight: 700; color: var(--white); margin: 0 0 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .loading-status { font-size: 18px; color: rgba(255,255,255,0.9); margin: 0; }
+        
+        /* ===========================
+           Formulario de Login
+        =========================== */
+        .login-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); display: flex; align-items: center; justify-content: center; z-index: 9998; }
+        .login-form { background: var(--white); padding: 40px; border-radius: var(--radius-xl); box-shadow: var(--shadow-2xl); width: 400px; max-width: 90%; }
+        .login-header { text-align: center; margin-bottom: 30px; }
+        .login-logo { width: 80px; height: 80px; margin: 0 auto 20px; border-radius: var(--radius-full); overflow: hidden; }
+        .login-logo img { width: 100%; height: 100%; object-fit: cover; }
+        .login-title { font-size: 28px; font-weight: 700; color: var(--dark); margin: 0 0 10px; }
+        .login-subtitle { font-size: 14px; color: var(--gray-600); margin: 0; }
+        
+        /* ===========================
+           Específicos para nuevos módulos
+        =========================== */
+        .accounting-dashboard, .payroll-dashboard {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .balance-cards, .payroll-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .balance-card, .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .balance-card h4, .summary-card h4 {
+            color: var(--gray-600);
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .summary-card span {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .payroll-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .admin-section {
+            background: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+        }
+
+        .admin-section h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        .admin-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .accounting-details {
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .account-select, .debe-input, .haber-input {
+            padding: 8px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+        }
+
+        .totals {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 2px solid var(--gray-200);
+            font-weight: bold;
+        }
+        
+        /* ===========================
+           Compliance específico
+        =========================== */
+        .compliance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
+        .compliance-card { background: var(--white); border-radius: var(--radius-lg); padding: 25px; box-shadow: var(--shadow); }
+        .compliance-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
+        .compliance-icon { width: 50px; height: 50px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; font-size: 24px; }
+        .compliance-info h3 { margin: 0 0 5px; font-size: 18px; color: var(--dark); }
+        .compliance-info p { margin: 0; font-size: 14px; color: var(--gray-600); }
+        .compliance-list { margin-bottom: 20px; }
+        .compliance-item { display: flex; align-items: center; gap: 12px; padding: 8px 0; }
+        .check-icon { width: 20px; height: 20px; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--white); }
+        .compliance-progress { }
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .progress-header span { font-size: 14px; color: var(--gray-600); }
+        .progress-header strong { font-size: 16px; color: var(--dark); }
+        .progress { width: 100%; height: 8px; background: var(--gray-200); border-radius: var(--radius-full); overflow: hidden; }
+        .progress-bar { height: 100%; transition: width var(--transition); }
+        
+        /* ===========================
+           Balance Sheet específico
+        =========================== */
+        .balance-sheet { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .balance-section { background: var(--white); padding: 20px; border-radius: var(--radius); }
+        .balance-section h4 { margin: 0 0 15px; padding-bottom: 10px; border-bottom: 2px solid var(--primary); color: var(--primary); }
+        .balance-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--gray-200); }
+        .balance-total { display: flex; justify-content: space-between; padding: 12px 0; border-top: 2px solid var(--dark); font-weight: 600; color: var(--dark); margin-top: 10px; }
         
         /* ===========================
            Responsive Design
         =========================== */
-        @media(max-width:1024px){.sidebar{transform:translateX(-100%);z-index:1001}.sidebar.active{transform:translateX(0);box-shadow:var(--shadow-2xl)}.main-content{margin-left:0;width:100%}.menu-toggle{display:block!important}}
-        @media(max-width:768px){.content{padding:20px;padding-bottom:calc(var(--bottom-nav-height) + 20px)}.header{padding:0 20px}.page-title{font-size:20px}.table{min-width:auto}.hide-mobile{display:none}.form-row{grid-template-columns:1fr}.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-nav-height);background:var(--white);display:flex;box-shadow:0 -2px 10px rgba(0,0,0,.1);z-index:1000}.bottom-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--gray-600);text-decoration:none;font-size:11px;gap:4px;position:relative}.bottom-nav-item.active{color:var(--primary)}.bottom-nav-item.active::before{content:'';position:absolute;top:0;width:30px;height:3px;background:var(--primary);border-radius:0 0 3px 3px}.bottom-nav-icon{font-size:22px}}
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.active { transform: translateX(0); }
+            .main-content { margin-left: 0; }
+            .menu-toggle { display: block; }
+            .stats-grid { grid-template-columns: 1fr; gap: 15px; }
+            .balance-sheet { grid-template-columns: 1fr; }
+            .compliance-grid { grid-template-columns: 1fr; }
+            .balance-cards, .payroll-summary { grid-template-columns: 1fr; }
+            .admin-grid { grid-template-columns: 1fr; }
+            .detail-row { grid-template-columns: 1fr; }
+            .payroll-actions { flex-direction: column; }
+            .header { padding: 0 15px; }
+            .content { padding: 15px; }
+            .panel-header { padding: 15px 20px; }
+            .panel-body { padding: 20px; }
+        }
+        
+        /* ===========================
+           Tab System
+        =========================== */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        /* ===========================
+           Utilities
+        =========================== */
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .text-left { text-align: left; }
+        .font-bold { font-weight: 600; }
+        .text-primary { color: var(--primary); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+        .text-info { color: var(--info); }
+        .bg-primary { background: var(--primary); }
+        .bg-success { background: var(--success); }
+        .bg-warning { background: var(--warning); }
+        .bg-danger { background: var(--danger); }
+        .bg-info { background: var(--info); }
+        .hidden { display: none; }
+        .visible { display: block; }
     </style>
 </head>
 <body>
-    <!-- Pantalla de Login -->
-    <div class="login-screen" id="loginScreen">
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Login Form -->
+    <div class="login-container" id="loginContainer">
         <div class="login-form">
-            <div class="login-logo">
-                <img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel Logo">
+            <div class="login-header">
+                <div class="login-logo">
+                    <img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel Logo">
+                </div>
+                <h1 class="login-title">TECSITEL</h1>
+                <p class="login-subtitle">Sistema de Gestión Empresarial v3.0</p>
             </div>
-            <h2 class="login-title">TECSITEL - Acceso Seguro</h2>
-            <form id="loginForm" onsubmit="handleLogin(event)">
+            <form id="loginForm">
                 <div class="form-group">
-                    <label class="form-label">Usuario</label>
-                    <input type="text" class="form-input" id="username" placeholder="admin" required>
+                    <label for="username">Usuario:</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
                 </div>
                 <div class="form-group">
-                    <label class="form-label">Contraseña</label>
-                    <input type="password" class="form-input" id="password" placeholder="••••••••" required>
+                    <label for="password">Contraseña:</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
                 </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
-                <p style="text-align: center; margin-top: 15px; color: var(--gray-600); font-size: 12px;">
-                    Demo: admin / admin123
-                </p>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <span class="btn-icon">🔐</span>
+                        <span class="btn-text">Iniciar Sesión</span>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -172,11 +434,20 @@
                 <button class="nav-item" data-tab="accounting">
                     <span class="nav-icon">💰</span><span class="nav-text">Contabilidad</span>
                 </button>
-                 <button class="nav-item" data-tab="personnel">
+                <button class="nav-item" data-tab="advanced-accounting">
+                    <span class="nav-icon">📈</span><span class="nav-text">Contabilidad Pro</span>
+                </button>
+                <button class="nav-item" data-tab="personnel">
                     <span class="nav-icon">👥</span><span class="nav-text">Personal</span>
+                </button>
+                <button class="nav-item" data-tab="payroll">
+                    <span class="nav-icon">💼</span><span class="nav-text">Planilla</span>
                 </button>
                 <button class="nav-item" data-tab="compliance">
                     <span class="nav-icon">⚖️</span><span class="nav-text">Cumplimiento</span>
+                </button>
+                <button class="nav-item" data-tab="admin-panel">
+                    <span class="nav-icon">⚙️</span><span class="nav-text">Administración</span>
                 </button>
                 <button class="nav-item" data-tab="sharepoint">
                     <span class="nav-icon">☁️</span><span class="nav-text">Respaldos</span>
@@ -219,29 +490,38 @@
                                     Cumpliendo con normativas SUNAT, SUNAFIL y MINTRA. Seguridad mejorada.
                                 </div>
                             </div>
-                            <div class="table-responsive"><table class="table" id="recentInvoicesTable"><thead><tr><th>N° Factura</th><th>Cliente</th><th class="hide-mobile">Total</th><th>Estado</th></tr></thead><tbody><tr><td colspan="4" style="text-align: center;">No hay facturas registradas.</td></tr></tbody></table></div>
+                            <div class="table-responsive">
+                                <table class="table" id="dashboardTable">
+                                    <thead><tr><th>Fecha</th><th>Tipo</th><th>Descripción</th><th>Monto</th><th>Estado</th></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                     <div class="quick-actions">
-                        <div class="action-card" onclick="showModal('newInvoice')"><div class="action-icon">➕</div><div class="action-title">Nueva Factura</div><div class="action-desc">Crear comprobante</div></div>
-                        <div class="action-card" onclick="showModal('registerPayment')"><div class="action-icon">💵</div><div class="action-title">Registrar Cobro</div><div class="action-desc">Ingresar pago</div></div>
-                        <div class="action-card" onclick="showTab('personnel')"><div class="action-icon">👥</div><div class="action-title">Ver Personal</div><div class="action-desc">Gestionar equipo</div></div>
-                        <div class="action-card" onclick="showModal('timeEntry')"><div class="action-icon">✍️</div><div class="action-title">Control de Asistencia</div><div class="action-desc">Registrar marcación</div></div>
-                    </div>
                 </div>
-                
+
                 <!-- Invoices Tab -->
                 <div id="invoices" class="tab-content">
                     <div class="panel">
                         <div class="panel-header">
-                            <h3 class="panel-title">Todas las Facturas</h3>
-                            <div class="panel-actions" style="gap: 10px;">
-                                <input type="file" id="uploadInvoiceInput" class="hidden" multiple onchange="handleFileUpload(this.files)" accept=".pdf,.jpg,.jpeg,.png">
-                                <button class="btn btn-secondary" onclick="document.getElementById('uploadInvoiceInput').click()">Subir Facturas</button>
-                                <button class="btn btn-primary" onclick="showModal('newInvoice')">➕ Nueva Factura</button>
-                            </div>
+                            <h3 class="panel-title">📄 Gestión de Facturas Electrónicas</h3>
+                            <button class="btn btn-primary" onclick="showModal('newInvoice')">➕ Nueva Factura</button>
                         </div>
-                        <div class="panel-body"><div class="table-responsive"><table class="table" id="allInvoicesTable"><thead><tr><th>N° Factura</th><th>Cliente</th><th class="hide-mobile">RUC</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr><td colspan="6" style="text-align: center;">No hay facturas registradas.</td></tr></tbody></table></div></div>
+                        <div class="panel-body">
+                           <div class="alert alert-info">
+                               <span class="alert-icon">ℹ️</span>
+                               <div class="alert-content">
+                                   <strong>Facturación Electrónica 3.0</strong>
+                                   Cumple con las últimas normativas SUNAT. Genera XML y PDF automáticamente.
+                               </div>
+                           </div>
+                           <div class="table-responsive">
+                               <table class="table" id="invoicesTable">
+                                   <thead><tr><th>N° Factura</th><th>Cliente</th><th>RUC</th><th>Fecha</th><th>Moneda</th><th>Monto</th><th>Estado</th><th>Acciones</th></tr></thead>
+                                   <tbody></tbody>
+                               </table>
+                           </div>
+                        </div>
                     </div>
                 </div>
 
@@ -249,23 +529,25 @@
                 <div id="accounting" class="tab-content">
                     <div class="panel">
                         <div class="panel-header">
-                            <h3 class="panel-title">💰 Estado de Situación Financiera</h3>
+                            <h3 class="panel-title">💰 Contabilidad Básica</h3>
                         </div>
                         <div class="panel-body">
                            <div class="balance-sheet">
                                 <div class="balance-section">
                                     <h4>ACTIVOS</h4>
-                                    <div class="balance-item"><span>Efectivo y Bancos</span><span id="cashBalance">S/ 12,500.00</span></div>
-                                    <div class="balance-item"><span>Cuentas por Cobrar</span><span id="receivables">S/ 7,800.00</span></div>
-                                    <div class="balance-item"><span>Inventario</span><span>S/ 4,200.00</span></div>
-                                    <div class="balance-total"><span>Total Activos</span><span id="totalAssets">S/ 24,500.00</span></div>
+                                    <div class="balance-item"><span>Efectivo y Equivalentes</span><span id="cashBalance">S/ 25,000.00</span></div>
+                                    <div class="balance-item"><span>Cuentas por Cobrar</span><span id="receivables">S/ 8,500.00</span></div>
+                                    <div class="balance-item"><span>Inventarios</span><span id="inventory">S/ 12,000.00</span></div>
+                                    <div class="balance-total"><span>Total Activos</span><span id="totalAssets">S/ 45,500.00</span></div>
                                 </div>
                                 <div class="balance-section">
                                     <h4>PASIVOS</h4>
-                                    <div class="balance-item"><span>Cuentas por Pagar</span><span>S/ 3,100.00</span></div>
-                                    <div class="balance-item"><span>Impuestos por Pagar</span><span id="taxesPayable">S/ 1,250.00</span></div>
-                                    <div class="balance-total"><span>Total Pasivos</span><span id="totalLiabilities">S/ 4,350.00</span></div>
+                                    <div class="balance-item"><span>Cuentas por Pagar</span><span>S/ 15,200.00</span></div>
+                                    <div class="balance-item"><span>Tributos por Pagar</span><span id="taxesPayable">S/ 10,150.00</span></div>
+                                    <div class="balance-total"><span>Total Pasivos</span><span id="totalLiabilities">S/ 25,350.00</span></div>
                                 </div>
+                           </div>
+                           <div class="balance-sheet" style="margin-top: 20px;">
                                 <div class="balance-section">
                                     <h4>PATRIMONIO</h4>
                                     <div class="balance-item"><span>Capital Social</span><span>S/ 15,000.00</span></div>
@@ -277,7 +559,59 @@
                     </div>
                 </div>
 
-                <!-- Personnel Tab (Unified) -->
+                <!-- Advanced Accounting Tab -->
+                <div id="advanced-accounting" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">📈 Contabilidad Avanzada</h3>
+                            <button class="btn btn-primary" onclick="showModal('newAccountingEntry')">
+                                ➕ Nuevo Asiento
+                            </button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="accounting-dashboard">
+                                <div class="balance-cards">
+                                    <div class="balance-card">
+                                        <h4>Balance de Comprobación</h4>
+                                        <button class="btn btn-secondary" onclick="generateBalanceSheet()">
+                                            📋 Generar
+                                        </button>
+                                    </div>
+                                    <div class="balance-card">
+                                        <h4>Estado de Resultados</h4>
+                                        <button class="btn btn-secondary" onclick="generateIncomeStatement()">
+                                            📈 Generar
+                                        </button>
+                                    </div>
+                                    <div class="balance-card">
+                                        <h4>Exportar PLE</h4>
+                                        <button class="btn btn-success" onclick="exportPLE()">
+                                            📤 Exportar SUNAT
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table" id="accountingEntriesTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Número</th>
+                                                <th>Fecha</th>
+                                                <th>Glosa</th>
+                                                <th>Debe</th>
+                                                <th>Haber</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personnel Tab -->
                 <div id="personnel" class="tab-content">
                     <div class="panel">
                         <div class="panel-header">
@@ -310,6 +644,62 @@
                     </div>
                 </div>
 
+                <!-- Payroll Tab -->
+                <div id="payroll" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">💼 Gestión de Planilla</h3>
+                            <button class="btn btn-primary" onclick="showModal('calculatePayroll')">
+                                🧮 Calcular Planilla
+                            </button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="payroll-dashboard">
+                                <div class="payroll-summary">
+                                    <div class="summary-card">
+                                        <h4>Empleados Activos</h4>
+                                        <span id="activeEmployeesCount">0</span>
+                                    </div>
+                                    <div class="summary-card">
+                                        <h4>Planilla Mensual</h4>
+                                        <span id="monthlyPayroll">S/ 0.00</span>
+                                    </div>
+                                    <div class="summary-card">
+                                        <h4>Aportes Empleador</h4>
+                                        <span id="employerContributions">S/ 0.00</span>
+                                    </div>
+                                </div>
+                                <div class="payroll-actions">
+                                    <button class="btn btn-success" onclick="generatePayslips()">
+                                        📄 Generar Boletas
+                                    </button>
+                                    <button class="btn btn-info" onclick="exportPLAME()">
+                                        📊 Exportar PLAME
+                                    </button>
+                                    <button class="btn btn-warning" onclick="exportTRegister()">
+                                        📋 Exportar T-Registro
+                                    </button>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table" id="payrollTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Empleado</th>
+                                                <th>Sueldo Básico</th>
+                                                <th>Total Ingresos</th>
+                                                <th>Total Descuentos</th>
+                                                <th>Neto</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Compliance Tab -->
                 <div id="compliance" class="tab-content">
                      <div class="compliance-grid">
@@ -320,13 +710,70 @@
                         </div>
                         <div class="compliance-card">
                             <div class="compliance-header"><div class="compliance-icon" style="background:rgba(59,130,246,.1)">⚖️</div><div class="compliance-info"><h3>SUNAFIL</h3><p>Fiscalización Laboral</p></div></div>
-                            <div class="compliance-list"><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>T-REGISTRO actualizado</span></div><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>Control de asistencia digital</span></div><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>SCTR vigente</span></div></div>
-                            <div class="compliance-progress"><div class="progress-header"><span>Cumplimiento</span><strong>100%</strong></div><div class="progress"><div class="progress-bar" style="width:100%;background:var(--success)"></div></div></div>
+                            <div class="compliance-list"><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>T-REGISTRO actualizado</span></div><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>Control de asistencia digital</span></div><div class="compliance-item"><div class="check-icon" style="background:var(--warning)">!</div><span>Planillas pendientes</span></div></div>
+                            <div class="compliance-progress"><div class="progress-header"><span>Cumplimiento</span><strong>88%</strong></div><div class="progress"><div class="progress-bar" style="width:88%;background:var(--warning)"></div></div></div>
                         </div>
                         <div class="compliance-card">
-                            <div class="compliance-header"><div class="compliance-icon" style="background:rgba(245,158,11,.1)">📋</div><div class="compliance-info"><h3>MINTRA</h3><p>Ministerio de Trabajo</p></div></div>
-                            <div class="compliance-list"><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>Contratos registrados</span></div><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>Planilla electrónica</span></div><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>Reglamento interno</span></div></div>
-                            <div class="compliance-progress"><div class="progress-header"><span>Cumplimiento</span><strong>98%</strong></div><div class="progress"><div class="progress-bar" style="width:98%;background:var(--success)"></div></div></div>
+                            <div class="compliance-header"><div class="compliance-icon" style="background:rgba(245,158,11,.1)">🏢</div><div class="compliance-info"><h3>MINTRA</h3><p>Ministerio de Trabajo</p></div></div>
+                            <div class="compliance-list"><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>PLAME presentado</span></div><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>Contratos registrados</span></div><div class="compliance-item"><div class="check-icon" style="background:var(--success)">✓</div><span>Seguridad y salud</span></div></div>
+                            <div class="compliance-progress"><div class="progress-header"><span>Cumplimiento</span><strong>100%</strong></div><div class="progress"><div class="progress-bar" style="width:100%;background:var(--success)"></div></div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Panel Tab -->
+                <div id="admin-panel" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">⚙️ Panel de Administración</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="admin-grid">
+                                <div class="admin-section">
+                                    <h4>👥 Gestión de Usuarios</h4>
+                                    <div class="admin-actions">
+                                        <button class="btn btn-primary" onclick="showModal('newUser')">
+                                            ➕ Nuevo Usuario
+                                        </button>
+                                        <button class="btn btn-secondary" onclick="showUserRoles()">
+                                            🔐 Roles y Permisos
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="admin-section">
+                                    <h4>🏢 Configuración Empresa</h4>
+                                    <div class="admin-actions">
+                                        <button class="btn btn-primary" onclick="showModal('companyConfig')">
+                                            ⚙️ Configurar
+                                        </button>
+                                        <button class="btn btn-info" onclick="showTaxConfig()">
+                                            💰 Parámetros Fiscales
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="admin-section">
+                                    <h4>📊 Auditoría</h4>
+                                    <div class="admin-actions">
+                                        <button class="btn btn-warning" onclick="showAuditLogs()">
+                                            📋 Ver Logs
+                                        </button>
+                                        <button class="btn btn-success" onclick="exportAuditReport()">
+                                            📤 Exportar Reporte
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="admin-section">
+                                    <h4>🔄 Respaldos Avanzados</h4>
+                                    <div class="admin-actions">
+                                        <button class="btn btn-success" onclick="scheduleBackup()">
+                                            ⏰ Programar Respaldo
+                                        </button>
+                                        <button class="btn btn-primary" onclick="downloadAdvancedBackup()">
+                                            💾 Respaldo Completo
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -334,815 +781,769 @@
                 <!-- SharePoint Tab -->
                 <div id="sharepoint" class="tab-content">
                     <div class="panel">
-                        <div class="panel-header"><h3 class="panel-title">☁️ Sistema de Respaldos</h3></div>
+                        <div class="panel-header">
+                            <h3 class="panel-title">☁️ Centro de Respaldos</h3>
+                        </div>
                         <div class="panel-body">
-                            <p>Genera y descarga respaldos completos de todos los datos de la aplicación.</p>
-                            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                                <button class="btn btn-success" onclick="downloadFullBackup()">📥 Descargar Respaldo CSV</button>
-                                <button class="btn btn-primary" onclick="downloadJSONBackup()">📥 Descargar Respaldo JSON</button>
-                                <button class="btn btn-info" onclick="generatePDFReport()">📄 Generar Reporte PDF</button>
+                            <div class="alert alert-success">
+                                <span class="alert-icon">✅</span>
+                                <div class="alert-content">
+                                    <strong>Respaldos Seguros</strong>
+                                    Todos los datos se almacenan localmente y se pueden exportar fácilmente.
+                                </div>
+                            </div>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <div class="stat-header">
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="backupSize">2.5 MB</div>
+                                            <div class="stat-label">Tamaño de Datos</div>
+                                        </div>
+                                        <div class="stat-icon" style="background:var(--info-alpha);color:var(--info)">💾</div>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-header">
+                                        <div class="stat-info">
+                                            <div class="stat-value" id="lastBackup">Hoy</div>
+                                            <div class="stat-label">Último Respaldo</div>
+                                        </div>
+                                        <div class="stat-icon" style="background:var(--success-alpha);color:var(--success)">📅</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="backup-actions" style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 25px;">
+                                <button class="btn btn-primary" onclick="downloadFullBackup()">
+                                    <span class="btn-icon">📥</span>
+                                    <span class="btn-text">Descargar CSV Completo</span>
+                                </button>
+                                <button class="btn btn-success" onclick="downloadJSONBackup()">
+                                    <span class="btn-icon">📊</span>
+                                    <span class="btn-text">Descargar JSON</span>
+                                </button>
+                                <button class="btn btn-info" onclick="generatePDFReport()">
+                                    <span class="btn-icon">📄</span>
+                                    <span class="btn-text">Generar PDF</span>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <nav class="bottom-nav" id="bottomNav">
-                <a href="#" class="bottom-nav-item active" data-tab="dashboard"><span class="bottom-nav-icon">📊</span><span>Dashboard</span></a>
-                <a href="#" class="bottom-nav-item" data-tab="invoices"><span class="bottom-nav-icon">📄</span><span>Facturas</span></a>
-                <a href="#" class="bottom-nav-item" data-tab="personnel"><span class="bottom-nav-icon">👥</span><span>Personal</span></a>
-                <a href="#" class="bottom-nav-item" data-tab="accounting"><span class="bottom-nav-icon">💰</span><span>Finanzas</span></a>
-                <a href="#" class="bottom-nav-item" data-tab="compliance"><span class="bottom-nav-icon">⚖️</span><span>Legal</span></a>
-            </nav>
         </main>
     </div>
 
     <!-- Modales -->
     
     <!-- Modal Nueva Factura -->
-    <div class="modal" id="newInvoiceModal">
-        <div class="modal-overlay" onclick="closeModal('newInvoice')"></div>
+    <div class="modal" id="newInvoice">
         <div class="modal-content">
-            <div class="modal-header"><h2 class="modal-title">Nueva Factura</h2><button class="modal-close" onclick="closeModal('newInvoice')">&times;</button></div>
-            <div class="modal-body">
-                <form id="invoiceForm" onsubmit="saveInvoice(event)">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">RUC Cliente*</label>
-                            <input type="text" class="form-input" name="clientRuc" placeholder="20100055237" pattern="[0-9]{11}" maxlength="11" required>
-                            <span class="form-error" id="rucError"></span>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Razón Social*</label>
-                            <input type="text" class="form-input" name="clientName" placeholder="Mi Cliente SAC" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Descripción*</label>
-                        <textarea class="form-textarea" name="description" placeholder="Servicio de consultoría..." required></textarea>
-                    </div>
-                     <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Moneda*</label>
-                            <select class="form-select" name="currency" onchange="handleCurrencyChange(this.value)">
-                                <option value="PEN">Soles (S/)</option>
-                                <option value="USD">Dólares ($)</option>
-                            </select>
-                        </div>
-                        <div class="form-group hidden" id="exchangeRateGroup">
-                            <label class="form-label">Tipo de Cambio (S/)</label>
-                            <input type="number" step="0.001" class="form-input" name="exchangeRate" value="3.75" min="1">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Monto Base* (<span class="currency-symbol">S/</span>)</label>
-                        <input type="number" step="0.01" class="form-input" name="amount" placeholder="1500.00" min="0.01" required oninput="calculateTotal()">
-                    </div>
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="isExportInvoice" onchange="calculateTotal()">
-                        <label for="isExportInvoice">Factura de Exportación (sin IGV)</label>
-                    </div>
-                    <div class="form-group" id="totalAmountGroup">
-                        <label class="form-label">Total (IGV Incl.) (<span class="currency-symbol">S/</span>)</label>
-                        <input type="text" class="form-input" name="totalAmount" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="invoiceFile" class="form-label">Adjuntar Archivo (PDF, JPG, PNG)</label>
-                        <input type="file" id="invoiceFile" class="form-input" name="invoiceFile" accept=".pdf,.jpg,.jpeg,.png">
-                    </div>
-                </form>
+            <div class="modal-header">
+                <h3>📄 Nueva Factura Electrónica</h3>
+                <span class="close" onclick="hideModal('newInvoice')">&times;</span>
             </div>
-            <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('newInvoice')">Cancelar</button><button type="submit" form="invoiceForm" class="btn btn-primary">Guardar</button></div>
-        </div>
-    </div>
-    
-    <!-- Modal Registrar Pago -->
-    <div class="modal" id="registerPaymentModal">
-        <div class="modal-overlay" onclick="closeModal('registerPayment')"></div>
-        <div class="modal-content">
-            <div class="modal-header"><h2 class="modal-title">Registrar Cobro</h2><button class="modal-close" onclick="closeModal('registerPayment')">&times;</button></div>
             <div class="modal-body">
-                <form id="paymentForm" onsubmit="savePayment(event)">
-                    <div class="form-group"><label class="form-label">N° de Factura*</label><input type="text" class="form-input" name="invoiceNumber" placeholder="F001-0001" required></div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Moneda*</label>
-                            <select class="form-select" name="currency" onchange="updateCurrencySymbols(this.value, 'paymentForm')">
-                                <option value="PEN">Soles (S/)</option>
-                                <option value="USD">Dólares ($)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Monto Cobrado* (<span class="currency-symbol">S/</span>)</label>
-                            <input type="number" step="0.01" class="form-input" name="paymentAmount" placeholder="1770.00" min="0.01" required>
-                        </div>
-                    </div>
-                    <div class="form-group"><label class="form-label">Fecha de Cobro*</label><input type="date" class="form-input" name="paymentDate" required></div>
-                    <div class="form-group"><label class="form-label">Método de Pago</label><select class="form-select" name="paymentMethod"><option>Transferencia</option><option>Efectivo</option><option>Yape/Plin</option></select></div>
-                </form>
-            </div>
-            <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('registerPayment')">Cancelar</button><button type="submit" form="paymentForm" class="btn btn-primary">Registrar</button></div>
-        </div>
-    </div>
-
-    <!-- Modal Control de Asistencia -->
-    <div class="modal" id="timeEntryModal">
-        <div class="modal-overlay" onclick="closeModal('timeEntry')"></div>
-        <div class="modal-content">
-            <div class="modal-header"><h2 class="modal-title">Registrar / Modificar Asistencia</h2><button class="modal-close" onclick="closeModal('timeEntry')">&times;</button></div>
-            <div class="modal-body">
-                <form id="timeEntryForm" onsubmit="saveTimeEntry(event)">
+                <form id="invoiceForm">
                     <div class="form-group">
-                        <label class="form-label">Empleado*</label>
-                        <select class="form-select" name="employeeId" required onchange="loadTimeEntryForEmployee(this.value)">
-                            <option value="">Seleccione un empleado...</option>
+                        <label>RUC Cliente:</label>
+                        <input type="text" id="clientRuc" maxlength="11" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre Cliente:</label>
+                        <input type="text" id="clientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Moneda:</label>
+                        <select id="currency" required>
+                            <option value="PEN">PEN - Soles</option>
+                            <option value="USD">USD - Dólares</option>
+                            <option value="EUR">EUR - Euros</option>
                         </select>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group"><label class="form-label">Fecha*</label><input type="date" class="form-input" name="entryDate" required onchange="loadTimeEntryForEmployee(document.querySelector('#timeEntryForm [name=employeeId]').value)"></div>
+                    <div class="form-group">
+                        <label>Monto (sin IGV):</label>
+                        <input type="number" id="amount" step="0.01" required>
                     </div>
-                    <div class="form-row">
-                         <div class="form-group"><label class="form-label">Hora de Entrada</label><input type="time" class="form-input" name="entryTime"></div>
-                         <div class="form-group"><label class="form-label">Hora de Salida</label><input type="time" class="form-input" name="exitTime"></div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="isExport"> Es exportación (exento de IGV)
+                        </label>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideModal('newInvoice')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Crear Factura</button>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('timeEntry')">Cancelar</button><button type="submit" form="timeEntryForm" class="btn btn-primary">Guardar Cambios</button></div>
         </div>
     </div>
 
     <!-- Modal Nuevo Empleado -->
-    <div class="modal" id="newEmployeeModal">
-        <div class="modal-overlay" onclick="closeModal('newEmployee')"></div>
+    <div class="modal" id="newEmployee">
         <div class="modal-content">
-            <div class="modal-header"><h2 class="modal-title">Nuevo Empleado</h2><button class="modal-close" onclick="closeModal('newEmployee')">&times;</button></div>
-            <div class="modal-body">
-                <form id="newEmployeeForm" onsubmit="saveEmployee(event)">
-                    <div class="form-group">
-                        <label class="form-label">DNI*</label>
-                        <input type="text" pattern="[0-9]{8}" maxlength="8" class="form-input" name="employeeDni" placeholder="71234567" required>
-                        <span class="form-error" id="dniError"></span>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label class="form-label">Nombres*</label><input type="text" class="form-input" name="employeeFirstName" placeholder="Juan" required></div>
-                        <div class="form-group"><label class="form-label">Apellidos*</label><input type="text" class="form-input" name="employeeLastName" placeholder="Pérez García" required></div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Estado*</label>
-                        <select class="form-select" name="employeeStatus" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Vacaciones">Vacaciones</option>
-                            <option value="Descanso Médico">Descanso Médico</option>
-                            <option value="Cesado">Cesado</option>
-                        </select>
-                    </div>
-                </form>
+            <div class="modal-header">
+                <h3>👥 Nuevo Empleado</h3>
+                <span class="close" onclick="hideModal('newEmployee')">&times;</span>
             </div>
-            <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal('newEmployee')">Cancelar</button><button type="submit" form="newEmployeeForm" class="btn btn-primary">Guardar Empleado</button></div>
-        </div>
-    </div>
-
-    <!-- Modal Editar Empleado (NUEVO) -->
-    <div class="modal" id="editEmployeeModal">
-        <div class="modal-overlay" onclick="closeModal('editEmployee')"></div>
-        <div class="modal-content">
-            <div class="modal-header"><h2 class="modal-title">Editar Empleado</h2><button class="modal-close" onclick="closeModal('editEmployee')">&times;</button></div>
             <div class="modal-body">
-                <form id="editEmployeeForm" onsubmit="updateEmployee(event)">
-                    <input type="hidden" name="editEmployeeDni">
+                <form id="employeeForm">
                     <div class="form-group">
-                        <label class="form-label">DNI</label>
-                        <input type="text" class="form-input" name="displayDni" disabled>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Nombres*</label>
-                            <input type="text" class="form-input" name="editFirstName" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Apellidos*</label>
-                            <input type="text" class="form-input" name="editLastName" required>
-                        </div>
+                        <label>DNI:</label>
+                        <input type="text" id="employeeDni" maxlength="8" required>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Estado*</label>
-                        <select class="form-select" name="editStatus" required>
+                        <label>Nombres:</label>
+                        <input type="text" id="employeeFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellidos:</label>
+                        <input type="text" id="employeeLastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado:</label>
+                        <select id="employeeStatus" required>
                             <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
                             <option value="Vacaciones">Vacaciones</option>
-                            <option value="Descanso Médico">Descanso Médico</option>
-                            <option value="Cesado">Cesado</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Notas / Observaciones</label>
-                        <textarea class="form-textarea" name="editNotes" placeholder="Observaciones adicionales..."></textarea>
+                        <label>Notas:</label>
+                        <textarea id="employeeNotes" rows="3"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideModal('newEmployee')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Empleado</button>
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('editEmployee')">Cancelar</button>
-                <button type="submit" form="editEmployeeForm" class="btn btn-primary">Actualizar</button>
             </div>
         </div>
     </div>
 
-    <div class="toast-container" id="toastContainer"></div>
+    <!-- Modal Registro de Tiempo -->
+    <div class="modal" id="timeEntry">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>⏰ Registro de Asistencia</h3>
+                <span class="close" onclick="hideModal('timeEntry')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="timeEntryForm">
+                    <div class="form-group">
+                        <label>Empleado:</label>
+                        <select id="employeeSelect" required onchange="loadTimeEntryForEmployee(this.value)">
+                            <option value="">Seleccionar empleado...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha:</label>
+                        <input type="date" id="entryDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Hora de Entrada:</label>
+                        <input type="time" id="entryTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Hora de Salida:</label>
+                        <input type="time" id="exitTime">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideModal('timeEntry')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Registro</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <!-- Modal Nuevo Asiento Contable -->
+    <div class="modal" id="newAccountingEntry">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📊 Nuevo Asiento Contable</h3>
+                <span class="close" onclick="hideModal('newAccountingEntry')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="accountingEntryForm">
+                    <div class="form-group">
+                        <label>Número de Asiento:</label>
+                        <input type="text" id="entryNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha:</label>
+                        <input type="date" id="entryDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Glosa:</label>
+                        <input type="text" id="entryDescription" required>
+                    </div>
+                    <div class="accounting-details">
+                        <h4>Detalle del Asiento</h4>
+                        <div id="accountingDetails">
+                            <div class="detail-row">
+                                <select class="account-select" required>
+                                    <option value="">Seleccionar cuenta...</option>
+                                </select>
+                                <input type="number" step="0.01" placeholder="Debe" class="debe-input">
+                                <input type="number" step="0.01" placeholder="Haber" class="haber-input">
+                                <button type="button" onclick="addAccountingDetail()">➕</button>
+                            </div>
+                        </div>
+                        <div class="totals">
+                            <span>Total Debe: <span id="totalDebe">0.00</span></span>
+                            <span>Total Haber: <span id="totalHaber">0.00</span></span>
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideModal('newAccountingEntry')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Asiento</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Configuración Empresa -->
+    <div class="modal" id="companyConfig">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🏢 Configuración de Empresa</h3>
+                <span class="close" onclick="hideModal('companyConfig')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="companyConfigForm">
+                    <div class="form-group">
+                        <label>RUC:</label>
+                        <input type="text" id="companyRuc" maxlength="11" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Razón Social:</label>
+                        <input type="text" id="companyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Dirección:</label>
+                        <input type="text" id="companyAddress" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono:</label>
+                        <input type="text" id="companyPhone">
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="companyEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Actividad Económica:</label>
+                        <input type="text" id="companyActivity">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="hideModal('companyConfig')">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Configuración</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Módulos JavaScript integrados -->
+    <script src="modules/advanced-modules.js"></script>
+    
     <script>
     // ========================================
-    // Configuración Global y Estado
+    // CONFIGURACIÓN Y ESTADO GLOBAL
     // ========================================
     const CONFIG = {
         IGV_RATE: 0.18,
-        LOADING_DURATION: 3000,
-        SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minutos
-        DATABASE_URL: '/.netlify/functions/database', // Para futuro uso con PostgreSQL
+        DEFAULT_CURRENCY: 'PEN',
+        API_URL: '/.netlify/functions/api',
+        VERSION: '3.0.1'
     };
 
-    const AppState = { 
-        user: null,
-        isAuthenticated: false,
-        invoices: [],
-        employees: [],
-        timeEntries: [],
-        invoiceCounter: 1,
-        sessionStart: null,
+    let AppState = {
+        invoices: JSON.parse(localStorage.getItem('tecsitel_invoices') || '[]'),
+        employees: JSON.parse(localStorage.getItem('tecsitel_employees') || '[]'),
+        timeEntries: JSON.parse(localStorage.getItem('tecsitel_timeEntries') || '[]'),
+        invoiceCounter: parseInt(localStorage.getItem('tecsitel_invoiceCounter') || '1'),
+        currentUser: null,
+        isAuthenticated: false
     };
 
+    let currentUser = { name: 'Admin', role: 'administrador' };
+
     // ========================================
-    // Sistema de Autenticación (NUEVO)
+    // SISTEMA DE AUTENTICACIÓN
     // ========================================
-    function handleLogin(event) {
+    function login(event) {
         event.preventDefault();
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         
-        // Validación básica (en producción esto sería contra un servidor)
-        if (username === 'admin' && password === 'admin123') {
-            AppState.isAuthenticated = true;
-            AppState.user = { name: username.charAt(0).toUpperCase() + username.slice(1), avatar: 'A' };
-            AppState.sessionStart = Date.now();
-            
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('loadingScreen').style.display = 'flex';
-            
-            // Simular carga y configuración
-            setTimeout(() => {
+        showLoadingScreen();
+        
+        setTimeout(() => {
+            if ((username === 'admin' && password === 'admin123') || 
+                (username === 'demo' && password === 'demo')) {
+                
+                AppState.currentUser = { username, role: 'administrador' };
+                AppState.isAuthenticated = true;
+                currentUser = AppState.currentUser;
+                
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('loadingScreen').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'flex';
+                
+                document.getElementById('userNameDisplay').textContent = username;
+                document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+                
                 initializeApp();
-            }, 1000);
-        } else {
-            showToast('❌ Usuario o contraseña incorrectos', 'error');
-        }
+                showToast('✅ Sesión iniciada correctamente', 'success');
+            } else {
+                hideLoadingScreen();
+                showToast('❌ Credenciales incorrectas', 'error');
+            }
+        }, 2000);
     }
 
-    function checkSession() {
-        if (AppState.sessionStart && (Date.now() - AppState.sessionStart > CONFIG.SESSION_TIMEOUT)) {
-            logout();
-            showToast('Su sesión ha expirado', 'warning');
-        }
+    function logout() {
+        AppState.isAuthenticated = false;
+        AppState.currentUser = null;
+        document.getElementById('appContainer').style.display = 'none';
+        document.getElementById('loginContainer').style.display = 'flex';
+        showToast('👋 Sesión cerrada', 'info');
     }
 
-    // ========================================
-    // Utilidades de Seguridad (NUEVO)
-    // ========================================
-    function sanitizeInput(input) {
-        const div = document.createElement('div');
-        div.textContent = input;
-        return div.innerHTML;
-    }
-
-    function validateRUC(ruc) {
-        return /^[0-9]{11}$/.test(ruc);
-    }
-
-    function validateDNI(dni) {
-        return /^[0-9]{8}$/.test(dni);
-    }
-
-    function validateEmail(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    // ========================================
-    // Datos de Ejemplo Mejorados
-    // ========================================
-    function loadSampleData() {
-        AppState.employees = [
-            { dni: '48756231', firstName: 'Juan', lastName: 'Pérez García', avatar: 'JP', status: 'Activo', notes: '' },
-            { dni: '71234567', firstName: 'María', lastName: 'Rodríguez', avatar: 'MR', status: 'Vacaciones', notes: 'Vacaciones hasta el 15/01' },
-            { dni: '78945612', firstName: 'Carlos', lastName: 'Sánchez', avatar: 'CS', status: 'Activo', notes: '' },
-            { dni: '12345678', firstName: 'Ana', lastName: 'Torres', avatar: 'AT', status: 'Cesado', notes: 'Fin de contrato' },
+    function showLoadingScreen() {
+        const loadingScreen = document.getElementById('loadingScreen');
+        const loadingStatus = document.getElementById('loadingStatus');
+        
+        loadingScreen.style.display = 'flex';
+        
+        const statuses = [
+            'Validando credenciales...',
+            'Cargando módulos...',
+            'Sincronizando datos...',
+            'Preparando dashboard...',
+            'Listo!'
         ];
         
-        AppState.invoices = [];
-        AppState.timeEntries = [];
-        AppState.invoiceCounter = 1;
-    }
-
-    // ========================================
-    // Inicialización
-    // ========================================
-    function initializeApp() {
-        setupLoadingAnimation();
-        updateLoadingStatus('Cargando datos seguros...', false);
-        loadSampleData();
-
-        setTimeout(() => {
-            updateLoadingStatus('¡Sistema listo!', false);
-            const loadingScreen = document.getElementById('loadingScreen');
-            const appContainer = document.getElementById('appContainer');
-
-            if (loadingScreen && appContainer) {
-                loadingScreen.style.opacity = '0';
-                loadingScreen.style.visibility = 'hidden';
-                appContainer.style.display = 'flex';
-                
-                setTimeout(() => {
-                    appContainer.classList.add('loaded');
-                    renderAll();
-                    setupEventListeners();
-                    
-                    // Configurar verificación de sesión
-                    setInterval(checkSession, 60000); // Verificar cada minuto
-                }, 50); 
+        let i = 0;
+        const interval = setInterval(() => {
+            if (i < statuses.length) {
+                loadingStatus.textContent = statuses[i];
+                i++;
+            } else {
+                clearInterval(interval);
             }
-        }, CONFIG.LOADING_DURATION);
+        }, 400);
     }
-    
-    function updateLoadingStatus(message, isError = false) {
-        const statusElement = document.getElementById('loadingStatus');
-        if (statusElement) {
-            statusElement.textContent = message;
-            statusElement.classList.toggle('error', isError);
+
+    function hideLoadingScreen() {
+        document.getElementById('loadingScreen').style.display = 'none';
+    }
+
+    // ========================================
+    // SISTEMA DE NAVEGACIÓN
+    // ========================================
+    function showTab(tabName) {
+        // Ocultar todas las pestañas
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        
+        // Remover clase activa de botones de navegación
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Mostrar pestaña seleccionada
+        const targetTab = document.getElementById(tabName);
+        if (targetTab) {
+            targetTab.classList.add('active');
+        }
+        
+        // Activar botón de navegación
+        const navButton = document.querySelector(`[data-tab="${tabName}"]`);
+        if (navButton) {
+            navButton.classList.add('active');
+        }
+        
+        // Actualizar título de página
+        const titles = {
+            dashboard: 'Dashboard',
+            invoices: 'Facturas',
+            accounting: 'Contabilidad',
+            'advanced-accounting': 'Contabilidad Pro',
+            personnel: 'Personal',
+            payroll: 'Planilla',
+            compliance: 'Cumplimiento',
+            'admin-panel': 'Administración',
+            sharepoint: 'Respaldos'
+        };
+        
+        document.getElementById('pageTitle').textContent = titles[tabName] || 'Sistema';
+        
+        // Actualizar datos según la pestaña
+        if (tabName === 'dashboard') updateDashboard();
+        if (tabName === 'invoices') renderInvoices();
+        if (tabName === 'personnel') renderEmployees();
+        if (tabName === 'payroll') updatePayrollSummary();
+    }
+
+    // ========================================
+    // SISTEMA DE MODALES
+    // ========================================
+    function showModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('active');
+            
+            // Preparar formularios específicos
+            if (modalId === 'timeEntry') {
+                populateEmployeeSelect();
+                document.getElementById('entryDate').value = new Date().toISOString().split('T')[0];
+            }
+            
+            if (modalId === 'newAccountingEntry') {
+                loadAccountingPlan();
+            }
         }
     }
 
-    function setupLoadingAnimation() {
-        const container = document.getElementById('loadingParticles');
-        if (!container) return;
-        const particleCount = 50;
-        for (let i = 0; i < particleCount; i++) {
-            const p = document.createElement('div');
-            p.className = 'particle';
-            const size = Math.random() * 6 + 2;
-            p.style.cssText = `
-                width:${size}px;
-                height:${size}px;
-                left:${Math.random()*100}%;
-                animation-delay:${Math.random() * 8}s;
-                animation-duration:${Math.random() * 5 + 4}s;
-            `;
-            container.appendChild(p);
+    function hideModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('active');
+            
+            // Limpiar formularios
+            const form = modal.querySelector('form');
+            if (form) form.reset();
         }
     }
 
     // ========================================
-    // Renderizado Mejorado
+    // SISTEMA DE NOTIFICACIONES
     // ========================================
-    function renderAll() {
-        if (AppState.user) {
-            document.getElementById('userAvatar').textContent = AppState.user.avatar || 'U';
-            document.getElementById('userNameDisplay').textContent = AppState.user.name || 'Usuario';
+    function showToast(message, type = 'info') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        
+        const icons = {
+            info: 'ℹ️',
+            success: '✅',
+            error: '❌',
+            warning: '⚠️'
+        };
+        
+        toast.className = `toast ${type}`;
+        toast.innerHTML = `
+            <span class="toast-icon">${icons[type]}</span>
+            <span class="toast-message">${message}</span>
+        `;
+        
+        container.appendChild(toast);
+        
+        setTimeout(() => toast.classList.add('show'), 100);
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => container.removeChild(toast), 300);
+        }, 3000);
+    }
+
+    // ========================================
+    // GESTIÓN DE FACTURAS
+    // ========================================
+    function submitInvoice(event) {
+        event.preventDefault();
+        
+        const formData = {
+            id: Date.now(),
+            invoice_number: `F001-${String(AppState.invoiceCounter).padStart(8, '0')}`,
+            clientRuc: document.getElementById('clientRuc').value,
+            clientName: document.getElementById('clientName').value,
+            currency: document.getElementById('currency').value,
+            amount: parseFloat(document.getElementById('amount').value),
+            isExport: document.getElementById('isExport').checked,
+            date: new Date().toISOString().split('T')[0],
+            status: 'Emitida'
+        };
+        
+        // Validaciones
+        if (!validateRUC(formData.clientRuc)) {
+            showToast('❌ RUC inválido', 'error');
+            return;
         }
-        renderDashboard();
+        
+        AppState.invoices.push(formData);
+        AppState.invoiceCounter++;
+        
+        saveToStorage();
         renderInvoices();
-        renderEmployees();
-        renderTimeTracking();
-        renderAccounting();
-        renderEmployeeOptions();
-    }
-    
-    function renderDashboard() {
-        const totalIncome = AppState.invoices.filter(inv => inv.status === 'Aprobada').reduce((sum, inv) => sum + (inv.currency === 'USD' ? inv.amount * 3.75 : inv.amount), 0);
-        const pendingInvoices = AppState.invoices.filter(inv => inv.status === 'Pendiente').length;
-        const netBalance = totalIncome; 
-
-        document.getElementById('totalIncome').textContent = `S/ ${totalIncome.toFixed(2)}`;
-        document.getElementById('pendingInvoices').textContent = pendingInvoices;
-        document.getElementById('netBalance').textContent = `S/ ${netBalance.toFixed(2)}`;
+        updateDashboard();
+        hideModal('newInvoice');
+        
+        showToast('✅ Factura creada correctamente', 'success');
     }
 
     function renderInvoices() {
-        const recentTbody = document.querySelector('#recentInvoicesTable tbody');
-        const allTbody = document.querySelector('#allInvoicesTable tbody');
-        recentTbody.innerHTML = '';
-        allTbody.innerHTML = '';
+        const tbody = document.querySelector('#invoicesTable tbody');
+        tbody.innerHTML = '';
+        
+        AppState.invoices.forEach(invoice => {
+            const row = tbody.insertRow();
+            const total = invoice.isExport ? invoice.amount : invoice.amount * (1 + CONFIG.IGV_RATE);
+            
+            row.innerHTML = `
+                <td>${invoice.invoice_number}</td>
+                <td>${invoice.clientName}</td>
+                <td>${invoice.clientRuc}</td>
+                <td>${invoice.date}</td>
+                <td>${invoice.currency}</td>
+                <td>${invoice.currency} ${total.toFixed(2)}</td>
+                <td><span class="badge ${invoice.status === 'Emitida' ? 'success' : 'warning'}">${invoice.status}</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm" onclick="downloadInvoice(${invoice.id})">📄 Descargar</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteItem(AppState.invoices, ${invoice.id}, 'id', renderInvoices, updateDashboard)">🗑️</button>
+                </td>
+            `;
+        });
+    }
 
-        if (AppState.invoices.length === 0) {
-            const emptyRow = `<tr><td colspan="6" style="text-align: center;">No hay facturas registradas.</td></tr>`;
-            recentTbody.innerHTML = emptyRow.replace('colspan="6"', 'colspan="4"');
-            allTbody.innerHTML = emptyRow;
+    // ========================================
+    // GESTIÓN DE EMPLEADOS
+    // ========================================
+    function submitEmployee(event) {
+        event.preventDefault();
+        
+        const formData = {
+            dni: document.getElementById('employeeDni').value,
+            firstName: document.getElementById('employeeFirstName').value,
+            lastName: document.getElementById('employeeLastName').value,
+            status: document.getElementById('employeeStatus').value,
+            notes: document.getElementById('employeeNotes').value
+        };
+        
+        // Validar DNI
+        if (!validateDNI(formData.dni)) {
+            showToast('❌ DNI inválido', 'error');
             return;
         }
-
-        const sortedInvoices = [...AppState.invoices].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-        sortedInvoices.forEach((inv, index) => {
-            const symbol = inv.currency === 'PEN' ? 'S/' : '$';
-            const total = inv.isExport ? inv.amount : inv.amount * (1 + CONFIG.IGV_RATE);
-            const statusClass = inv.status === 'Aprobada' ? 'success' : (inv.status === 'Pendiente' ? 'warning' : 'danger');
-            const allInvoicesRow = `
-                <tr>
-                    <td>${sanitizeInput(inv.invoice_number)}</td>
-                    <td>${sanitizeInput(inv.clientName)}</td>
-                    <td class="hide-mobile">${sanitizeInput(inv.clientRuc)}</td>
-                    <td>${symbol} ${total.toFixed(2)}</td>
-                    <td><span class="badge badge-${statusClass}">${inv.status}</span></td>
-                    <td>
-                        <button class="btn btn-secondary btn-sm" onclick="downloadInvoice(${inv.id})">Ver</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteItem('invoice', ${inv.id})">Borrar</button>
-                    </td>
-                </tr>`;
-            
-            if (index < 5) {
-                const recentInvoicesRow = `
-                <tr>
-                    <td>${sanitizeInput(inv.invoice_number)}</td>
-                    <td>${sanitizeInput(inv.clientName)}</td>
-                    <td class="hide-mobile">${symbol} ${total.toFixed(2)}</td>
-                    <td><span class="badge badge-${statusClass}">${inv.status}</span></td>
-                </tr>`;
-                recentTbody.innerHTML += recentInvoicesRow;
-            }
-            allTbody.innerHTML += allInvoicesRow;
-        });
+        
+        // Verificar duplicados
+        if (AppState.employees.find(emp => emp.dni === formData.dni)) {
+            showToast('❌ Ya existe un empleado con este DNI', 'error');
+            return;
+        }
+        
+        AppState.employees.push(formData);
+        saveToStorage();
+        renderEmployees();
+        updatePayrollSummary();
+        hideModal('newEmployee');
+        
+        showToast('✅ Empleado agregado correctamente', 'success');
     }
 
     function renderEmployees() {
-        const tableBody = document.querySelector('#employeesTable tbody');
-        tableBody.innerHTML = '';
-        AppState.employees.forEach(emp => {
-            const statusClass = emp.status === 'Activo' ? 'success' : (emp.status === 'Cesado' ? 'danger' : 'warning');
-            tableBody.innerHTML += `
-                <tr>
-                    <td>${emp.dni}</td>
-                    <td>${sanitizeInput(emp.firstName)} ${sanitizeInput(emp.lastName)}</td>
-                    <td><span class="badge badge-${statusClass}">${emp.status}</span></td>
-                    <td>
-                        <button class="btn btn-secondary btn-sm" onclick="editEmployee('${emp.dni}')">Editar</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteItem('employee', '${emp.dni}')">Borrar</button>
-                    </td>
-                </tr>`;
+        const tbody = document.querySelector('#employeesTable tbody');
+        tbody.innerHTML = '';
+        
+        AppState.employees.forEach(employee => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${employee.dni}</td>
+                <td>${employee.firstName} ${employee.lastName}</td>
+                <td><span class="badge ${employee.status === 'Activo' ? 'success' : 'warning'}">${employee.status}</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm" onclick="editEmployee('${employee.dni}')">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteItem(AppState.employees, '${employee.dni}', 'dni', renderEmployees, updatePayrollSummary)">🗑️</button>
+                </td>
+            `;
         });
+        
+        // Actualizar select de empleados en formulario de asistencia
+        populateEmployeeSelect();
     }
 
-    function renderTimeTracking() {
-        const tableBody = document.querySelector('#timeTrackingTable tbody');
-        tableBody.innerHTML = '';
-        if (AppState.timeEntries.length === 0) {
-            tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center;">No hay marcaciones registradas.</td></tr>`;
-            return;
-        }
-        AppState.timeEntries.forEach(entry => {
-            const statusClass = entry.exitTime !== '--:--' ? 'success' : 'warning';
-            const statusText = entry.exitTime !== '--:--' ? 'Completo' : 'En jornada';
-            tableBody.innerHTML += `
-                <tr>
-                    <td>
-                        <div class="employee-info">
-                            <div class="employee-avatar" style="background:#dbeafe;color:#1e40af">${entry.avatar}</div>
-                            <div class="employee-details"><div class="employee-name">${sanitizeInput(entry.name)}</div></div>
-                        </div>
-                    </td>
-                    <td>${entry.entryTime}</td>
-                    <td>${entry.exitTime}</td>
-                    <td><span class="badge badge-${statusClass}">${statusText}</span></td>
-                    <td><button class="btn btn-danger btn-sm" onclick="deleteItem('timeEntry', ${entry.id})">Borrar</button></td>
-                </tr>`;
-        });
-    }
-    
-    function renderAccounting() {
-        // Datos actualizados basados en facturas reales
-        const totalIncome = AppState.invoices.filter(inv => inv.status === 'Aprobada').reduce((sum, inv) => sum + (inv.currency === 'USD' ? inv.amount * 3.75 : inv.amount), 0);
-        const cash = 12500.00 + totalIncome;
-        const receivables = AppState.invoices.filter(inv => inv.status === 'Pendiente').reduce((sum, inv) => sum + (inv.currency === 'USD' ? inv.amount * 3.75 : inv.amount), 0);
-        const inventory = 4200.00;
-        const totalAssets = cash + receivables + inventory;
-        
-        const payables = 3100.00;
-        const taxes = totalIncome * 0.18; // IGV estimado
-        const totalLiabilities = payables + taxes;
-        
-        const capital = 15000.00;
-        const retainedEarnings = totalAssets - totalLiabilities - capital;
-        const totalEquity = capital + retainedEarnings;
-        
-        document.getElementById('cashBalance').textContent = `S/ ${cash.toFixed(2)}`;
-        document.getElementById('receivables').textContent = `S/ ${receivables.toFixed(2)}`;
-        document.getElementById('totalAssets').textContent = `S/ ${totalAssets.toFixed(2)}`;
-        document.getElementById('taxesPayable').textContent = `S/ ${taxes.toFixed(2)}`;
-        document.getElementById('totalLiabilities').textContent = `S/ ${totalLiabilities.toFixed(2)}`;
-        document.getElementById('retainedEarnings').textContent = `S/ ${retainedEarnings.toFixed(2)}`;
-        document.getElementById('totalEquity').textContent = `S/ ${totalEquity.toFixed(2)}`;
-    }
-    
-    function renderEmployeeOptions() {
-        const select = document.querySelector('#timeEntryForm [name="employeeId"]');
+    function populateEmployeeSelect() {
+        const select = document.getElementById('employeeSelect');
         if (!select) return;
-        select.innerHTML = '<option value="">Seleccione un empleado...</option>';
-        AppState.employees.filter(e => e.status === 'Activo').forEach(emp => {
+        
+        select.innerHTML = '<option value="">Seleccionar empleado...</option>';
+        
+        AppState.employees.filter(emp => emp.status === 'Activo').forEach(employee => {
             const option = document.createElement('option');
-            option.value = emp.dni;
-            option.textContent = `${emp.firstName} ${emp.lastName} (${emp.dni})`;
+            option.value = employee.dni;
+            option.textContent = `${employee.firstName} ${employee.lastName}`;
             select.appendChild(option);
         });
     }
 
     // ========================================
-    // Funciones de Edición de Empleados (NUEVO)
+    // CONTROL DE ASISTENCIA
     // ========================================
-    function editEmployee(dni) {
-        const employee = AppState.employees.find(e => e.dni === dni);
-        if (!employee) return;
-        
-        const form = document.getElementById('editEmployeeForm');
-        form.editEmployeeDni.value = employee.dni;
-        form.displayDni.value = employee.dni;
-        form.editFirstName.value = employee.firstName;
-        form.editLastName.value = employee.lastName;
-        form.editStatus.value = employee.status;
-        form.editNotes.value = employee.notes || '';
-        
-        showModal('editEmployee');
-    }
-
-    function updateEmployee(event) {
+    function submitTimeEntry(event) {
         event.preventDefault();
-        const form = event.target;
-        const dni = form.editEmployeeDni.value;
-        const employee = AppState.employees.find(e => e.dni === dni);
         
-        if (employee) {
-            employee.firstName = sanitizeInput(form.editFirstName.value);
-            employee.lastName = sanitizeInput(form.editLastName.value);
-            employee.status = form.editStatus.value;
-            employee.notes = sanitizeInput(form.editNotes.value);
-            employee.avatar = `${employee.firstName[0]}${employee.lastName[0]}`.toUpperCase();
-            
-            renderEmployees();
-            renderEmployeeOptions();
-            showToast(`✅ Empleado ${employee.firstName} actualizado.`, 'success');
-            closeModal('editEmployee');
-        }
-    }
-
-    // ========================================
-    // Validación y Guardado de Datos
-    // ========================================
-    async function saveInvoice(event) {
-        event.preventDefault();
-        const form = event.target;
+        const employeeDni = document.getElementById('employeeSelect').value;
+        const date = document.getElementById('entryDate').value;
+        const entryTime = document.getElementById('entryTime').value;
+        const exitTime = document.getElementById('exitTime').value;
         
-        // Validación de RUC
-        const ruc = form.clientRuc.value;
-        if (!validateRUC(ruc)) {
-            document.getElementById('rucError').textContent = 'RUC debe tener 11 dígitos';
-            form.clientRuc.classList.add('error');
-            return;
-        }
-        
-        const newInvoice = {
-            id: Date.now(),
-            invoice_number: `F001-${String(AppState.invoiceCounter++).padStart(4, '0')}`,
-            clientRuc: ruc,
-            clientName: sanitizeInput(form.clientName.value),
-            description: sanitizeInput(form.description.value),
-            currency: form.currency.value,
-            amount: parseFloat(form.amount.value),
-            status: 'Pendiente',
-            isExport: form.isExportInvoice.checked,
-            date: new Date().toISOString().split('T')[0],
-            file: form.invoiceFile.files[0] ? form.invoiceFile.files[0].name : null
-        };
-
-        AppState.invoices.push(newInvoice);
-        showToast('✅ Factura guardada correctamente.', 'success');
-        closeModal('newInvoice');
-        form.reset();
-        handleCurrencyChange('PEN');
-        renderInvoices();
-        renderDashboard();
-        renderAccounting();
-    }
-    
-    async function savePayment(event) {
-        event.preventDefault();
-        const form = event.target;
-        const invoiceNumber = form.invoiceNumber.value;
-        const invoice = AppState.invoices.find(inv => inv.invoice_number === invoiceNumber);
-        if (invoice) {
-            invoice.status = 'Aprobada';
-            showToast(`✅ Cobro registrado. Factura ${invoiceNumber} actualizada a Aprobada.`, 'success');
-            renderInvoices();
-            renderDashboard();
-            renderAccounting();
-        } else {
-            showToast(`Factura ${invoiceNumber} no encontrada.`, 'error');
-        }
-        closeModal('registerPayment');
-        form.reset();
-        updateCurrencySymbols('PEN', 'paymentForm');
-    }
-
-    async function saveTimeEntry(event) {
-        event.preventDefault();
-        const form = event.target;
-        const employeeId = form.employeeId.value;
-        const entryDate = form.entryDate.value;
-        const entryTime = form.entryTime.value;
-        const exitTime = form.exitTime.value;
-        const employee = AppState.employees.find(e => e.dni === employeeId);
-        
+        const employee = AppState.employees.find(emp => emp.dni === employeeDni);
         if (!employee) {
-            showToast('Por favor, seleccione un empleado válido.', 'error');
+            showToast('❌ Empleado no encontrado', 'error');
             return;
         }
-
-        let existingEntry = AppState.timeEntries.find(e => e.dni === employeeId && e.date === entryDate);
         
-        if (existingEntry) {
-            if (entryTime) existingEntry.entryTime = entryTime;
-            if (exitTime) existingEntry.exitTime = exitTime;
+        // Verificar si ya existe registro para esa fecha
+        const existingIndex = AppState.timeEntries.findIndex(entry => 
+            entry.dni === employeeDni && entry.date === date
+        );
+        
+        const timeEntry = {
+            id: existingIndex >= 0 ? AppState.timeEntries[existingIndex].id : Date.now(),
+            dni: employeeDni,
+            name: `${employee.firstName} ${employee.lastName}`,
+            date: date,
+            entryTime: entryTime,
+            exitTime: exitTime
+        };
+        
+        if (existingIndex >= 0) {
+            AppState.timeEntries[existingIndex] = timeEntry;
+            showToast('✅ Registro de asistencia actualizado', 'success');
         } else {
-            existingEntry = {
-                id: Date.now(),
-                dni: employee.dni,
-                name: `${employee.firstName} ${employee.lastName}`,
-                avatar: employee.avatar,
-                date: entryDate,
-                entryTime: entryTime || '--:--',
-                exitTime: exitTime || '--:--',
-            };
-            AppState.timeEntries.push(existingEntry);
+            AppState.timeEntries.push(timeEntry);
+            showToast('✅ Registro de asistencia guardado', 'success');
         }
         
-        renderTimeTracking();
-        showToast(`✅ Asistencia actualizada para ${employee.firstName}.`, 'success');
-        closeModal('timeEntry');
+        saveToStorage();
+        renderTimeEntries();
+        hideModal('timeEntry');
     }
 
-    async function saveEmployee(event) {
-        event.preventDefault();
-        const form = event.target;
-        const dni = form.employeeDni.value;
+    function renderTimeEntries() {
+        const tbody = document.querySelector('#timeTrackingTable tbody');
+        if (!tbody) return;
         
-        // Validación de DNI
-        if (!validateDNI(dni)) {
-            document.getElementById('dniError').textContent = 'DNI debe tener 8 dígitos';
-            form.employeeDni.classList.add('error');
-            return;
-        }
+        tbody.innerHTML = '';
         
-        if (AppState.employees.some(e => e.dni === dni)) {
-            document.getElementById('dniError').textContent = `El DNI ${dni} ya está registrado`;
-            form.employeeDni.classList.add('error');
-            return;
-        }
-        
-        const firstName = sanitizeInput(form.employeeFirstName.value);
-        const lastName = sanitizeInput(form.employeeLastName.value);
-        const status = form.employeeStatus.value;
-        const avatar = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase();
-        const newEmployee = { dni, firstName, lastName, avatar, status, notes: '' };
-        AppState.employees.push(newEmployee);
-        
-        renderEmployees();
-        renderEmployeeOptions();
-        showToast(`✅ Empleado ${firstName} ${lastName} registrado.`, 'success');
-        closeModal('newEmployee');
-        form.reset();
-    }
-
-    // ========================================
-    // Funciones de Utilidad
-    // ========================================
-    function handleCurrencyChange(currency) {
-        const exchangeRateGroup = document.getElementById('exchangeRateGroup');
-        exchangeRateGroup.classList.toggle('hidden', currency === 'PEN');
-        updateCurrencySymbols(currency, 'invoiceForm');
-        calculateTotal();
-    }
-    
-    function updateCurrencySymbols(currency, formId) {
-        const symbol = currency === 'PEN' ? 'S/' : '$';
-        const form = document.getElementById(formId);
-        if(form) {
-            form.querySelectorAll('.currency-symbol').forEach(span => {
-                span.textContent = symbol;
-            });
-        }
-    }
-    
-    function calculateTotal(returnTotal = false) {
-        const form = document.getElementById('invoiceForm');
-        const isExport = form.isExportInvoice.checked;
-        const amount = parseFloat(form.amount.value) || 0;
-        const totalAmountGroup = document.getElementById('totalAmountGroup');
-        
-        let total;
-        if (isExport) {
-            total = amount;
-            totalAmountGroup.classList.add('hidden');
-        } else {
-            total = amount * (1 + CONFIG.IGV_RATE);
-            totalAmountGroup.classList.remove('hidden');
-        }
-        
-        const currency = form.currency.value;
-        const symbol = currency === 'PEN' ? 'S/' : '$';
-        
-        form.totalAmount.value = `${symbol} ${total.toFixed(2)}`;
-
-        if (returnTotal) return total;
-    }
-
-    function showModal(modalId) { 
-        const modal = document.getElementById(modalId + 'Modal');
-        if (!modal) return;
-        
-        // Limpiar errores previos
-        modal.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
-        modal.querySelectorAll('.form-error').forEach(el => el.textContent = '');
-        
-        if (modalId === 'timeEntry') {
-            const dateInput = modal.querySelector('[name="entryDate"]');
-            if(!dateInput.value) {
-                dateInput.value = new Date().toISOString().split('T')[0];
-            }
-        }
-
-        modal.classList.add('active');
-    }
-    
-    function closeModal(modalId) { 
-        const modal = document.getElementById(modalId + 'Modal');
-        if(modal) modal.classList.remove('active');
-    }
-    
-    function logout() {
-        if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
-            AppState.isAuthenticated = false;
-            AppState.user = null;
-            AppState.sessionStart = null;
-            location.reload();
-        }
-    }
-    
-    function showTab(tabName) {
-        if (!tabName) return;
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        const tabElement = document.getElementById(tabName);
-        if(tabElement) tabElement.classList.add('active');
-        
-        document.querySelectorAll('.nav-item, .bottom-nav-item').forEach(i => {
-            i.classList.toggle('active', i.dataset.tab === tabName);
+        AppState.timeEntries.slice(-20).reverse().forEach(entry => {
+            const row = tbody.insertRow();
+            const status = entry.exitTime ? 'Completo' : 'En progreso';
+            
+            row.innerHTML = `
+                <td>${entry.name}</td>
+                <td>${entry.entryTime}</td>
+                <td>${entry.exitTime || 'Pendiente'}</td>
+                <td><span class="badge ${entry.exitTime ? 'success' : 'warning'}">${status}</span></td>
+                <td>
+                    <button class="btn btn-info btn-sm" onclick="editTimeEntry(${entry.id})">✏️ Editar</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteItem(AppState.timeEntries, ${entry.id}, 'id', renderTimeEntries)">🗑️</button>
+                </td>
+            `;
         });
-        
-        document.getElementById('pageTitle').textContent = tabName.charAt(0).toUpperCase() + tabName.slice(1);
-        
-        if (window.innerWidth <= 1024) {
-            document.getElementById('sidebar').classList.remove('active');
-        }
     }
-    
-    function showToast(message, type = 'info') {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        const toast = document.createElement('div');
-        toast.className = `toast toast-${type}`;
-        toast.textContent = message;
-        container.appendChild(toast);
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
+
+    // ========================================
+    // DASHBOARD Y ESTADÍSTICAS
+    // ========================================
+    function updateDashboard() {
+        const totalIncome = AppState.invoices.reduce((sum, inv) => {
+            const amount = inv.isExport ? inv.amount : inv.amount * (1 + CONFIG.IGV_RATE);
+            return sum + amount;
+        }, 0);
+        
+        const pendingInvoices = AppState.invoices.filter(inv => inv.status === 'Pendiente').length;
+        const totalExpenses = totalIncome * 0.3; // Simulado
+        const netBalance = totalIncome - totalExpenses;
+        
+        document.getElementById('totalIncome').textContent = `S/ ${totalIncome.toFixed(2)}`;
+        document.getElementById('pendingInvoices').textContent = pendingInvoices;
+        document.getElementById('totalExpenses').textContent = `S/ ${totalExpenses.toFixed(2)}`;
+        document.getElementById('netBalance').textContent = `S/ ${netBalance.toFixed(2)}`;
+        
+        renderDashboardTable();
     }
-    
-    function deleteItem(type, id) {
-        if (!confirm('¿Estás seguro de que deseas eliminar este registro?')) {
-            return;
-        }
 
-        let itemArray;
-        let renderFunctions = [];
-        let idKey = (type === 'employee') ? 'dni' : 'id';
+    function renderDashboardTable() {
+        const tbody = document.querySelector('#dashboardTable tbody');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        
+        // Mostrar últimas 10 transacciones
+        const recentItems = [
+            ...AppState.invoices.slice(-5).map(inv => ({
+                date: inv.date,
+                type: 'Factura',
+                description: `${inv.invoice_number} - ${inv.clientName}`,
+                amount: inv.isExport ? inv.amount : inv.amount * (1 + CONFIG.IGV_RATE),
+                status: inv.status
+            })),
+            ...AppState.employees.slice(-3).map(emp => ({
+                date: new Date().toISOString().split('T')[0],
+                type: 'Empleado',
+                description: `${emp.firstName} ${emp.lastName}`,
+                amount: 0,
+                status: emp.status
+            }))
+        ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+        
+        recentItems.forEach(item => {
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${item.date}</td>
+                <td>${item.type}</td>
+                <td>${item.description}</td>
+                <td>S/ ${item.amount.toFixed(2)}</td>
+                <td><span class="badge ${item.status === 'Emitida' || item.status === 'Activo' ? 'success' : 'warning'}">${item.status}</span></td>
+            `;
+        });
+    }
 
-        switch (type) {
-            case 'invoice':
-                itemArray = AppState.invoices;
-                renderFunctions = [renderInvoices, renderDashboard, renderAccounting];
-                break;
-            case 'employee':
-                itemArray = AppState.employees;
-                renderFunctions = [renderEmployees, renderEmployeeOptions];
-                break;
-            case 'timeEntry':
-                itemArray = AppState.timeEntries;
-                renderFunctions = [renderTimeTracking];
-                break;
-            default:
-                showToast('Tipo de dato no válido para eliminar.', 'error');
+    function updatePayrollSummary() {
+        const activeEmployees = AppState.employees.filter(emp => emp.status === 'Activo').length;
+        const monthlyPayroll = activeEmployees * 1025; // RMV base
+        const employerContributions = monthlyPayroll * 0.09; // EsSalud
+        
+        const activeCount = document.getElementById('activeEmployeesCount');
+        const monthly = document.getElementById('monthlyPayroll');
+        const contributions = document.getElementById('employerContributions');
+        
+        if (activeCount) activeCount.textContent = activeEmployees;
+        if (monthly) monthly.textContent = `S/ ${monthlyPayroll.toFixed(2)}`;
+        if (contributions) contributions.textContent = `S/ ${employerContributions.toFixed(2)}`;
+    }
+
+    // ========================================
+    // UTILIDADES Y VALIDACIONES
+    // ========================================
+    function validateRUC(ruc) {
+        if (!/^\d{11}$/.test(ruc)) return false;
+        
+        const weights = [5, 4, 3, 2, 7, 6, 5, 4, 3, 2];
+        const sum = weights.reduce((acc, weight, i) => acc + weight * parseInt(ruc[i]), 0);
+        const remainder = sum % 11;
+        const checkDigit = remainder < 2 ? remainder : 11 - remainder;
+        
+        return checkDigit === parseInt(ruc[10]);
+    }
+
+    function validateDNI(dni) {
+        return /^\d{8}$/.test(dni);
+    }
+
+    function saveToStorage() {
+        localStorage.setItem('tecsitel_invoices', JSON.stringify(AppState.invoices));
+        localStorage.setItem('tecsitel_employees', JSON.stringify(AppState.employees));
+        localStorage.setItem('tecsitel_timeEntries', JSON.stringify(AppState.timeEntries));
+        localStorage.setItem('tecsitel_invoiceCounter', AppState.invoiceCounter.toString());
+    }
+
+    function deleteItem(itemArray, id, idKey, ...renderFunctions) {
+        if (!confirm('¿Está seguro de que desea eliminar este registro?')) {
                 return;
         }
 
@@ -1271,7 +1672,6 @@ RUC: ${invoice.clientRuc}
 Monto: ${invoice.currency} ${invoice.amount.toFixed(2)}
 IGV: ${invoice.isExport ? '0.00' : (invoice.amount * CONFIG.IGV_RATE).toFixed(2)}
 Total: ${invoice.currency} ${(invoice.isExport ? invoice.amount : invoice.amount * (1 + CONFIG.IGV_RATE)).toFixed(2)}
-Estado: ${invoice.status}
         `;
         
         const blob = new Blob([content], { type: 'text/plain' });
@@ -1283,44 +1683,67 @@ Estado: ${invoice.status}
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        
+        showToast('✅ Factura descargada como TXT.', 'success');
     }
 
     // ========================================
-    // Event Listeners
+    // INICIALIZACIÓN DE LA APLICACIÓN
     // ========================================
-    function setupEventListeners() {
-        const handleTabClick = (tabName) => {
-            if (tabName) showTab(tabName);
-        };
-
-        document.body.addEventListener('click', e => {
-            if (e.target.matches('.modal-overlay')) {
-                const modalId = e.target.parentElement.id.replace('Modal', '');
-                closeModal(modalId);
-            }
-            const navItem = e.target.closest('.nav-item');
-            if(navItem) handleTabClick(navItem.dataset.tab);
-        });
-        
-        document.getElementById('bottomNav').addEventListener('click', e => {
-            e.preventDefault();
-            const navItem = e.target.closest('.bottom-nav-item');
-            if(navItem) handleTabClick(navItem.dataset.tab);
-        });
-        
-        const today = new Date().toISOString().split('T')[0];
-        const dateInput = document.querySelector('#paymentForm [name="paymentDate"]');
-        if(dateInput) dateInput.value = today;
-        
-        // Limpiar errores al escribir
-        document.querySelectorAll('.form-input').forEach(input => {
-            input.addEventListener('input', function() {
-                this.classList.remove('error');
-                const errorSpan = this.parentElement.querySelector('.form-error');
-                if (errorSpan) errorSpan.textContent = '';
+    function initializeApp() {
+        // Configurar navegación
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const tabName = item.getAttribute('data-tab');
+                showTab(tabName);
             });
         });
+        
+        // Configurar formularios
+        document.getElementById('loginForm').addEventListener('submit', login);
+        document.getElementById('invoiceForm').addEventListener('submit', submitInvoice);
+        document.getElementById('employeeForm').addEventListener('submit', submitEmployee);
+        document.getElementById('timeEntryForm').addEventListener('submit', submitTimeEntry);
+        
+        // Configurar modales
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('active');
+            }
+        });
+        
+        // Cargar datos iniciales
+        updateDashboard();
+        renderInvoices();
+        renderEmployees();
+        renderTimeEntries();
+        updatePayrollSummary();
+        
+        // Mostrar tab inicial
+        showTab('dashboard');
     }
-    </script>
-</body>
-</html>
+
+    // ========================================
+    // EVENTOS DE CARGA
+    // ========================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Verificar si hay sesión activa
+        if (AppState.isAuthenticated) {
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            initializeApp();
+        } else {
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+        }
+        
+        document.getElementById('loadingScreen').style.display = 'none';
+        
+        console.log('✅ Tecsitel v3.0 cargado correctamente');
+    });
+
+    // Hacer funciones disponibles globalmente
+    window.showTab = showTab;
+    window.showModal = showModal;
+    window.hideModal = hideModal;
+    
