@@ -9,17 +9,24 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#B91C1C">
+    
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://i.imgur.com https://placehold.co data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' 'https://fonts.googleapis.com'; font-src 'self' https://fonts.gstatic.com;">
+    
     <title>Tecsitel - Sistema de Gestión Empresarial</title>
+    
+    <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://i.imgur.com/6XXdcPR.png">
     <link rel="apple-touch-icon" href="https://i.imgur.com/6XXdcPR.png">
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        /* ===========================
+           Variables y Base
+        =========================== */
         :root {
-            --primary: #B91C1C;
-            --primary-dark: #991B1B;
-            --primary-light: #FEE2E2;
+            --primary: #B91C1C; /* Rojo Principal */
+            --primary-dark: #991B1B; /* Rojo Oscuro */
+            --primary-light: #FEE2E2; /* Rojo Claro para fondos */
             --white: #ffffff;
             --dark: #1f2937;
             --gray-50: #F9FAFB;
@@ -33,10 +40,10 @@
             --danger: #ef4444;
             --info: #3b82f6;
             --primary-alpha: rgba(185, 28, 28, 0.1);
-            --success-alpha: rgba(16,185,129,0.1);
-            --warning-alpha: rgba(245,158,11,0.1);
-            --danger-alpha: rgba(239,68,68,0.1);
-            --info-alpha: rgba(59,130,246,0.1);
+            --success-alpha: rgba(16, 185, 129, 0.1);
+            --warning-alpha: rgba(245, 158, 11, 0.1);
+            --danger-alpha: rgba(239, 68, 68, 0.1);
+            --info-alpha: rgba(59, 130, 246, 0.1);
             --shadow: 0 1px 3px 0 rgba(0,0,0,.07), 0 1px 2px 0 rgba(0,0,0,.05);
             --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
             --radius: 8px;
@@ -46,13 +53,23 @@
             --transition: 300ms ease;
             --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--font-sans); background: var(--gray-50); color: var(--dark); line-height: 1.6; overflow-x: hidden; }
-        .app-container { display: flex; min-height: 100vh; }
+        
+        /* ===========================
+           Layout Principal
+        =========================== */
+        .app-container { display: none; min-height: 100vh; background: var(--gray-50); }
         .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-width); height: 100vh; background: var(--primary); color: var(--white); box-shadow: var(--shadow-lg); z-index: 1000; transition: transform var(--transition); overflow-y: auto; display: flex; flex-direction: column; }
         .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); min-height: 100vh; display: flex; flex-direction: column; transition: margin-left var(--transition), width var(--transition); }
         .header { height: var(--header-height); background: var(--white); box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: sticky; top: 0; z-index: 999; }
         .content { flex: 1; padding: 24px; background: var(--gray-50); }
+
+        /* ===========================
+           Pantalla de Login
+        =========================== */
         .login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; z-index: 9999; }
         .login-form { background: rgba(255, 255, 255, 0.98); padding: 40px; border-radius: 16px; box-shadow: var(--shadow-lg); text-align: center; max-width: 450px; width: 90%; backdrop-filter: blur(10px); }
         .login-logo { width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 20px; box-shadow: var(--shadow); border: 3px solid var(--primary); display: flex; align-items: center; justify-content: center; background: var(--white); }
@@ -63,37 +80,137 @@
         .btn { padding: 12px 24px; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 600; cursor: pointer; transition: all var(--transition); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; justify-content: center; }
         .btn-primary { background: var(--primary); color: white; }
         .btn-primary:hover { background: var(--primary-dark); }
-        /* Users Info Panel - Horizontal Scroll */
-        .users-info-panel { margin-top: 20px;}
+        
+        .users-info-panel { margin-top: 20px; }
         .users-info-panel h4 { margin-bottom: 12px; color: var(--gray-700); font-size: 14px; text-align: left; }
-        .users-scroll-container { display: flex; overflow-x: auto; padding-bottom: 15px; gap: 10px; scrollbar-width: thin; scrollbar-color: var(--primary) var(--gray-200);}
+        .users-scroll-container { display: flex; overflow-x: auto; padding-bottom: 15px; gap: 10px; scrollbar-width: thin; scrollbar-color: var(--primary) var(--gray-200); }
         .users-scroll-container::-webkit-scrollbar { height: 8px; }
         .users-scroll-container::-webkit-scrollbar-track { background: var(--gray-200); border-radius: 4px; }
         .users-scroll-container::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 4px; }
-        .user-card { display: flex; flex-direction: column; align-items: center; padding: 12px; border-radius: 8px; background: var(--gray-100); border: 1px solid var(--gray-200); cursor: pointer; transition: all 0.3s ease; flex-shrink: 0; width: 120px; }
-        .user-card:hover { background: var(--gray-200); transform: translateY(-3px);}
+        
+        .user-card { display: flex; flex-direction: column; align-items: center; padding: 12px; border-radius: 8px; background: var(--gray-100); border: 1px solid var(--gray-200); cursor: pointer; transition: all 0.3s ease; flex-shrink: 0; width: 120px; text-align: center; }
+        .user-card:hover { background: var(--gray-200); transform: translateY(-3px); }
         .user-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; margin-bottom: 8px; font-size: 18px; }
+        
         .user-card.admin .user-badge { background: var(--primary); }
         .user-card.accountant .user-badge { background: #10b981; }
         .user-card.hr .user-badge { background: #3b82f6; }
         .user-card.operator .user-badge { background: #f59e0b; }
+        
         .user-details { text-align: center; }
         .user-details strong { display: block; color: var(--dark); font-size: 13px; font-weight: 600; }
-        .user-details small { display: block; color: var(--gray-600); font-size: 11px; margin-top: 2px;}
+        .user-details small { display: block; color: var(--gray-600); font-size: 11px; margin-top: 2px; }
         .security-info { margin-top: 15px; padding: 10px; background: var(--primary-alpha); border-radius: 8px; text-align: center; }
-        .security-info p { margin: 4px 0; font-size: 11px; color: var(--gray-600);}
-        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: none; align-items: center; justify-content: center; z-index: 9998; overflow: hidden;}
+        .security-info p { margin: 4px 0; font-size: 11px; color: var(--gray-600); }
+
+        .login-error { background: var(--danger-alpha); color: var(--danger); padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 14px; text-align: center; border: 1px solid var(--danger); display: none; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
+        /* ===========================
+           Pantalla de Carga
+        =========================== */
+        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: none; align-items: center; justify-content: center; z-index: 9998; overflow: hidden; }
         .loading-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
         .loading-content { position: relative; z-index: 2; text-align: center; color: white; }
-        .loading-logo { width: 100px; height: 100px; border-radius: 50%; margin-bottom: 30px; box-shadow: var(--shadow-lg); animation: logoSpin 3s ease-in-out infinite; border: 3px solid var(--white); display: flex; align-items: center; justify-content: center; background: var(--white);}
-        .loading-logo img { width: 85%; height: 85%; object-fit: contain;}
+        .loading-logo { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 30px; box-shadow: var(--shadow-lg); animation: logoSpin 3s ease-in-out infinite; border: 3px solid var(--white); display: flex; align-items: center; justify-content: center; background: var(--white); }
+        .loading-logo img { width: 85%; height: 85%; object-fit: contain; }
         @keyframes logoSpin { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(360deg) scale(1.1); } }
-        .loading-title { font-size: 36px; font-weight: 800; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);}
-        .loading-status { font-size: 18px; margin-bottom: 30px; opacity: 0.9;}
-        /* ... (rest of index 2.html styles, as above, plus any extra table columns/styles from original) ... */
-        /* Add any extended original styles if needed */
-        /* Modals and toast, see above */
-        /* Responsive omitted for brevity, as in index 2.html */
+        .loading-title { font-size: 36px; font-weight: 800; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
+        .loading-status { font-size: 18px; margin-bottom: 30px; opacity: 0.9; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); opacity: 0.7; } 50% { transform: translateY(-20px); opacity: 1; } }
+
+        /* ===========================
+           UI Principal
+        =========================== */
+        .sidebar-header { padding: 24px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2); }
+        .logo { width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 15px; cursor: pointer; transition: transform var(--transition); border: 3px solid var(--white); display: flex; align-items: center; justify-content: center; background: var(--white); }
+        .logo:hover { transform: scale(1.1); }
+        .logo img { width: 85%; height: 85%; object-fit: contain; }
+        .sidebar-title { font-size: 22px; font-weight: 700; color: var(--white); }
+        .sidebar-subtitle { font-size: 12px; color: var(--primary-light); }
+        .nav-menu { padding: 16px 0; }
+        .nav-item { width: 100%; padding: 14px 24px; border: none; background: transparent; text-align: left; display: flex; align-items: center; gap: 15px; color: var(--primary-light); font-size: 16px; cursor: pointer; transition: all var(--transition); border-left: 4px solid transparent; }
+        .nav-item:hover { background: var(--primary-dark); color: var(--white); }
+        .nav-item.active { background: var(--white); color: var(--primary); border-left-color: var(--primary); font-weight: 600; }
+        .nav-icon { font-size: 20px; }
+        .menu-toggle { background: none; border: none; font-size: 24px; color: var(--gray-700); cursor: pointer; display: none; }
+        .page-title { font-size: 24px; font-weight: 700; color: var(--dark); }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
+        .user-name { font-weight: 600; color: var(--dark); }
+        .logout-btn { background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: var(--radius); cursor: pointer; font-size: 14px; font-weight: 500; transition: all var(--transition); }
+        .card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
+        .card-header { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 20px; font-weight: 700; color: var(--dark); }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 24px; }
+        .stat-card { background: var(--white); color: var(--dark); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow); border-left: 4px solid var(--primary); }
+        .stat-value { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+        .stat-label { font-size: 14px; color: var(--gray-600); }
+        
+        /* Quick Actions */
+        .quick-actions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 20px; }
+        .quick-action-card { background: var(--white); border-radius: var(--radius); padding: 16px; text-align: center; box-shadow: var(--shadow); transition: all var(--transition); cursor: pointer; border: 1px solid var(--gray-200); }
+        .quick-action-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); color: var(--primary); }
+        .quick-action-icon { font-size: 28px; margin-bottom: 8px; color: var(--primary); }
+        .quick-action-label { font-size: 14px; font-weight: 500; }
+
+        .table-container { overflow-x: auto; }
+        .table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
+        .table th, .table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+        .table th { background: var(--gray-100); font-weight: 600; color: var(--dark); }
+        .table tbody tr:hover { background: var(--gray-50); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 10000; }
+        .modal-content { background: var(--white); border-radius: 16px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 24px 24px 0; }
+        .modal-title { font-size: 20px; font-weight: 700; color: var(--dark); }
+        .modal-body { padding: 24px; }
+        .modal-footer { padding: 0 24px 24px; display: flex; gap: 15px; justify-content: flex-end; }
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); font-size: 14px; }
+        .form-select, .form-textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--gray-300); border-radius: var(--radius); font-size: 16px; transition: all var(--transition); background: var(--white); }
+        .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-alpha); }
+        .toast-container { position: fixed; top: 90px; right: 30px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: var(--white); padding: 16px 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); min-width: 300px; max-width: 500px; border-left: 4px solid; animation: slideIn 0.3s ease; }
+        .toast.success { border-left-color: var(--success); }
+        .toast.error { border-left-color: var(--danger); }
+        .toast.info { border-left-color: var(--info); }
+        .toast.warning { border-left-color: var(--warning); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .badge.activo, .badge.emitida { background: var(--success-alpha); color: var(--success); }
+        .badge.vacaciones, .badge.pendiente { background: var(--warning-alpha); color: var(--warning); }
+        .badge.cesado, .badge.anulada { background: var(--danger-alpha); color: var(--danger); }
+        .btn-sm { padding: 6px 12px; font-size: 12px; margin: 0 2px; border: none; border-radius: var(--radius); cursor: pointer; color: white; }
+        .btn-sm.btn-danger { background-color: var(--danger); }
+        .role-badge { background: var(--primary); color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; margin-right: 10px; display: inline-block; }
+        
+        .special-operator { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: white !important; font-weight: bold !important; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
+
+        /* ===========================
+           Media Queries
+        =========================== */
+        @media (max-width: 1024px) {
+            .sidebar { transform: translateX(-100%); z-index: 1001; }
+            .sidebar.active { transform: translateX(0); box-shadow: var(--shadow-lg); }
+            .main-content { margin-left: 0; width: 100%; }
+            .menu-toggle { display: block !important; }
+        }
+        @media (max-width: 768px) {
+            .content { padding: 16px; }
+            .header { padding: 0 16px; }
+            .page-title { font-size: 20px; }
+            .stats-grid, .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
+            .user-name { display: none; }
+        }
+        @media (max-width: 480px) {
+            .user-info { display: none; }
+            .stats-grid, .quick-actions-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -111,6 +228,7 @@
                 <div class="form-group">
                     <input type="password" class="form-input" id="password" placeholder="Contraseña" required autocomplete="current-password">
                 </div>
+                <div id="loginError" class="login-error"></div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
             </form>
             <div class="users-info-panel">
@@ -118,7 +236,7 @@
                 <div class="users-scroll-container">
                     <div class="user-card admin" data-user="admin" data-pass="admin123">
                         <div class="user-badge">A</div>
-                        <div class="user-details"><strong>admin</strong><small>Administrador</small></div>
+                        <div class="user-details"><strong>admin</strong><small>Admin</small></div>
                     </div>
                     <div class="user-card accountant" data-user="contable" data-pass="cont123">
                         <div class="user-badge">C</div>
@@ -134,12 +252,10 @@
                     </div>
                 </div>
             </div>
-            <div class="security-info">
-                <p>🔒 Sistema protegido con autenticación por roles</p>
-                <p>⏰ Sesión válida por 30 minutos</p>
-            </div>
+            <div class="security-info"><p>🔒 Sistema protegido con autenticación por roles</p></div>
         </div>
     </div>
+
     <!-- Pantalla de Carga -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-particles" id="loadingParticles"></div>
@@ -149,16 +265,25 @@
             <p class="loading-status" id="loadingStatus">Cargando...</p>
         </div>
     </div>
+
     <!-- Contenedor Principal de la App -->
-    <div class="app-container" id="appContainer" style="display: none;">
+    <div class="app-container" id="appContainer">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo" onclick="showTab('dashboard')"><img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel"></div>
                 <h2 class="sidebar-title">TECSITEL</h2>
-                <p class="sidebar-subtitle">Gestión Empresarial v6</p>
+                <p class="sidebar-subtitle">Gestión Empresarial v3.1</p>
             </div>
-            <nav class="nav-menu"></nav>
+            <nav class="nav-menu">
+                <button class="nav-item" data-tab="dashboard"><span class="nav-icon">📊</span><span class="nav-text">Dashboard</span></button>
+                <button class="nav-item" data-tab="invoices"><span class="nav-icon">📄</span><span class="nav-text">Facturas</span></button>
+                <button class="nav-item" data-tab="accounting"><span class="nav-icon">💰</span><span class="nav-text">Contabilidad</span></button>
+                <button class="nav-item" data-tab="personnel"><span class="nav-icon">👥</span><span class="nav-text">Personal</span></button>
+                <button class="nav-item" data-tab="compliance"><span class="nav-icon">⚖️</span><span class="nav-text">Cumplimiento</span></button>
+                <button class="nav-item" data-tab="sharepoint"><span class="nav-icon">☁️</span><span class="nav-text">Respaldos</span></button>
+            </nav>
         </aside>
+
         <main class="main-content">
             <header class="header">
                 <button class="menu-toggle" style="display:none;" onclick="document.getElementById('sidebar').classList.toggle('active')">☰</button>
@@ -171,7 +296,9 @@
                     <button class="logout-btn" onclick="logout()">Salir</button>
                 </div>
             </header>
+
             <div class="content">
+                <!-- Dashboard Content -->
                 <div id="dashboard" class="tab-content">
                     <div class="stats-grid">
                         <div class="stat-card"><div class="stat-value" id="totalInvoices">0</div><div class="stat-label">Facturas Emitidas</div></div>
@@ -179,173 +306,74 @@
                         <div class="stat-card"><div class="stat-value" id="totalEmployees">0</div><div class="stat-label">Empleados Activos</div></div>
                         <div class="stat-card"><div class="stat-value" id="pendingTasks">0</div><div class="stat-label">Tareas Pendientes</div></div>
                     </div>
-                    <div class="card" id="quickActionsCard"><div class="card-header"><h3 class="card-title">Acciones Rápidas</h3></div><div class="quick-actions-grid" id="quickActions"></div></div>
-                    <div class="card"><div class="card-header"><h3 class="card-title">Resumen de Ventas</h3></div><div class="chart-container"><canvas id="salesChart"></canvas></div></div>
+                    <!-- Quick Actions Card - NEW -->
+                    <div class="card" id="quickActionsCard">
+                        <div class="card-header"><h3 class="card-title">Acciones Rápidas</h3></div>
+                        <div class="quick-actions-grid" id="quickActions"></div>
+                    </div>
                 </div>
+
+                <!-- Invoices Content -->
                 <div id="invoices" class="tab-content">
                     <div class="card">
                         <div class="card-header"><h3 class="card-title">📄 Gestión de Facturas</h3><button class="btn btn-primary" onclick="openModal('newInvoice')">+ Nueva Factura</button></div>
-                        <div class="table-container"><table class="table" id="invoicesTable"><thead><tr><th>N°</th><th>Cliente</th><th>RUC/DNI</th><th>Monto</th><th>Moneda</th><th>Estado</th><th>Fecha</th><th>Acciones</th></tr></thead><tbody id="invoicesTableBody"></tbody></table></div>
+                        <div class="table-container"><table class="table" id="invoicesTable"><thead><tr><th>N° Factura</th><th>Cliente</th><th>Monto</th><th>Estado</th><th>Fecha</th><th>Propietario</th><th>Acciones</th></tr></thead><tbody id="invoicesTableBody"></tbody></table></div>
                     </div>
                 </div>
+
+                <!-- Accounting Content -->
                 <div id="accounting" class="tab-content">
-                     <div class="card">
-                        <div class="card-header"><h3 class="card-title">💰 Módulo Contable</h3></div>
-                        <p>Gestión contable y generación de libros electrónicos.</p>
-                        <div class="quick-actions-grid">
-                            <div class="quick-action-card" onclick="showToast('Generando Libros...', 'info')"><div class="quick-action-icon">📚</div><div class="quick-action-label">Libros Electrónicos</div></div>
-                            <div class="quick-action-card" onclick="showToast('Generando Reportes...', 'info')"><div class="quick-action-icon">📊</div><div class="quick-action-label">Reportes Financieros</div></div>
-                        </div>
-                    </div>
+                     <div class="card"><div class="card-header"><h3 class="card-title">💰 Módulo Contable</h3></div><p>Gestión contable y generación de libros electrónicos.</p></div>
                 </div>
+
+                <!-- Personnel Content -->
                 <div id="personnel" class="tab-content">
                     <div class="card">
                         <div class="card-header"><h3 class="card-title">👥 Gestión de Personal</h3><button class="btn btn-primary" onclick="openModal('newEmployee')">+ Nuevo Empleado</button></div>
-                        <div class="table-container"><table class="table" id="employeesTable"><thead><tr><th>DNI</th><th>Nombres</th><th>Apellidos</th><th>Estado</th><th>Notas</th><th>Acciones</th></tr></thead><tbody id="employeesTableBody"></tbody></table></div>
+                        <div class="table-container"><table class="table" id="employeesTable"><thead><tr><th>DNI</th><th>Nombres</th><th>Apellidos</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="employeesTableBody"></tbody></table></div>
                     </div>
                     <div class="card">
-                        <div class="card-header"><h3 class="card-title">⏰ Registro de Asistencias</h3><button class="btn btn-primary" onclick="openModal('timeEntry')">+ Registrar Asistencia</button></div>
-                        <div class="table-container"><table class="table" id="timeEntriesTable"><thead><tr><th>DNI</th><th>Empleado</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Horas</th><th>Acciones</th></tr></thead><tbody id="timeEntriesTableBody"></tbody></table></div>
+                        <div class="card-header"><h3 class="card-title">⏰ Registro de Asistencias</h3><button class="btn btn-primary" onclick="openModal('timeEntry')">+ Registrar</button></div>
+                        <div class="table-container"><table class="table" id="timeEntriesTable"><thead><tr><th>DNI</th><th>Empleado</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Acciones</th></tr></thead><tbody id="timeEntriesTableBody"></tbody></table></div>
                     </div>
                 </div>
-                <div id="compliance" class="tab-content">
-                    <div class="card">
-                        <div class="card-header"><h3 class="card-title">⚖️ Cumplimiento Normativo</h3></div>
-                        <div id="complianceChecklist" style="margin-top: 20px;"></div>
-                        <div style="margin-top: 30px;">
-                            <h4>🇵🇪 Parámetros Tributarios Perú 2024</h4>
-                            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
-                                <div style="padding: 15px; background: var(--primary-alpha); border-radius: var(--radius);"><strong>UIT 2024</strong><br><span style="font-size: 18px; font-weight: bold;">S/ 5,150</span></div>
-                                <div style="padding: 15px; background: var(--primary-alpha); border-radius: var(--radius);"><strong>RMV</strong><br><span style="font-size: 18px; font-weight: bold;">S/ 1,025</span></div>
-                                <div style="padding: 15px; background: var(--primary-alpha); border-radius: var(--radius);"><strong>IGV</strong><br><span style="font-size: 18px; font-weight: bold;">18%</span></div>
-                                <div style="padding: 15px; background: var(--primary-alpha); border-radius: var(--radius);"><strong>Asig. Familiar</strong><br><span style="font-size: 18px; font-weight: bold;">S/ 102.50</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div id="sharepoint" class="tab-content">
-                     <div class="card">
-                        <div class="card-header"><h3 class="card-title">☁️ Respaldos y Exportaciones</h3></div>
-                        <div class="quick-actions-grid">
-                            <div class="quick-action-card" onclick="downloadFullBackup()"><div class="quick-action-icon">💾</div><div class="quick-action-label">Respaldo Completo</div></div>
-                            <div class="quick-action-card" onclick="exportInvoices()"><div class="quick-action-icon">📄</div><div class="quick-action-label">Exportar Facturas</div></div>
-                            <div class="quick-action-card" onclick="exportEmployees()"><div class="quick-action-icon">👥</div><div class="quick-action-label">Exportar Personal</div></div>
-                            <div class="quick-action-card" onclick="exportTimeEntries()"><div class="quick-action-icon">⏰</div><div class="quick-action-label">Exportar Asistencias</div></div>
-                        </div>
-                        <div style="margin-top: 30px;">
-                            <h4>📤 Última Sincronización</h4>
-                            <p id="lastSyncInfo">No hay sincronizaciones registradas</p>
-                        </div>
-                     </div>
-                </div>
+                
+                <!-- Compliance Content -->
+                <div id="compliance" class="tab-content"><div class="card"><div class="card-header"><h3 class="card-title">⚖️ Cumplimiento Normativo</h3></div><div id="complianceChecklist"></div></div></div>
+                
+                <!-- Sharepoint/Backup Content -->
+                <div id="sharepoint" class="tab-content"><div class="card"><div class="card-header"><h3 class="card-title">☁️ Respaldos y Exportaciones</h3></div><button class="btn btn-primary" onclick="downloadFullBackup()">💾 Respaldo Completo</button></div></div>
             </div>
         </main>
     </div>
+
     <!-- Modals -->
-    <div class="modal" id="newInvoice">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">📄 Nueva Factura</h3></div>
-            <div class="modal-body">
-                <form id="newInvoiceForm" onsubmit="createInvoice(event)">
-                    <div class="form-group"><label class="form-label">Tipo de Comprobante*</label><select class="form-input" name="invoiceType" required>
-                        <option value="01">Factura</option>
-                        <option value="03">Boleta de Venta</option>
-                        <option value="07">Nota de Crédito</option>
-                        <option value="08">Nota de Débito</option>
-                    </select></div>
-                    <div class="form-group"><label class="form-label">RUC Cliente</label><input type="text" class="form-input" name="clientRuc" pattern="[0-9]{11}"></div>
-                    <div class="form-group"><label class="form-label">Razón Social*</label><input type="text" class="form-input" name="clientName" required></div>
-                    <div class="form-group"><label class="form-label">Monto (sin IGV)*</label><input type="number" class="form-input" name="amount" step="0.01" required></div>
-                    <div class="form-group"><label class="form-label">Moneda*</label><select class="form-input" name="currency" required>
-                        <option value="PEN">Soles (PEN)</option>
-                        <option value="USD">Dólares (USD)</option>
-                        <option value="EUR">Euros (EUR)</option>
-                    </select></div>
-                    <div class="form-group"><label class="form-label">Descripción</label><textarea class="form-input" name="description"></textarea></div>
-                </form>
-            </div>
-            <div class="modal-footer"><button type="button" class="btn" onclick="closeModal('newInvoice')" style="background-color: var(--gray-200);">Cancelar</button><button type="submit" form="newInvoiceForm" class="btn btn-primary">Crear</button></div>
-        </div>
-    </div>
-    <div class="modal" id="newEmployee">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">👤 Nuevo Empleado</h3></div>
-            <div class="modal-body">
-                <form id="newEmployeeForm" onsubmit="createEmployee(event)">
-                    <div class="form-group"><label class="form-label">DNI*</label><input type="text" class="form-input" name="dni" required pattern="[0-9]{8}"></div>
-                    <div class="form-group"><label class="form-label">Nombres*</label><input type="text" class="form-input" name="firstName" required></div>
-                    <div class="form-group"><label class="form-label">Apellidos*</label><input type="text" class="form-input" name="lastName" required></div>
-                    <div class="form-group"><label class="form-label">Estado*</label><select class="form-input" name="status" required>
-                        <option value="Activo">Activo</option>
-                        <option value="Vacaciones">Vacaciones</option>
-                        <option value="Descanso Médico">Descanso Médico</option>
-                        <option value="Cesado">Cesado</option>
-                    </select></div>
-                    <div class="form-group"><label class="form-label">Notas / Observaciones</label><textarea class="form-input" name="notes"></textarea></div>
-                </form>
-            </div>
-            <div class="modal-footer"><button type="button" class="btn" onclick="closeModal('newEmployee')" style="background-color: var(--gray-200);">Cancelar</button><button type="submit" form="newEmployeeForm" class="btn btn-primary">Agregar</button></div>
-        </div>
-    </div>
-    <div class="modal" id="timeEntry">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">⏰ Registrar Asistencia</h3></div>
-            <div class="modal-body">
-                <form id="timeEntryForm" onsubmit="createTimeEntry(event)">
-                    <div class="form-group"><label class="form-label">Empleado*</label><select class="form-input" name="employeeDni" id="timeEntryEmployee" required></select></div>
-                    <div class="form-group"><label class="form-label">Fecha*</label><input type="date" class="form-input" name="date" required></div>
-                    <div class="form-group"><label class="form-label">Hora Entrada</label><input type="time" class="form-input" name="entryTime"></div>
-                    <div class="form-group"><label class="form-label">Hora Salida</label><input type="time" class="form-input" name="exitTime"></div>
-                </form>
-            </div>
-            <div class="modal-footer"><button type="button" class="btn" onclick="closeModal('timeEntry')" style="background-color: var(--gray-200);">Cancelar</button><button type="submit" form="timeEntryForm" class="btn btn-primary">Registrar</button></div>
-        </div>
-    </div>
-    <div class="modal" id="editEmployee">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">✏️ Editar Empleado</h3></div>
-            <div class="modal-body">
-                <form id="editEmployeeForm" onsubmit="updateEmployee(event)">
-                    <input type="hidden" name="editDni">
-                    <div class="form-group"><label class="form-label">Nombres*</label><input type="text" class="form-input" name="editFirstName" required></div>
-                    <div class="form-group"><label class="form-label">Apellidos*</label><input type="text" class="form-input" name="editLastName" required></div>
-                    <div class="form-group"><label class="form-label">Estado*</label><select class="form-input" name="editStatus" required>
-                        <option value="Activo">Activo</option>
-                        <option value="Vacaciones">Vacaciones</option>
-                        <option value="Descanso Médico">Descanso Médico</option>
-                        <option value="Cesado">Cesado</option>
-                    </select></div>
-                    <div class="form-group"><label class="form-label">Notas / Observaciones</label><textarea class="form-input" name="editNotes"></textarea></div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn" onclick="closeModal('editEmployee')" style="background-color: var(--gray-200);">Cancelar</button>
-                <button type="submit" form="editEmployeeForm" class="btn btn-primary">Actualizar</button>
-            </div>
-        </div>
-    </div>
+    <div class="modal" id="newInvoice"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">📄 Nueva Factura</h3></div><div class="modal-body"><form id="newInvoiceForm" onsubmit="createInvoice(event)"><div class="form-group"><label class="form-label">RUC Cliente</label><input type="text" class="form-input" name="clientRuc" pattern="[0-9]{11}"></div><div class="form-group"><label class="form-label">Razón Social*</label><input type="text" class="form-input" name="clientName" required></div><div class="form-group"><label class="form-label">Monto (sin IGV)*</label><input type="number" class="form-input" name="amount" step="0.01" required></div></form></div><div class="modal-footer"><button type="button" class="btn" onclick="closeModal('newInvoice')" style="background-color: var(--gray-200);">Cancelar</button><button type="submit" form="newInvoiceForm" class="btn btn-primary">Crear</button></div></div></div>
+    <div class="modal" id="newEmployee"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">👤 Nuevo Empleado</h3></div><div class="modal-body"><form id="newEmployeeForm" onsubmit="createEmployee(event)"><div class="form-group"><label class="form-label">DNI*</label><input type="text" class="form-input" name="dni" required pattern="[0-9]{8}"></div><div class="form-group"><label class="form-label">Nombres*</label><input type="text" class="form-input" name="firstName" required></div><div class="form-group"><label class="form-label">Apellidos*</label><input type="text" class="form-input" name="lastName" required></div></form></div><div class="modal-footer"><button type="button" class="btn" onclick="closeModal('newEmployee')" style="background-color: var(--gray-200);">Cancelar</button><button type="submit" form="newEmployeeForm" class="btn btn-primary">Agregar</button></div></div></div>
+    <div class="modal" id="timeEntry"><div class="modal-content"><div class="modal-header"><h3 class="modal-title">⏰ Registrar Asistencia</h3></div><div class="modal-body"><form id="timeEntryForm" onsubmit="createTimeEntry(event)"><div class="form-group"><label class="form-label">Empleado*</label><select class="form-select" name="employeeDni" id="timeEntryEmployee" required></select></div><div class="form-group"><label class="form-label">Fecha*</label><input type="date" class="form-input" name="date" required></div><div class="form-group"><label class="form-label">Hora Entrada</label><input type="time" class="form-input" name="entryTime"></div><div class="form-group"><label class="form-label">Hora Salida</label><input type="time" class="form-input" name="exitTime"></div></form></div><div class="modal-footer"><button type="button" class="btn" onclick="closeModal('timeEntry')" style="background-color: var(--gray-200);">Cancelar</button><button type="submit" form="timeEntryForm" class="btn btn-primary">Registrar</button></div></div></div>
+
     <div class="toast-container" id="toastContainer"></div>
+
     <script>
-    // ========== Configuración y Estado =============
-    const CONFIG = {
-        IGV_RATE: 0.18,
-        SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minutos
-    };
-    const AppState = {
+    // ========================================
+    // ENHANCED SCRIPT WITH QUICK ACTIONS & DATA FILTERING
+    // ========================================
+
+    const AppState = { 
         user: null,
         invoices: [],
         employees: [],
         timeEntries: [],
         invoiceCounter: 1,
-        sessionStart: null,
     };
-    // ========== Usuarios y Roles ===================
+
     const SYSTEM_USERS = {
-        'admin': { password: 'admin123', name: 'Administrador', role: 'ADMIN', avatar: 'A', permissions: ['dashboard', 'invoices', 'accounting', 'personnel', 'compliance', 'sharepoint'], dni: '99999999' },
-        'contable': { password: 'cont123', name: 'Contador', role: 'ACCOUNTANT', avatar: 'C', permissions: ['dashboard', 'invoices', 'accounting', 'compliance'], dni: '88888888' },
-        'rrhh': { password: 'rrhh123', name: 'Recursos Humanos', role: 'HR', avatar: 'R', permissions: ['dashboard', 'personnel'], dni: '77777777' },
-        'operario': { password: 'oper123', name: 'Operario', role: 'OPERATOR', avatar: 'O', permissions: ['timeEntry'], dni: '66666666' }
+        'admin': { password: 'admin123', name: 'Administrador', role: 'ADMIN', avatar: 'A', permissions: ['dashboard', 'invoices', 'accounting', 'personnel', 'compliance', 'sharepoint'], description: 'Acceso completo al sistema' },
+        'contable': { password: 'cont123', name: 'Contador', role: 'ACCOUNTANT', avatar: 'C', permissions: ['dashboard', 'invoices', 'accounting', 'compliance'], description: 'Gestión contable y tributaria' },
+        'rrhh': { password: 'rrhh123', name: 'Recursos Humanos', role: 'HR', avatar: 'R', permissions: ['dashboard', 'personnel'], description: 'Gestión de personal y asistencias' },
+        'operario': { password: 'oper123', name: 'Carlos Sánchez', role: 'OPERATOR', avatar: 'O', permissions: ['timeEntry'], description: 'Solo registro de asistencias', dni: 'operario' }
     };
+    
     const MODULES = {
         'dashboard': { name: 'Dashboard', icon: '📊' },
         'invoices': { name: 'Facturas', icon: '📄' },
@@ -355,326 +383,371 @@
         'sharepoint': { name: 'Respaldos', icon: '☁️' },
         'timeEntry': { name: 'Marcar Asistencia', icon: '⏰' }
     };
-    // ========== Autenticación y Sesión =============
+
+    // ========================================
+    // AUTHENTICATION & INITIALIZATION
+    // ========================================
     function handleLogin(event) {
         event.preventDefault();
         const username = document.getElementById('username').value.toLowerCase().trim();
         const password = document.getElementById('password').value;
+        clearLoginErrors();
+        
         const user = SYSTEM_USERS[username];
-        if (user && user.password === password) {
-            AppState.user = user;
-            AppState.sessionStart = Date.now();
-            document.getElementById('loginScreen').style.display = 'none';
-            document.getElementById('loadingScreen').style.display = 'flex';
-            const particlesContainer = document.getElementById('loadingParticles');
-            particlesContainer.innerHTML = '';
-            for (let i = 0; i < 30; i++) {
-                const particle = document.createElement('div');
-                particle.style.cssText = `position: absolute; width: 4px; height: 4px; background: rgba(255, 255, 255, 0.7); border-radius: 50%; top: ${Math.random() * 100}%; left: ${Math.random() * 100}%; animation: float ${2 + Math.random() * 4}s ease-in-out infinite; animation-delay: ${Math.random() * 2}s;`;
-                particlesContainer.appendChild(particle);
-            }
-            setTimeout(() => {
-                document.getElementById('loadingScreen').style.display = 'none';
-                document.getElementById('appContainer').style.display = 'flex';
-                initializeAppUI();
-                startSessionTimer();
-            }, 1500);
-        } else {
-            showToast('Credenciales incorrectas', 'error');
+        if (!user || user.password !== password) {
+            showLoginError('Credenciales incorrectas');
+            shakeLoginForm();
+            return;
         }
+        
+        AppState.user = user;
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('loadingScreen').style.display = 'flex';
+        
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            initializeAppUI();
+            showToast(`✅ Bienvenido ${user.name}`, 'success');
+        }, 1500);
     }
-    function logout() {
-        AppState.user = null;
-        AppState.sessionStart = null;
-        document.getElementById('appContainer').style.display = 'none';
-        document.getElementById('loginScreen').style.display = 'flex';
-        document.getElementById('loginForm').reset();
-    }
-    function startSessionTimer() {
-        clearInterval(window.sessionInterval);
-        window.sessionInterval = setInterval(() => {
-            if (AppState.sessionStart && Date.now() - AppState.sessionStart > CONFIG.SESSION_TIMEOUT) {
-                showToast('Sesión expirada. Por favor, inicie sesión nuevamente.', 'warning');
-                logout();
-                clearInterval(window.sessionInterval);
-            }
-        }, 10000);
-    }
-    // ========== UI Inicialización y Render ==========
+
     function initializeAppUI() {
+        loadInitialData();
+        configureInterfaceByRole();
+        const firstTab = getFirstAllowedTab();
+        showTab(firstTab);
+    }
+
+    function configureInterfaceByRole() {
         const user = AppState.user;
         document.getElementById('userName').textContent = user.name;
         document.getElementById('userAvatar').textContent = user.avatar;
-        document.getElementById('quickActionsCard').style.display = user.role !== 'OPERATOR' ? 'block' : 'none';
-        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-        setupNavigation();
-        if (user.role !== 'OPERATOR') {
-            setupQuickActions();
+        
+        // Setup Role Badge
+        const headerRight = document.querySelector('.header-right');
+        let roleBadge = headerRight.querySelector('.role-badge');
+        if (!roleBadge) {
+            roleBadge = document.createElement('div');
+            roleBadge.className = 'role-badge';
+            headerRight.insertBefore(roleBadge, headerRight.firstChild);
         }
-        setupComplianceChecklist();
-        if (user.role === 'OPERATOR') {
-            document.getElementById('pageTitle').textContent = "Marcar Asistencia";
-            openModal('timeEntry');
-        } else {
-            showTab('dashboard');
-        }
-        loadInitialData();
+        const roleColors = { 'ADMIN': 'var(--primary)', 'ACCOUNTANT': 'var(--success)', 'HR': 'var(--info)', 'OPERATOR': 'var(--warning)' };
+        roleBadge.style.backgroundColor = roleColors[user.role] || '#6b7280';
+        roleBadge.textContent = user.role;
+
+        setupNavigationMenu();
+        setupQuickActions(); // NEW: Setup quick actions on dashboard
     }
-    function setupNavigation() {
+
+    function setupNavigationMenu() {
         const navMenu = document.querySelector('.nav-menu');
-        navMenu.innerHTML = '';
-        if (AppState.user.role === 'OPERATOR') {
-            const timeEntryModule = MODULES['timeEntry'];
-            const navItem = document.createElement('button');
-            navItem.className = 'nav-item active';
-            navItem.style.background = 'rgba(255,255,255,0.2)';
-            navItem.innerHTML = `<span class="nav-icon">${timeEntryModule.icon}</span><span class="nav-text">${timeEntryModule.name}</span>`;
-            navItem.onclick = () => openModal('timeEntry');
-            navMenu.appendChild(navItem);
+        const user = AppState.user;
+        
+        navMenu.querySelectorAll('.nav-item').forEach(item => {
+            const tab = item.getAttribute('data-tab');
+            item.style.display = user.permissions.includes(tab) ? 'flex' : 'none';
+        });
+
+        const existingSpecialOperator = navMenu.querySelector('.special-operator');
+        if (existingSpecialOperator) existingSpecialOperator.remove();
+
+        if (user.role === 'OPERATOR') {
+            const quickTimeEntry = document.createElement('button');
+            quickTimeEntry.className = 'nav-item special-operator';
+            quickTimeEntry.innerHTML = `<span class="nav-icon">⏰</span><span class="nav-text">Marcar Asistencia</span>`;
+            quickTimeEntry.onclick = () => showTab('timeEntry');
+            navMenu.appendChild(quickTimeEntry);
+        }
+    }
+
+    // NEW: Function to create Quick Actions on the dashboard
+    function setupQuickActions() {
+        const container = document.getElementById('quickActions');
+        const card = document.getElementById('quickActionsCard');
+        const user = AppState.user;
+        container.innerHTML = ''; // Clear previous actions
+
+        // Hide card for operator
+        if (user.role === 'OPERATOR') {
+            card.style.display = 'none';
             return;
         }
-        AppState.user.permissions.forEach(perm => {
-            const module = MODULES[perm];
-            if (module) {
-                const navItem = document.createElement('button');
-                navItem.className = 'nav-item';
-                navItem.dataset.tab = perm;
-                navItem.innerHTML = `<span class="nav-icon">${module.icon}</span><span class="nav-text">${module.name}</span>`;
-                navItem.onclick = () => showTab(perm);
-                navMenu.appendChild(navItem);
-            }
-        });
-    }
-    function setupQuickActions() {
-        const quickActionsContainer = document.getElementById('quickActions');
-        quickActionsContainer.innerHTML = '';
-        AppState.user.permissions.forEach(perm => {
-            if (perm !== 'dashboard') {
-                const module = MODULES[perm];
+        card.style.display = 'block';
+
+        // Define which actions to show based on permissions
+        const quickActionMap = {
+            'invoices': { name: 'Nueva Factura', icon: '📄', action: () => openModal('newInvoice') },
+            'personnel': { name: 'Nuevo Empleado', icon: '👥', action: () => openModal('newEmployee') },
+            'timeEntry': { name: 'Registrar Hora', icon: '⏰', action: () => openModal('timeEntry') }
+        };
+
+        let hasActions = false;
+        user.permissions.forEach(perm => {
+            const actionDetails = quickActionMap[perm];
+            if (actionDetails) {
+                hasActions = true;
                 const actionCard = document.createElement('div');
                 actionCard.className = 'quick-action-card';
-                actionCard.onclick = () => showTab(perm);
-                actionCard.innerHTML = `<div class="quick-action-icon">${module.icon}</div><div class="quick-action-label">${module.name}</div>`;
-                quickActionsContainer.appendChild(actionCard);
+                actionCard.innerHTML = `<div class="quick-action-icon">${actionDetails.icon}</div><div class="quick-action-label">${actionDetails.name}</div>`;
+                actionCard.onclick = actionDetails.action;
+                container.appendChild(actionCard);
             }
         });
+        
+        // Also add a general action for personnel if they have that tab
+        if (user.permissions.includes('personnel') && !quickActionMap['timeEntry']) {
+             const timeEntryAction = quickActionMap['timeEntry'];
+             const actionCard = document.createElement('div');
+             actionCard.className = 'quick-action-card';
+             actionCard.innerHTML = `<div class="quick-action-icon">${timeEntryAction.icon}</div><div class="quick-action-label">${timeEntryAction.name}</div>`;
+             actionCard.onclick = timeEntryAction.action;
+             container.appendChild(actionCard);
+        }
+
+
+        if (!hasActions) {
+            card.style.display = 'none';
+        }
     }
+
+    function getFirstAllowedTab() {
+        const user = AppState.user;
+        if (user.role === 'OPERATOR') return 'timeEntry';
+        return user.permissions[0] || 'dashboard';
+    }
+
+    function showTab(tabName) {
+        const user = AppState.user;
+        if (!user.permissions.includes(tabName)) return;
+
+        if (tabName === 'timeEntry') {
+            openModal('timeEntry');
+            if(user.role === 'OPERATOR'){
+                 setTimeout(() => {
+                    const select = document.getElementById('timeEntryEmployee');
+                    select.value = user.dni;
+                    select.disabled = true;
+                }, 100);
+            }
+            return;
+        }
+        
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        
+        document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+        const activeNavItem = document.querySelector(`.nav-item[data-tab="${tabName}"]`);
+        if (activeNavItem) activeNavItem.classList.add('active');
+        
+        document.getElementById('pageTitle').textContent = MODULES[tabName]?.name || 'Tecsitel';
+        updateAllTables(); // Refresh tables on tab switch
+    }
+
+    function logout() {
+        AppState.user = null;
+        document.getElementById('appContainer').style.display = 'none';
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('loginForm').reset();
+        showToast('👋 Sesión cerrada', 'info');
+    }
+
+    // ========================================
+    // DATA HANDLING & RENDERING (WITH FILTERING)
+    // ========================================
     function loadInitialData() {
-        AppState.employees = [
-            { dni: '48756231', firstName: 'Juan', lastName: 'Pérez', status: 'Activo', notes: "" },
-            { dni: '71234567', firstName: 'María', lastName: 'Gomez', status: 'Activo', notes: "" },
-            { dni: '10203040', firstName: 'Carlos', lastName: 'Ruiz', status: 'Activo', notes: "" },
-            { dni: '66666666', firstName: 'Luis', lastName: 'Garcia', status: 'Activo', notes: "" } // Operario
-        ];
         AppState.invoices = [
-            { id: 1, invoiceType: 'Factura', clientName: 'Empresa XYZ', clientRuc: '20100011122', amount: 1500, currency: 'PEN', status: 'Pagada', date: '2025-07-01', description: "" },
-            { id: 2, invoiceType: 'Boleta de Venta', clientName: 'Comercial ABC', clientRuc: '10400111223', amount: 2500, currency: 'PEN', status: 'Pendiente', date: '2025-07-05', description: "" }
+            { id: 1, clientName: 'Empresa XYZ', amount: 1500, status: 'Pagada', date: '2025-07-01', owner: 'contable' },
+            { id: 2, clientName: 'Comercial ABC', amount: 2500, status: 'Pendiente', date: '2025-07-05', owner: 'admin' },
+            { id: 3, clientName: 'Servicios Generales', amount: 800, status: 'Pagada', date: '2025-07-08', owner: 'contable' }
+        ];
+        AppState.employees = [
+            { dni: '48756231', firstName: 'Juan', lastName: 'Pérez García', status: 'Activo' },
+            { dni: '71234567', firstName: 'María', lastName: 'Rodríguez', status: 'Vacaciones' },
+            { dni: 'operario', firstName: 'Carlos', lastName: 'Sánchez', status: 'Activo' }
         ];
         AppState.timeEntries = [
             { id: 1, dni: '48756231', name: 'Juan Pérez', date: '2025-07-09', entryTime: '09:00', exitTime: '18:00' }
         ];
+        AppState.invoiceCounter = AppState.invoices.length + 1;
         updateDashboardStats();
-        updateTables();
         populateEmployeeDropdown();
+        setupComplianceChecklist();
     }
+    
+    function updateAllTables() {
+        updateInvoicesTable();
+        updateEmployeesTable();
+        updateTimeEntriesTable();
+        updateDashboardStats();
+    }
+
     function updateDashboardStats() {
-        document.getElementById('totalInvoices').textContent = AppState.invoices.length;
-        const totalAmount = AppState.invoices.reduce((sum, inv) => sum + inv.amount, 0);
+        const user = AppState.user;
+        let visibleInvoices = AppState.invoices;
+        // Filter for dashboard stats if not admin/accountant
+        if(user.role !== 'ADMIN' && user.role !== 'ACCOUNTANT') {
+            visibleInvoices = [];
+        }
+
+        document.getElementById('totalInvoices').textContent = visibleInvoices.length;
+        const totalAmount = visibleInvoices.reduce((sum, inv) => sum + inv.amount, 0);
         document.getElementById('totalAmount').textContent = `S/ ${totalAmount.toFixed(2)}`;
-        document.getElementById('totalEmployees').textContent = AppState.employees.length;
-        document.getElementById('pendingTasks').textContent = AppState.invoices.filter(i => i.status === 'Pendiente').length;
+        const activeEmployees = AppState.employees.filter(emp => emp.status === 'Activo').length;
+        document.getElementById('totalEmployees').textContent = activeEmployees;
+        document.getElementById('pendingTasks').textContent = visibleInvoices.filter(i => i.status === 'Pendiente').length;
     }
-    function updateTables() {
-        const invoicesTbody = document.getElementById('invoicesTableBody');
-        if (invoicesTbody) {
-            invoicesTbody.innerHTML = AppState.invoices.map(inv => `
-                <tr>
-                    <td>F001-${String(inv.id).padStart(4,'0')}</td>
-                    <td>${inv.clientName}</td>
-                    <td>${inv.clientRuc || ''}</td>
-                    <td>S/ ${inv.amount.toFixed(2)}</td>
-                    <td>${inv.currency || 'PEN'}</td>
-                    <td><span class="badge ${inv.status.toLowerCase()}">${inv.status}</span></td>
-                    <td>${inv.date}</td>
-                    <td>
-                        <button class="btn-sm btn-primary" style="background-color: var(--info);">Ver</button>
-                    </td>
-                </tr>`).join('');
+
+    // Invoice Functions with filtering
+    function updateInvoicesTable() {
+        const tbody = document.getElementById('invoicesTableBody');
+        const user = AppState.user;
+        let visibleInvoices = AppState.invoices;
+
+        // Accountant and Admin see all invoices
+        if (user.role !== 'ADMIN' && user.role !== 'ACCOUNTANT') {
+            visibleInvoices = []; // Other roles don't see invoices
         }
-        const employeesTbody = document.getElementById('employeesTableBody');
-        if (employeesTbody) {
-            employeesTbody.innerHTML = AppState.employees.map(emp => `
-                <tr>
-                    <td>${emp.dni}</td>
-                    <td>${emp.firstName}</td>
-                    <td>${emp.lastName}</td>
-                    <td><span class="badge ${(emp.status || 'activo').toLowerCase()}">${emp.status}</span></td>
-                    <td>${emp.notes || ''}</td>
-                    <td>
-                        <button class="btn-sm btn-primary" style="background-color: var(--info);" onclick="openEditEmployee('${emp.dni}')">Editar</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-        const timeEntriesTbody = document.getElementById('timeEntriesTableBody');
-        if (timeEntriesTbody) {
-            timeEntriesTbody.innerHTML = AppState.timeEntries.map(entry => {
-                const hours = calculateHours(entry.entryTime, entry.exitTime);
-                return `
-                <tr>
-                    <td>${entry.dni}</td>
-                    <td>${entry.name}</td>
-                    <td>${entry.date}</td>
-                    <td>${entry.entryTime || '-'}</td>
-                    <td>${entry.exitTime || '-'}</td>
-                    <td>${hours}</td>
-                    <td><button class="btn-sm btn-primary" style="background-color: var(--info);" disabled>Editar</button></td>
-                </tr>`;
-            }).join('');
-        }
-    }
-    function showTab(tabName) {
-        if (AppState.user.role === 'OPERATOR') {
-            openModal('timeEntry');
+
+        if (visibleInvoices.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 40px;">No hay facturas para mostrar.</td></tr>`;
             return;
         }
-        document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-        const activeTab = document.getElementById(tabName);
-        if (activeTab) activeTab.style.display = 'block';
-        document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.tab === tabName));
-        document.getElementById('pageTitle').textContent = MODULES[tabName].name;
+        tbody.innerHTML = visibleInvoices.map(inv => `
+            <tr>
+                <td>F001-${String(inv.id).padStart(4,'0')}</td>
+                <td>${inv.clientName}</td>
+                <td>S/ ${inv.amount.toFixed(2)}</td>
+                <td><span class="badge ${inv.status.toLowerCase()}">${inv.status}</span></td>
+                <td>${inv.date}</td>
+                <td>${inv.owner}</td>
+                <td><button class="btn-sm btn-danger" onclick="deleteInvoice(${inv.id})">🗑️</button></td>
+            </tr>`).join('');
     }
-    // ========== Formularios y Modales ==========
+
+    // Employee & Time Entry functions (HR and Admin see all)
+    function updateEmployeesTable() {
+        const tbody = document.getElementById('employeesTableBody');
+        tbody.innerHTML = AppState.employees.map(emp => `
+            <tr>
+                <td>${emp.dni}</td>
+                <td>${emp.firstName}</td>
+                <td>${emp.lastName}</td>
+                <td><span class="badge ${emp.status.toLowerCase()}">${emp.status}</span></td>
+                <td><button class="btn-sm btn-danger" onclick="deleteEmployee('${emp.dni}')">🗑️</button></td>
+            </tr>`).join('');
+    }
+    function updateTimeEntriesTable() {
+        const tbody = document.getElementById('timeEntriesTableBody');
+        tbody.innerHTML = AppState.timeEntries.map(entry => `
+            <tr>
+                <td>${entry.dni}</td>
+                <td>${entry.name}</td>
+                <td>${entry.date}</td>
+                <td>${entry.entryTime || '-'}</td>
+                <td>${entry.exitTime || '-'}</td>
+                <td><button class="btn-sm btn-danger" onclick="deleteTimeEntry(${entry.id})">🗑️</button></td>
+            </tr>`).join('');
+    }
+
+    // ========================================
+    // CRUD OPERATIONS
+    // ========================================
     function createInvoice(event) {
         event.preventDefault();
         const form = event.target;
         const newInvoice = {
-            id: ++AppState.invoiceCounter,
-            invoiceType: form.invoiceType.value,
+            id: AppState.invoiceCounter++,
             clientName: form.clientName.value,
-            clientRuc: form.clientRuc.value,
             amount: parseFloat(form.amount.value),
-            currency: form.currency.value,
             status: 'Pendiente',
             date: new Date().toISOString().split('T')[0],
-            description: form.description.value
+            owner: AppState.user.name.toLowerCase() // Assign to current user
         };
         AppState.invoices.push(newInvoice);
-        updateTables();
-        updateDashboardStats();
+        updateAllTables();
         closeModal('newInvoice');
         showToast('Factura creada exitosamente', 'success');
+        form.reset();
+    }
+    function deleteInvoice(id) {
+        AppState.invoices = AppState.invoices.filter(inv => inv.id !== id);
+        updateAllTables();
+        showToast(`Factura eliminada`, 'info');
     }
     function createEmployee(event) {
         event.preventDefault();
         const form = event.target;
-        const newEmployee = {
-            dni: form.dni.value,
-            firstName: form.firstName.value,
-            lastName: form.lastName.value,
-            status: form.status.value,
-            notes: form.notes.value
-        };
+        const dni = form.dni.value;
+        if (AppState.employees.find(emp => emp.dni === dni)) {
+            showToast('❌ DNI ya existe', 'error'); return;
+        }
+        const newEmployee = { dni, firstName: form.firstName.value, lastName: form.lastName.value, status: 'Activo' };
         AppState.employees.push(newEmployee);
-        updateTables();
-        updateDashboardStats();
+        updateAllTables();
         populateEmployeeDropdown();
         closeModal('newEmployee');
         showToast('Empleado agregado exitosamente', 'success');
+        form.reset();
     }
-    function updateEmployee(event) {
-        event.preventDefault();
-        const form = event.target;
-        const dni = form.editDni.value;
-        const emp = AppState.employees.find(e => e.dni === dni);
-        if (emp) {
-            emp.firstName = form.editFirstName.value;
-            emp.lastName = form.editLastName.value;
-            emp.status = form.editStatus.value;
-            emp.notes = form.editNotes.value;
-            updateTables();
-            closeModal('editEmployee');
-            showToast('Empleado actualizado', 'success');
-        }
-    }
-    function openEditEmployee(dni) {
-        const emp = AppState.employees.find(e => e.dni === dni);
-        if (!emp) return;
-        const form = document.getElementById('editEmployeeForm');
-        form.editDni.value = emp.dni;
-        form.editFirstName.value = emp.firstName;
-        form.editLastName.value = emp.lastName;
-        form.editStatus.value = emp.status;
-        form.editNotes.value = emp.notes || "";
-        openModal('editEmployee');
+    function deleteEmployee(dni) {
+        AppState.employees = AppState.employees.filter(emp => emp.dni !== dni);
+        updateAllTables();
+        populateEmployeeDropdown();
+        showToast(`Empleado eliminado`, 'info');
     }
     function createTimeEntry(event) {
         event.preventDefault();
         const form = event.target;
         const employeeDni = form.employeeDni.value;
         const employee = AppState.employees.find(emp => emp.dni === employeeDni);
-        if (!employee) return;
-        const newEntry = {
-            id: Date.now(),
-            dni: employeeDni,
-            name: `${employee.firstName} ${employee.lastName}`,
-            date: form.date.value,
-            entryTime: form.entryTime.value,
-            exitTime: form.exitTime.value
-        };
+        const newEntry = { id: Date.now(), dni: employeeDni, name: `${employee.firstName} ${employee.lastName}`, date: form.date.value, entryTime: form.entryTime.value, exitTime: form.exitTime.value };
         AppState.timeEntries.push(newEntry);
-        updateTables();
+        updateAllTables();
         closeModal('timeEntry');
         showToast('Asistencia registrada', 'success');
+        form.reset();
     }
-    function calculateHours(entryTime, exitTime) {
-        if (!entryTime || !exitTime) return '-';
-        const entry = new Date(`1970-01-01T${entryTime}`);
-        const exit = new Date(`1970-01-01T${exitTime}`);
-        const diff = (exit - entry) / (1000 * 60 * 60);
-        return `${diff.toFixed(2)}h`;
+    function deleteTimeEntry(id) {
+        AppState.timeEntries = AppState.timeEntries.filter(entry => entry.id !== id);
+        updateAllTables();
+        showToast('Registro de asistencia eliminado', 'info');
     }
+    
+    // ========================================
+    // UTILITIES
+    // ========================================
     function populateEmployeeDropdown() {
         const select = document.getElementById('timeEntryEmployee');
         select.innerHTML = '<option value="">Seleccionar empleado...</option>';
         AppState.employees.forEach(emp => {
-            const option = document.createElement('option');
-            option.value = emp.dni;
-            option.textContent = `${emp.firstName} ${emp.lastName}`;
-            select.appendChild(option);
+            select.innerHTML += `<option value="${emp.dni}">${emp.firstName} ${emp.lastName}</option>`;
         });
-        if (AppState.user.role === 'OPERATOR' && AppState.user.dni) {
-            select.value = AppState.user.dni;
-            select.disabled = true;
-        } else {
-            select.disabled = false;
-        }
     }
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
-    // ========== Módulos Específicos ==========
     function setupComplianceChecklist() {
         const container = document.getElementById('complianceChecklist');
-        const items = [
-            { label: 'Inscripción en SUNAT', status: 'completed' },
-            { label: 'Facturación Electrónica', status: 'completed' },
-            { label: 'Declaraciones Mensuales', status: 'pending' },
-            { label: 'Registro de Empleados T-REGISTRO', status: 'completed' },
-            { label: 'Pagos EsSalud', status: 'warning' },
-        ];
-        container.innerHTML = items.map(item => {
-            const statusStyles = { completed: 'var(--success)', warning: 'var(--warning)', pending: 'var(--danger)' };
-            return `<div style="display: flex; align-items: center; padding: 10px; margin-bottom: 8px; background: var(--gray-50); border-radius: var(--radius); border-left: 4px solid ${statusStyles[item.status]};">
-                        <span style="margin-right: 10px;">${item.status === 'completed' ? '✅' : (item.status === 'warning' ? '⚠️' : '❌')}</span>
-                        <span>${item.label}</span>
-                    </div>`;
-        }).join('');
+        container.innerHTML = `<div style="padding:10px; background:var(--gray-50); border-radius:var(--radius);">✅ Facturación Electrónica Activa</div>`;
     }
-    function downloadFullBackup() { showToast('Iniciando descarga de respaldo completo...', 'info'); }
-    function exportInvoices() { showToast('Exportando facturas a CSV...', 'info'); }
-    function exportEmployees() { showToast('Exportando personal a CSV...', 'info'); }
-    function exportTimeEntries() { showToast('Exportando asistencias a CSV...', 'info'); }
-    // ========== Utilidades y Eventos ==========
+    function downloadFullBackup() { showToast('📥 Generando respaldo...', 'info'); }
+    function showLoginError(message) {
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+    }
+    function clearLoginErrors() { document.getElementById('loginError').style.display = 'none'; }
+    function shakeLoginForm() {
+        const loginForm = document.querySelector('.login-form');
+        loginForm.style.animation = 'shake 0.5s ease-in-out';
+        setTimeout(() => { loginForm.style.animation = ''; }, 500);
+    }
+    function openModal(id) { 
+        document.getElementById(id).style.display = 'flex'; 
+        if(id === 'timeEntry'){
+            const dateInput = document.querySelector(`#${id} input[name="date"]`);
+            if(dateInput) dateInput.valueAsDate = new Date();
+        }
+    }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function showToast(message, type = 'info') {
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
@@ -683,15 +756,19 @@
         container.appendChild(toast);
         setTimeout(() => { if(container.contains(toast)) container.removeChild(toast) }, 4000);
     }
+    
+    // ========================================
+    // EVENT LISTENERS
+    // ========================================
     document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.user-card').forEach(card => {
             card.addEventListener('click', function() {
                 document.getElementById('username').value = this.dataset.user;
                 document.getElementById('password').value = this.dataset.pass;
+                document.querySelector('button[type="submit"]').focus();
             });
         });
         document.addEventListener('click', e => { if(e.target.classList.contains('modal')) closeModal(e.target.id); });
-        document.getElementById('loginScreen').style.display = 'flex';
     });
     </script>
 </body>
