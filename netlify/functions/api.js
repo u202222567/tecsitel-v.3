@@ -1,5 +1,5 @@
 // ============================================
-// TECSITEL V.3 - API BACKEND (Adaptado para Entorno)
+// TECSITEL V.3 - API BACKEND (Corregido para despliegue)
 // Netlify Functions
 // ============================================
 
@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
 const serverless = require('serverless-http');
-const rateLimit = require('express-rate-limit');
+// Se eliminó: const rateLimit = require('express-rate-limit');
 
 // --- Configuración desde variables de entorno con valores por defecto ---
 
@@ -67,16 +67,8 @@ if (ENABLE_CORS_FLAG) {
   }));
 }
 
-// Límite de peticiones (Rate Limiting)
-const limiter = rateLimit({
-  windowMs: (parseInt(process.env.RATE_LIMIT_WINDOW, 10) || 15) * 60 * 1000, // en minutos
-  max: parseInt(process.env.RATE_LIMIT_MAX, 10) || 100, // max peticiones por ventana
-  message: 'Demasiadas peticiones desde esta IP, por favor intente de nuevo más tarde.',
-  standardHeaders: true,
-  legacyHeaders: false, 
-});
-app.use('/api/', limiter); // Aplicar a todas las rutas API
-
+// Se eliminó el middleware de rate-limit para solucionar el error de despliegue.
+// Para reactivarlo, asegúrate de añadir "express-rate-limit" a tu package.json
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
@@ -95,8 +87,6 @@ if (DATABASE_URL) {
 // --- Verificación de JWT Secret ---
 if (!JWT_SECRET) {
   console.error("Error Crítico: La variable de entorno JWT_SECRET no está definida. La autenticación fallará.");
-  // En un escenario real, podrías querer que la aplicación no inicie.
-  // process.exit(1); 
 }
 
 
@@ -130,13 +120,10 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Usuario y contraseña son requeridos' });
     }
 
-    // Se recomienda gestionar usuarios en la base de datos.
-    // Este es un ejemplo con un admin cuya contraseña viene del entorno.
     const users = {
       'admin': {
         id: 1,
         username: 'admin',
-        // La contraseña del admin se hashea al vuelo. No almacenar contraseñas en texto plano.
         passwordHash: await bcrypt.hash(process.env.DB_PASSWORD || 'admin123', BCRYPT_ROUNDS),
         role: 'administrador',
         name: 'Administrador'
@@ -183,9 +170,8 @@ app.post('/api/auth/login', async (req, res) => {
 
 app.get('/api/config', authenticateToken, (req, res) => {
   try {
-    // La configuración ahora se lee desde las variables de entorno
     const config = {
-      version: '3.0.1-env',
+      version: '3.0.2-env',
       peru: {
         uit: PERU_UIT,
         rmv: PERU_RMV,
@@ -197,7 +183,7 @@ app.get('/api/config', authenticateToken, (req, res) => {
         razonSocial: COMPANY_NAME,
         direccion: COMPANY_ADDRESS
       },
-      tasas: { // Estas tasas podrían también venir del entorno si cambian a menudo
+      tasas: { 
         essalud: 0.09,
         onp: 0.13,
         afp: {
@@ -219,29 +205,16 @@ app.get('/api/config', authenticateToken, (req, res) => {
 // RUTAS DE VALIDACIÓN (con placeholder para API externa)
 // ========================================
 
-// Validar RUC
 app.post('/api/validate/ruc', async (req, res) => {
     const { ruc } = req.body;
     if (!ruc || !/^\d{11}$/.test(ruc)) {
         return res.status(400).json({ valid: false, error: 'RUC debe tener 11 dígitos' });
     }
 
-    // Para usar la API externa, necesitarías una librería como node-fetch
-    // Ejemplo de implementación (requiere 'node-fetch'):
     if (RUC_VALIDATION_URL) {
-        try {
-            // const fetch = require('node-fetch'); // O import fetch from 'node-fetch';
-            // const apiRes = await fetch(`${RUC_VALIDATION_URL}?ruc=${ruc}`, { headers: { 'Authorization': 'Bearer TU_API_KEY' } });
-            // const data = await apiRes.json();
-            // return res.json({ valid: true, ...data });
-            return res.status(501).json({ message: 'La validación externa de RUC no está implementada aún.', url: RUC_VALIDATION_URL });
-        } catch (error) {
-            console.error('Error en API externa de RUC:', error);
-            return res.status(503).json({ valid: false, error: 'Servicio de validación no disponible.' });
-        }
+        return res.status(501).json({ message: 'La validación externa de RUC no está implementada aún.', url: RUC_VALIDATION_URL });
     }
 
-    // Lógica de fallback con datos simulados si la URL no está configurada
     res.json({
         valid: true,
         ruc: ruc,
@@ -250,7 +223,45 @@ app.post('/api/validate/ruc', async (req, res) => {
     });
 });
 
-// ... (Otras rutas como /api/validate/dni, /api/reports, etc. se mantienen igual pero pueden ser adaptadas de forma similar)
+// ========================================
+// RUTAS DE DATOS (CRUD BÁSICO)
+// ========================================
+
+if (pool) {
+  app.get('/api/invoices', authenticateToken, async (req, res) => {
+    try {
+      const result = await pool.query('SELECT * FROM invoices ORDER BY created_at DESC LIMIT 100');
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error obteniendo facturas:', error);
+      res.status(500).json({ error: 'Error al obtener facturas' });
+    }
+  });
+
+  app.post('/api/invoices', authenticateToken, async (req, res) => {
+    try {
+      const { invoice_number, client_ruc, client_name, amount, currency, is_export } = req.body;
+      const result = await pool.query(
+        'INSERT INTO invoices (invoice_number, client_ruc, client_name, amount, currency, is_export, created_by) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+        [invoice_number, client_ruc, client_name, amount, currency, is_export, req.user.id]
+      );
+      res.status(201).json(result.rows[0]);
+    } catch (error) {
+      console.error('Error creando factura:', error);
+      res.status(500).json({ error: 'Error al crear factura' });
+    }
+  });
+
+  app.get('/api/employees', authenticateToken, async (req, res) => {
+    try {
+      const result = await pool.query('SELECT * FROM employees ORDER BY created_at DESC');
+      res.json(result.rows);
+    } catch (error) {
+      console.error('Error obteniendo empleados:', error);
+      res.status(500).json({ error: 'Error al obtener empleados' });
+    }
+  });
+}
 
 
 // ========================================
@@ -260,11 +271,10 @@ app.post('/api/validate/ruc', async (req, res) => {
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
-    version: '3.0.1-env',
+    version: '3.0.2-env',
     timestamp: new Date().toISOString(),
     environment: NODE_ENV,
     database: pool ? 'connected' : 'not configured',
-    cors_enabled: ENABLE_CORS_FLAG
   });
 });
 
@@ -272,7 +282,6 @@ app.get('/api/health', (req, res) => {
 // MANEJO DE ERRORES
 // ========================================
 
-// Ruta no encontrada
 app.use('/api/*', (req, res) => {
   res.status(404).json({ 
     error: 'Endpoint no encontrado',
@@ -281,12 +290,10 @@ app.use('/api/*', (req, res) => {
   });
 });
 
-// Manejo global de errores
 app.use((error, req, res, next) => {
   console.error('Error no manejado:', error);
   res.status(500).json({ 
     error: 'Error interno del servidor',
-    // Mostrar más detalles solo si el modo DEBUG está activado
     message: DEBUG_MODE ? error.message : 'Ocurrió un problema inesperado.'
   });
 });
