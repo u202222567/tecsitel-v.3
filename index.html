@@ -2,575 +2,1090 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Tecsitel - Sistema de Gestión Empresarial Integrado con facturación electrónica, contabilidad y cumplimiento normativo">
-    <meta name="author" content="Tecsitel">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#B91C1C">
-    
-    <!-- Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://i.imgur.com https://placehold.co data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' 'https://fonts.googleapis.com'; font-src 'self' https://fonts.gstatic.com;">
-    
-    <title>Tecsitel - Sistema de Gestión Empresarial</title>
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://i.imgur.com/6XXdcPR.png">
-    <link rel="apple-touch-icon" href="https://i.imgur.com/6XXdcPR.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="TECSITEL PERU E.I.R.L. - Sistema de Gestión de Telecomunicaciones">
+    <meta name="theme-color" content="#dc143c">
+    <title>TECSITEL PERU E.I.R.L. - Sistema de Gestión v3.0</title>
     
     <style>
-        /* ===========================
-           Variables y Base (Colores Rojo/Blanco)
-        =========================== */
+        /* ========================================
+           VARIABLES CORPORATIVAS TECSITEL
+        ======================================== */
         :root {
-            --primary: #B91C1C; /* Rojo Principal */
-            --primary-dark: #991B1B; /* Rojo Oscuro */
-            --primary-light: #FEE2E2; /* Rojo Claro para fondos */
-            --white: #ffffff;
-            --dark: #1f2937;
-            --gray-50: #F9FAFB;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-400: #9ca3af;
-            --gray-600: #4b5563;
-            --gray-700: #374151;
+            /* Colores Corporativos TECSITEL */
+            --tecsitel-red: #dc143c;
+            --tecsitel-red-dark: #b91c3c;
+            --tecsitel-red-light: #f87171;
+            --tecsitel-white: #ffffff;
+            --tecsitel-gray: #f8fafc;
+            --tecsitel-gray-dark: #64748b;
+            
+            /* Colores de Estado */
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
             --info: #3b82f6;
-            --success-alpha: rgba(16, 185, 129, 0.1);
-            --warning-alpha: rgba(245, 158, 11, 0.1);
-            --danger-alpha: rgba(239, 68, 68, 0.1);
-            --info-alpha: rgba(59, 130, 246, 0.1);
-            --primary-alpha: rgba(185, 28, 28, 0.1);
-            --shadow: 0 1px 3px 0 rgba(0,0,0,.07), 0 1px 2px 0 rgba(0,0,0,.05);
-            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -2px rgba(0,0,0,.05);
-            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,.1), 0 10px 10px -5px rgba(0,0,0,.04);
-            --radius: 8px;
-            --radius-lg: 12px;
-            --radius-xl: 16px;
-            --header-height: 70px;
-            --sidebar-width: 280px;
-            --transition: 300ms ease;
-            --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            
+            /* Efectos y Sombras */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            
+            /* Transiciones */
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: 0.15s ease-out;
+            
+            /* Espaciado */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            
+            /* Border Radius */
+            --radius-sm: 0.25rem;
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --radius-full: 9999px;
         }
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: var(--font-sans); background: var(--gray-50); color: var(--dark); line-height: 1.6; overflow-x: hidden; }
-        
-        /* ===========================
-           Layout Principal (Responsivo)
-        =========================== */
-        .app-container { display: flex; min-height: 100vh; }
-        .sidebar { position: fixed; top: 0; left: 0; width: var(--sidebar-width); height: 100vh; background: var(--primary); color: var(--white); box-shadow: var(--shadow-lg); z-index: 1000; transition: transform var(--transition); overflow-y: auto; display: flex; flex-direction: column; }
-        .main-content { margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width)); min-height: 100vh; display: flex; flex-direction: column; transition: margin-left var(--transition), width var(--transition); }
-        .header { height: var(--header-height); background: var(--white); box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; position: sticky; top: 0; z-index: 999; }
-        .content { flex: 1; padding: 24px; background: var(--gray-50); }
-
-        /* ===========================
-           Pantalla de Login
-        =========================== */
-        .login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; z-index: 9999; }
-        .login-form { background: rgba(255, 255, 255, 0.98); padding: 40px; border-radius: 16px; box-shadow: var(--shadow-xl); text-align: center; max-width: 450px; width: 90%; backdrop-filter: blur(10px); }
-        .login-logo { width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 20px; box-shadow: var(--shadow); border: 3px solid var(--primary); display: flex; align-items: center; justify-content: center; background: var(--white); }
-        .login-logo img { width: 70px; height: 70px; object-fit: contain; }
-        .login-title { color: var(--dark); margin-bottom: 30px; font-size: 24px; font-weight: 700; }
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--dark); font-size: 14px; text-align: left; }
-        .form-input, .form-select, .form-textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--gray-300); border-radius: var(--radius); font-size: 16px; transition: all var(--transition); background: var(--white); }
-        .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-alpha); }
-        .form-textarea { resize: vertical; min-height: 100px; }
-        .btn { padding: 12px 24px; border: none; border-radius: var(--radius); font-size: 16px; font-weight: 600; cursor: pointer; transition: all var(--transition); display: inline-flex; align-items: center; gap: 8px; text-decoration: none; justify-content: center; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-primary:hover { background: var(--primary-dark); transform: translateY(-1px); }
-        .btn-secondary { background: var(--gray-300); color: var(--dark); }
-        .btn-secondary:hover { background: var(--gray-400); }
-        .btn-success { background: var(--success); color: white; }
-        .btn-success:hover { background: #059669; }
-        .btn-warning { background: var(--warning); color: white; }
-        .btn-warning:hover { background: #d97706; }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-danger:hover { background: #dc2626; }
-        
-        /* Users Info Panel - Horizontal Scroll */
-        .users-info-panel { margin-top: 20px; }
-        .users-info-panel h4 { margin-bottom: 12px; color: var(--gray-700); font-size: 14px; text-align: left; }
-        .users-scroll-container { display: flex; overflow-x: auto; padding-bottom: 15px; gap: 10px; scrollbar-width: thin; scrollbar-color: var(--primary) var(--gray-200); }
-        .users-scroll-container::-webkit-scrollbar { height: 8px; }
-        .users-scroll-container::-webkit-scrollbar-track { background: var(--gray-200); border-radius: 4px; }
-        .users-scroll-container::-webkit-scrollbar-thumb { background-color: var(--primary); border-radius: 4px; }
-        
-        .user-card { display: flex; flex-direction: column; align-items: center; padding: 12px; border-radius: 8px; background: var(--gray-100); border: 1px solid var(--gray-200); cursor: pointer; transition: all 0.3s ease; flex-shrink: 0; width: 120px; }
-        .user-card:hover { background: var(--gray-200); transform: translateY(-3px); }
-        .user-badge { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; margin-bottom: 8px; font-size: 18px; }
-        .user-card.admin .user-badge { background: var(--primary); }
-        .user-card.accountant .user-badge { background: #10b981; }
-        .user-card.hr .user-badge { background: #3b82f6; }
-        .user-card.supervisor .user-badge { background: #f59e0b; }
-        .user-details { text-align: center; }
-        .user-details strong { display: block; color: var(--dark); font-size: 13px; font-weight: 600; }
-        .user-details small { display: block; color: var(--gray-600); font-size: 11px; margin-top: 2px; }
-        .security-info { margin-top: 15px; padding: 10px; background: var(--primary-alpha); border-radius: 8px; text-align: center; }
-        .security-info p { margin: 4px 0; font-size: 11px; color: var(--gray-600); }
-
-        /* Login Error */
-        .login-error { background: #fee2e2; color: #dc2626; padding: 10px; border-radius: 6px; margin-top: 10px; font-size: 14px; text-align: center; border: 1px solid #fca5a5; display: none; }
-        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
-
-        /* ===========================
-           Pantalla de Carga (Estilo Original con Nuevos Colores)
-        =========================== */
-        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: none; align-items: center; justify-content: center; z-index: 9998; overflow: hidden; }
-        .loading-particles { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .loading-content { position: relative; z-index: 2; text-align: center; color: white; }
-        .loading-logo { width: 100px; height: 100px; border-radius: 50%; margin: 0 auto 30px; box-shadow: var(--shadow-lg); animation: logoSpin 3s ease-in-out infinite; border: 3px solid var(--white); display: flex; align-items: center; justify-content: center; background: var(--white); }
-        .loading-logo img { width: 70px; height: 70px; object-fit: contain; }
-        @keyframes logoSpin { 0%, 100% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(360deg) scale(1.1); } }
-        .loading-title { font-size: 36px; font-weight: 800; margin-bottom: 15px; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); }
-        .loading-status { font-size: 18px; margin-bottom: 30px; opacity: 0.9; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); opacity: 0.7; } 50% { transform: translateY(-20px); opacity: 1; } }
-
-        /* ===========================
-           UI Principal
-        =========================== */
-        .sidebar-header { padding: 24px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2); }
-        .logo { width: 70px; height: 70px; border-radius: 50%; margin: 0 auto 15px; cursor: pointer; transition: transform var(--transition); border: 3px solid var(--white); display: flex; align-items: center; justify-content: center; background: var(--white); }
-        .logo:hover { transform: scale(1.1); }
-        .logo img { width: 50px; height: 50px; object-fit: contain; }
-        .sidebar-title { font-size: 22px; font-weight: 700; color: var(--white); }
-        .sidebar-subtitle { font-size: 12px; color: var(--primary-light); }
-        .nav-menu { padding: 16px 0; }
-        .nav-item { width: 100%; padding: 14px 24px; border: none; background: transparent; text-align: left; display: flex; align-items: center; gap: 15px; color: var(--primary-light); font-size: 16px; cursor: pointer; transition: all var(--transition); border-left: 4px solid transparent; }
-        .nav-item:hover { background: var(--primary-dark); color: var(--white); }
-        .nav-item.active { background: var(--white); color: var(--primary); border-left-color: var(--primary-light); font-weight: 600; }
-        .nav-icon { font-size: 20px; }
-        .menu-toggle { background: none; border: none; font-size: 24px; color: var(--gray-700); cursor: pointer; display: none; }
-        .page-title { font-size: 24px; font-weight: 700; color: var(--dark); }
-        .header-right { display: flex; align-items: center; gap: 20px; }
-        .user-info { display: flex; align-items: center; gap: 12px; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--primary); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; }
-        .user-name { font-weight: 600; color: var(--dark); }
-        .logout-btn { background: var(--danger); color: white; border: none; padding: 8px 16px; border-radius: var(--radius); cursor: pointer; font-size: 14px; font-weight: 500; transition: all var(--transition); }
-        .logout-btn:hover { background: #dc2626; transform: translateY(-1px); }
-        .card { background: var(--white); border-radius: var(--radius-lg); box-shadow: var(--shadow); padding: 24px; margin-bottom: 24px; }
-        .card-header { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--gray-200); display: flex; justify-content: space-between; align-items: center; }
-        .card-title { font-size: 20px; font-weight: 700; color: var(--dark); }
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; margin-bottom: 24px; }
-        .stat-card { background: var(--white); color: var(--dark); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow); border-left: 4px solid var(--primary); transition: transform var(--transition); }
-        .stat-card:hover { transform: translateY(-2px); }
-        .stat-value { font-size: 32px; font-weight: 800; margin-bottom: 8px; color: var(--primary); }
-        .stat-label { font-size: 14px; color: var(--gray-600); }
-        .stat-change { font-size: 12px; margin-top: 8px; color: var(--success); }
-        .quick-actions-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px; margin-top: 24px; }
-        .quick-action-card { background: var(--white); border-radius: var(--radius); padding: 16px; text-align: center; box-shadow: var(--shadow); transition: all var(--transition); cursor: pointer; border: 1px solid var(--gray-200); }
-        .quick-action-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); color: var(--primary); border-color: var(--primary); }
-        .quick-action-icon { font-size: 28px; margin-bottom: 8px; color: var(--primary); }
-        .quick-action-label { font-size: 14px; font-weight: 500; }
-        .table-container { overflow-x: auto; margin-top: 20px; }
-        .table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
-        .table th, .table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--gray-200); }
-        .table th { background: var(--gray-100); font-weight: 600; color: var(--dark); }
-        .table tbody tr:hover { background: var(--gray-50); }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 10000; }
-        .modal-content { background: var(--white); border-radius: 16px; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; }
-        .modal-header { padding: 24px 24px 0; }
-        .modal-title { font-size: 20px; font-weight: 700; color: var(--dark); }
-        .modal-body { padding: 24px; }
-        .modal-footer { padding: 0 24px 24px; display: flex; gap: 15px; justify-content: flex-end; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .toast-container { position: fixed; top: 90px; right: 30px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; }
-        .toast { background: var(--white); padding: 16px 20px; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); min-width: 300px; max-width: 500px; border-left: 4px solid; animation: slideIn 0.3s ease; }
-        .toast.success { border-left-color: var(--success); }
-        .toast.error { border-left-color: var(--danger); }
-        .toast.warning { border-left-color: var(--warning); }
-        .toast.info { border-left-color: var(--info); }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
-        .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
-        .badge.activo, .badge.emitida, .badge.pagada { background: var(--success-alpha); color: var(--success); }
-        .badge.vacaciones, .badge.pendiente { background: var(--warning-alpha); color: var(--warning); }
-        .badge.cesado, .badge.anulada { background: var(--danger-alpha); color: var(--danger); }
-        .btn-sm { padding: 6px 12px; font-size: 12px; margin: 0 2px; }
-        
-        /* Role Badge */
-        .role-badge { background: var(--primary); color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px; font-weight: bold; margin-right: 10px; display: inline-block; }
-
-        /* Special Supervisor Button */
-        .special-supervisor { background: linear-gradient(135deg, #f59e0b, #d97706) !important; color: white !important; margin-top: 20px !important; font-weight: bold !important; animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(245, 158, 11, 0); } 100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); } }
-
-        /* Welcome Message */
-        .role-welcome { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; }
-
-        /* ===========================
-           NAVEGACIÓN MÓVIL - BOTTOM NAV
-        =========================== */
-        .bottom-nav { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            right: 0; 
-            height: 70px; 
-            background: var(--white); 
-            display: none; 
-            box-shadow: 0 -2px 10px rgba(0,0,0,.1); 
-            z-index: 1000; 
-            border-top: 1px solid var(--gray-200);
+        /* ========================================
+           RESET Y BASE
+        ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        
-        .bottom-nav-container { 
-            display: flex; 
-            height: 100%; 
-            max-width: 100%; 
-            overflow-x: auto; 
-            scrollbar-width: none; 
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--tecsitel-gray) 0%, #e2e8f0 100%);
+            color: #334155;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
-        
-        .bottom-nav-container::-webkit-scrollbar { display: none; }
-        
-        .bottom-nav-item { 
-            flex: 1; 
-            min-width: 80px;
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            color: var(--gray-600); 
-            text-decoration: none; 
-            font-size: 11px; 
-            gap: 4px; 
-            position: relative; 
-            cursor: pointer;
-            transition: all var(--transition);
-            padding: 8px 4px;
+
+        /* ========================================
+           LAYOUT PRINCIPAL
+        ======================================== */
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+            background: var(--tecsitel-white);
+            margin: 0;
+            box-shadow: var(--shadow-xl);
         }
-        
-        .bottom-nav-item.active { 
-            color: var(--primary); 
-            background: var(--primary-alpha);
+
+        /* ========================================
+           SIDEBAR CORPORATIVA TECSITEL
+        ======================================== */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
+            color: var(--tecsitel-white);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
         }
-        
-        .bottom-nav-item.active::before { 
-            content: ''; 
-            position: absolute; 
-            top: 0; 
-            width: 30px; 
-            height: 3px; 
-            background: var(--primary); 
-            border-radius: 0 0 3px 3px; 
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="fiber" patternUnits="userSpaceOnUse" width="20" height="20"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23fiber)"/></svg>') repeat;
+            pointer-events: none;
         }
-        
-        .bottom-nav-icon { 
-            font-size: 20px; 
-            margin-bottom: 2px;
-        }
-        
-        .bottom-nav-label {
-            font-size: 10px;
-            font-weight: 500;
+
+        .sidebar-header {
+            padding: var(--spacing-xl);
             text-align: center;
-            line-height: 1.1;
+            position: relative;
+            z-index: 2;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
         }
 
-        /* Supervisor special button para móvil */
-        .bottom-nav-item.supervisor-special {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white !important;
-            border-radius: 12px 12px 0 0;
-            margin: 0 4px;
-            animation: pulse 2s infinite;
+        .company-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-full);
+            margin: 0 auto var(--spacing-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--tecsitel-red);
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* ===========================
-           Media Queries para Responsividad COMPLETA
-        =========================== */
-        
-        /* TABLET - 1024px a 768px */
-        @media (max-width: 1024px) and (min-width: 769px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.active { transform: translateX(0); box-shadow: var(--shadow-xl); }
-            .main-content { margin-left: 0; width: 100%; }
-            .menu-toggle { display: block !important; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-            .quick-actions-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
-            .content { padding: 20px; }
-            .header { padding: 0 20px; }
-            .page-title { font-size: 22px; }
-            .card { padding: 20px; }
+        .company-logo::before {
+            content: '🔗';
+            font-size: 2.5rem;
         }
 
-        /* MÓVIL GRANDE - 768px a 481px */
-        @media (max-width: 768px) and (min-width: 481px) {
-            .sidebar { display: none !important; } /* Ocultar sidebar completamente */
-            .main-content { margin-left: 0; width: 100%; }
-            .menu-toggle { display: none !important; } /* No necesario en móvil */
-            .bottom-nav { display: block; } /* Activar navegación inferior */
-            .content { padding: 16px; padding-bottom: 90px; } /* Espacio para bottom nav */
-            .header { padding: 0 16px; }
-            .page-title { font-size: 20px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-            .quick-actions-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .form-row { grid-template-columns: 1fr; }
-            .table { font-size: 14px; }
-            .table th, .table td { padding: 12px 8px; }
-            .btn { padding: 10px 16px; font-size: 14px; }
-            .modal-content { width: 95%; margin: 20px auto; }
-            .toast { min-width: 250px; margin: 0 10px; }
-            .card { margin-bottom: 16px; }
-            .user-info .user-name { display: none; }
+        .company-logo:hover {
+            transform: scale(1.05) rotate(3deg);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
-        /* MÓVIL PEQUEÑO - 480px a 361px */
-        @media (max-width: 480px) and (min-width: 361px) {
-            .sidebar { display: none !important; }
-            .main-content { margin-left: 0; width: 100%; }
-            .bottom-nav { display: block; }
-            .content { padding: 12px; padding-bottom: 90px; }
-            .header { padding: 0 12px; }
-            .page-title { font-size: 18px; }
-            .stats-grid { grid-template-columns: 1fr; gap: 12px; }
-            .quick-actions-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-            .login-form { padding: 25px 20px; max-width: 90%; }
-            .users-scroll-container { gap: 6px; }
-            .user-card { width: 90px; padding: 8px; }
-            .user-badge { width: 35px; height: 35px; font-size: 16px; }
-            .card { padding: 16px; margin-bottom: 12px; }
-            .btn-sm { padding: 4px 8px; font-size: 10px; }
-            .stat-value { font-size: 28px; }
-            .quick-action-icon { font-size: 24px; }
-            .modal-content { width: 98%; margin: 10px auto; }
-            .modal-body { padding: 16px; }
-            .form-group { margin-bottom: 16px; }
+        .company-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-xs);
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
-        /* MÓVIL MUY PEQUEÑO - 360px y menos */
-        @media (max-width: 360px) {
-            .sidebar { display: none !important; }
-            .main-content { margin-left: 0; width: 100%; }
-            .bottom-nav { display: block; height: 65px; }
-            .content { padding: 10px; padding-bottom: 85px; }
-            .header { padding: 0 10px; }
-            .page-title { font-size: 16px; }
-            .stats-grid { grid-template-columns: 1fr; gap: 10px; }
-            .quick-actions-grid { grid-template-columns: 1fr; gap: 8px; }
-            .login-form { max-width: 95%; padding: 20px 15px; }
-            .login-title { font-size: 20px; }
-            .users-scroll-container { gap: 4px; }
-            .user-card { width: 80px; padding: 6px; }
-            .user-badge { width: 30px; height: 30px; font-size: 14px; }
-            .user-details strong { font-size: 11px; }
-            .user-details small { font-size: 9px; }
-            .card { padding: 12px; margin-bottom: 10px; }
-            .card-title { font-size: 18px; }
-            .stat-value { font-size: 24px; }
-            .stat-label { font-size: 12px; }
-            .quick-action-icon { font-size: 20px; }
-            .quick-action-label { font-size: 12px; }
-            .btn { padding: 8px 12px; font-size: 12px; }
-            .btn-sm { padding: 3px 6px; font-size: 9px; }
-            .form-input, .form-select { padding: 10px 12px; font-size: 14px; }
-            .table { font-size: 12px; }
-            .table th, .table td { padding: 8px 4px; }
-            .bottom-nav-item { min-width: 60px; }
-            .bottom-nav-icon { font-size: 18px; }
-            .bottom-nav-label { font-size: 9px; }
+        .company-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-sm);
         }
 
-        /* LANDSCAPE MÓVIL */
-        @media (max-height: 500px) and (orientation: landscape) and (max-width: 768px) {
-            .login-screen { align-items: flex-start; padding-top: 10px; }
-            .loading-screen { align-items: flex-start; padding-top: 30px; }
-            .login-form { max-height: 90vh; overflow-y: auto; }
-            .header { height: 50px; }
-            .content { padding-top: 10px; }
-            .bottom-nav { height: 60px; }
-            .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
-            .quick-actions-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+        .company-info {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            line-height: 1.4;
         }
 
-        /* HIGH DPI SCREENS */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            .logo img, .login-logo img, .loading-logo img { 
-                image-rendering: -webkit-optimize-contrast; 
-                image-rendering: crisp-edges; 
+        /* ========================================
+           NAVEGACIÓN ESPECÍFICA TECSITEL
+        ======================================== */
+        .nav-menu {
+            flex: 1;
+            padding: var(--spacing-md);
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav-item {
+            width: 100%;
+            padding: var(--spacing-md) var(--spacing-lg);
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--tecsitel-white);
+            transform: translateX(8px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--tecsitel-white);
+            transform: translateX(8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 60%;
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-sm);
+        }
+
+        .nav-icon {
+            font-size: 1.2rem;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        /* ========================================
+           CONTENIDO PRINCIPAL
+        ======================================== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--tecsitel-gray);
+        }
+
+        .header {
+            background: var(--tecsitel-white);
+            padding: var(--spacing-lg) var(--spacing-xl);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 3px solid var(--tecsitel-red);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--tecsitel-red);
+            margin: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--tecsitel-gray);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-info:hover {
+            background: #e2e8f0;
+            transform: scale(1.02);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--tecsitel-white);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* ========================================
+           ÁREA DE CONTENIDO
+        ======================================== */
+        .content-area {
+            flex: 1;
+            padding: var(--spacing-xl);
+            overflow-y: auto;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
-        /* VERY WIDE SCREENS */
-        @media (min-width: 1920px) {
-            .app-container { max-width: 1920px; margin: 0 auto; }
-            .stats-grid { grid-template-columns: repeat(4, 1fr); max-width: 1200px; margin: 0 auto 24px; }
-            .quick-actions-grid { max-width: 1000px; margin: 0 auto; }
+        /* ========================================
+           DASHBOARD TECSITEL
+        ======================================== */
+        .welcome-banner {
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
+            color: var(--tecsitel-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-xl);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* PRINT STYLES */
-        @media print {
-            .sidebar, .header, .bottom-nav, .btn, .modal, .toast-container { display: none !important; }
-            .main-content { margin-left: 0; width: 100%; }
-            .content { padding: 0; }
-            .card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 20px; }
-            .table { border: 1px solid #000; }
-            .table th, .table td { border: 1px solid #000; }
+        .welcome-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 200%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+            animation: float 20s linear infinite;
         }
+
+        @keyframes float {
+            0% { transform: translateX(0) translateY(0); }
+            100% { transform: translateX(-100px) translateY(-100px); }
+        }
+
+        .welcome-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .welcome-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .company-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-lg);
+        }
+
+        .stat-item {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.15);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        /* ========================================
+           MÉTRICAS DE SERVICIOS TECSITEL
+        ======================================== */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+
+        .metric-card {
+            background: var(--tecsitel-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border-top: 4px solid var(--tecsitel-red);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
+        }
+
+        .metric-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--success) 0%, #34d399 100%);
+        }
+
+        .metric-card:nth-child(3)::before {
+            background: linear-gradient(90deg, var(--warning) 0%, #fbbf24 100%);
+        }
+
+        .metric-card:nth-child(4)::before {
+            background: linear-gradient(90deg, var(--info) 0%, #60a5fa 100%);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .metric-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--tecsitel-white);
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--tecsitel-red);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .metric-label {
+            color: var(--tecsitel-gray-dark);
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .metric-change {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .metric-change.positive {
+            color: var(--success);
+        }
+
+        .metric-change.negative {
+            color: var(--danger);
+        }
+
+        /* ========================================
+           SERVICIOS TECSITEL
+        ======================================== */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+        }
+
+        .service-card {
+            background: var(--tecsitel-white);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 20, 60, 0.1), transparent);
+            transition: var(--transition);
+        }
+
+        .service-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .service-card:hover::before {
+            left: 100%;
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            margin-bottom: var(--spacing-md);
+            color: var(--tecsitel-red);
+        }
+
+        .service-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--tecsitel-red);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .service-description {
+            color: var(--tecsitel-gray-dark);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           TABLA DE PROYECTOS
+        ======================================== */
+        .projects-table {
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+            margin: var(--spacing-xl) 0;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
+            color: var(--tecsitel-white);
+            padding: var(--spacing-lg) var(--spacing-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .table-content {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: var(--spacing-md) var(--spacing-lg);
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: var(--tecsitel-gray);
+            font-weight: 600;
+            color: var(--tecsitel-red);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tr {
+            transition: var(--transition-fast);
+        }
+
+        tr:hover {
+            background: rgba(220, 20, 60, 0.05);
+        }
+
+        /* ========================================
+           BOTONES CORPORATIVOS
+        ======================================== */
+        .btn {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            min-height: 40px;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+            transform: translate(-50%, -50%);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
+            color: var(--tecsitel-white);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--tecsitel-gray-dark) 0%, #475569 100%);
+            color: var(--tecsitel-white);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+            color: var(--tecsitel-white);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning) 0%, #d97706 100%);
+            color: var(--tecsitel-white);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger) 0%, #dc2626 100%);
+            color: var(--tecsitel-white);
+        }
+
+        .btn-icon {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ========================================
+           ESTADOS Y BADGES
+        ======================================== */
+        .badge {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .badge-pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .badge-completed {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .badge-cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        /* ========================================
+           NOTIFICACIONES TOAST
+        ======================================== */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .toast {
+            background: var(--tecsitel-white);
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid var(--info);
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* ========================================
+           RESPONSIVE DESIGN
+        ======================================== */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: -100%;
+                z-index: 200;
+                transition: var(--transition);
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .header {
+                padding: var(--spacing-md);
+            }
+
+            .content-area {
+                padding: var(--spacing-md);
+            }
+
+            .metrics-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+
+            .company-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* ========================================
+           UTILIDADES
+        ======================================== */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .text-left { text-align: left; }
+        .text-right { text-align: right; }
+        .mb-0 { margin-bottom: 0; }
+        .mb-1 { margin-bottom: var(--spacing-sm); }
+        .mb-2 { margin-bottom: var(--spacing-md); }
+        .mb-3 { margin-bottom: var(--spacing-lg); }
+        .mt-1 { margin-top: var(--spacing-sm); }
+        .mt-2 { margin-top: var(--spacing-md); }
+        .mt-3 { margin-top: var(--spacing-lg); }
     </style>
 </head>
 <body>
-    <!-- Pantalla de Login -->
-    <div class="login-screen" id="loginScreen">
-        <div class="login-form">
-            <div class="login-logo">
-                <img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel Logo">
-            </div>
-            <h2 class="login-title">TECSITEL - Acceso Seguro</h2>
-            <form id="loginForm" onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label class="form-label">Usuario</label>
-                    <input type="text" class="form-input" id="username" placeholder="Usuario" required autocomplete="username">
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Contraseña</label>
-                    <input type="password" class="form-input" id="password" placeholder="Contraseña" required autocomplete="current-password">
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
-            </form>
-            <div class="users-info-panel">
-                <h4>Usuarios del Sistema:</h4>
-                <div class="users-scroll-container">
-                    <div class="user-card admin" data-user="admin" data-pass="admin123">
-                        <div class="user-badge">A</div>
-                        <div class="user-details"><strong>admin</strong><small>Administrador</small></div>
-                    </div>
-                    <div class="user-card accountant" data-user="contable" data-pass="cont123">
-                        <div class="user-badge">C</div>
-                        <div class="user-details"><strong>contable</strong><small>Contador</small></div>
-                    </div>
-                    <div class="user-card hr" data-user="rrhh" data-pass="rrhh123">
-                        <div class="user-badge">R</div>
-                        <div class="user-details"><strong>rrhh</strong><small>RR.HH.</small></div>
-                    </div>
-                    <div class="user-card supervisor" data-user="supervisor" data-pass="super123">
-                        <div class="user-badge">S</div>
-                        <div class="user-details"><strong>supervisor</strong><small>Supervisor</small></div>
-                    </div>
-                </div>
-            </div>
-            <div class="security-info"><p>🔒 Sistema protegido con autenticación por roles</p></div>
-        </div>
-    </div>
+    <!-- Contenedor de Notificaciones Toast -->
+    <div class="toast-container" id="toastContainer"></div>
 
-    <!-- Pantalla de Carga -->
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loading-particles" id="loadingParticles"></div>
-        <div class="loading-content">
-            <div class="loading-logo"><img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel Logo"></div>
-            <h1 class="loading-title">TECSITEL</h1>
-            <p class="loading-status" id="loadingStatus">Cargando...</p>
-        </div>
-    </div>
-
-    <!-- Contenedor Principal de la App -->
-    <div class="app-container" id="appContainer" style="display: none;">
+    <!-- Aplicación Principal -->
+    <div class="app-container">
+        <!-- Sidebar Corporativa TECSITEL -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="logo" onclick="showTab('dashboard')"><img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel"></div>
-                <h2 class="sidebar-title">TECSITEL</h2>
-                <p class="sidebar-subtitle">Gestión Empresarial v6</p>
+                <div class="company-logo" onclick="showTab('dashboard')"></div>
+                <h2 class="company-name">TECSITEL</h2>
+                <p class="company-subtitle">PERU E.I.R.L.</p>
+                <div class="company-info">
+                    <div>RUC: 20605908285</div>
+                    <div>Telecomunicaciones del Norte</div>
+                    <div>+1300 Servicios Exitosos</div>
+                </div>
             </div>
-            <nav class="nav-menu" id="navMenu"><!-- Se llena dinámicamente --></nav>
+            <nav class="nav-menu">
+                <button class="nav-item active" data-tab="dashboard" onclick="showTab('dashboard')">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">Dashboard</span>
+                </button>
+                <button class="nav-item" data-tab="projects" onclick="showTab('projects')">
+                    <span class="nav-icon">🔗</span>
+                    <span class="nav-text">Proyectos</span>
+                </button>
+                <button class="nav-item" data-tab="services" onclick="showTab('services')">
+                    <span class="nav-icon">⚡</span>
+                    <span class="nav-text">Servicios</span>
+                </button>
+                <button class="nav-item" data-tab="invoices" onclick="showTab('invoices')">
+                    <span class="nav-icon">📄</span>
+                    <span class="nav-text">Facturación</span>
+                </button>
+                <button class="nav-item" data-tab="personnel" onclick="showTab('personnel')">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-text">Personal</span>
+                </button>
+                <button class="nav-item" data-tab="inventory" onclick="showTab('inventory')">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-text">Inventario</span>
+                </button>
+                <button class="nav-item" data-tab="reports" onclick="showTab('reports')">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-text">Reportes</span>
+                </button>
+            </nav>
         </aside>
 
+        <!-- Contenido Principal -->
         <main class="main-content">
+            <!-- Header -->
             <header class="header">
-                <button class="menu-toggle" style="display:none;" onclick="document.getElementById('sidebar').classList.toggle('active')">☰</button>
                 <h1 class="page-title" id="pageTitle">Dashboard</h1>
-                <div class="header-right">
-                    <div class="user-info">
-                        <div class="user-avatar" id="userAvatar">A</div>
-                        <span class="user-name" id="userName">Usuario</span>
+                <div class="header-actions">
+                    <button class="btn btn-secondary btn-icon" onclick="toggleSidebar()" title="Menú">
+                        ☰
+                    </button>
+                    <div class="user-info" onclick="showUserMenu()">
+                        <div class="user-avatar">A</div>
+                        <span>Administrador</span>
                     </div>
-                    <button class="logout-btn" onclick="logout()">Salir</button>
                 </div>
             </header>
 
-            <div class="content">
-                <!-- Dashboard -->
+            <!-- Área de Contenido -->
+            <div class="content-area">
+                <!-- Dashboard Tab -->
                 <div id="dashboard" class="tab-content active">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalInvoices">0</div>
-                            <div class="stat-label">Facturas Emitidas</div>
-                            <div class="stat-change">Este mes</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalAmount">S/ 0</div>
-                            <div class="stat-label">Facturación Total</div>
-                            <div class="stat-change">Acumulado</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="totalEmployees">0</div>
-                            <div class="stat-label">Empleados Activos</div>
-                            <div class="stat-change">Registrados</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-value" id="pendingTasks">0</div>
-                            <div class="stat-label">Tareas Pendientes</div>
-                            <div class="stat-change">Por completar</div>
-                        </div>
-                    </div>
-                    
-                    <div class="card" id="quickActionsCard">
-                        <div class="card-header">
-                            <h3 class="card-title">🚀 Acciones Rápidas</h3>
-                        </div>
-                        <div class="quick-actions-grid" id="quickActions">
-                            <!-- Se llena dinámicamente según permisos -->
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">📈 Resumen del Sistema</h3>
-                        </div>
-                        <p>Bienvenido al sistema de gestión empresarial TECSITEL. Administra todas las operaciones de tu empresa de manera eficiente y cumpliendo con las normativas peruanas.</p>
-                        
-                        <div style="margin-top: 20px;">
-                            <h4 style="margin-bottom: 15px;">🎯 Módulos Disponibles:</h4>
-                            <div id="modulesInfo" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                                <!-- Se llena dinámicamente -->
+                    <!-- Banner de Bienvenida -->
+                    <div class="welcome-banner">
+                        <div class="welcome-content">
+                            <h1 class="welcome-title">¡Bienvenido a TECSITEL!</h1>
+                            <p class="welcome-subtitle">Sistema de Gestión para Telecomunicaciones del Norte del Perú</p>
+                            
+                            <div class="company-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">1300+</span>
+                                    <span class="stat-label">Servicios Exitosos</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">12</span>
+                                    <span class="stat-label">Empleados</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">Norte</span>
+                                    <span class="stat-label">Cobertura Perú</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">2025</span>
+                                    <span class="stat-label">Expansión Nacional</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Facturas -->
-                <div id="invoices" class="tab-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">📄 Gestión de Facturas</h3>
-                            <button class="btn btn-primary" onclick="openModal('newInvoice')">+ Nueva Factura</button>
+                    <!-- Métricas de Servicios -->
+                    <div class="metrics-grid">
+                        <div class="metric-card" onclick="showTab('projects')">
+                            <div class="metric-header">
+                                <div class="metric-icon">🔗</div>
+                            </div>
+                            <div class="metric-value" id="totalProjects">15</div>
+                            <div class="metric-label">Proyectos Activos</div>
+                            <div class="metric-change positive">
+                                <span>↗</span> +3 este mes
+                            </div>
                         </div>
-                        <div class="table-container">
-                            <table class="table" id="invoicesTable">
+
+                        <div class="metric-card" onclick="showTab('services')">
+                            <div class="metric-header">
+                                <div class="metric-icon" style="background: linear-gradient(135deg, var(--success) 0%, #34d399 100%);">⚡</div>
+                            </div>
+                            <div class="metric-value">S/ <span id="monthlyRevenue">125,500</span></div>
+                            <div class="metric-label">Ingresos del Mes</div>
+                            <div class="metric-change positive">
+                                <span>↗</span> +15.2%
+                            </div>
+                        </div>
+
+                        <div class="metric-card" onclick="showTab('personnel')">
+                            <div class="metric-header">
+                                <div class="metric-icon" style="background: linear-gradient(135deg, var(--warning) 0%, #fbbf24 100%);">👥</div>
+                            </div>
+                            <div class="metric-value" id="totalEmployees">12</div>
+                            <div class="metric-label">Personal Total</div>
+                            <div class="metric-change positive">
+                                <span>↗</span> 2 Admin + 10 Operarios
+                            </div>
+                        </div>
+
+                        <div class="metric-card" onclick="showTab('inventory')">
+                            <div class="metric-header">
+                                <div class="metric-icon" style="background: linear-gradient(135deg, var(--info) 0%, #60a5fa 100%);">📦</div>
+                            </div>
+                            <div class="metric-value">98%</div>
+                            <div class="metric-label">Equipos Disponibles</div>
+                            <div class="metric-change positive">
+                                <span>↗</span> Stock Óptimo
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Servicios Principales -->
+                    <div class="services-grid">
+                        <div class="service-card" onclick="showTab('projects')">
+                            <div class="service-icon">🌐</div>
+                            <div class="service-title">Redes Ópticas</div>
+                            <div class="service-description">Diseño e instalación de redes FTTH, GPON y FTTX con tecnología de fibra óptica avanzada para empresas del sector telecomunicaciones.</div>
+                        </div>
+                        
+                        <div class="service-card" onclick="showTab('projects')">
+                            <div class="service-icon">🔧</div>
+                            <div class="service-title">Cableado Estructurado</div>
+                            <div class="service-description">Implementación de infraestructura de red completa con cableado de cobre y fibra óptica para empresas que requieren conectividad robusta.</div>
+                        </div>
+                        
+                        <div class="service-card" onclick="showTab('projects')">
+                            <div class="service-icon">📡</div>
+                            <div class="service-title">Proyectos Tecnológicos</div>
+                            <div class="service-description">Swap de routers, enlaces microondas y satelitales. Soluciones especializadas para proyectos de infraestructura de telecomunicaciones complejos.</div>
+                        </div>
+                        
+                        <div class="service-card" onclick="showTab('services')">
+                            <div class="service-icon">⚡</div>
+                            <div class="service-title">Servicios Eléctricos</div>
+                            <div class="service-description">Gestión integral de planta interna y externa. Servicios de electricidad y electrónica especializados para infraestructura de telecomunicaciones.</div>
+                        </div>
+                        
+                        <div class="service-card" onclick="showTab('projects')">
+                            <div class="service-icon">🏗️</div>
+                            <div class="service-title">Construcción de Sites</div>
+                            <div class="service-description">Construcción y acondicionamiento de sitios para telecomunicaciones, incluyendo torres y infraestructura civil especializada.</div>
+                        </div>
+                        
+                        <div class="service-card" onclick="showTab('inventory')">
+                            <div class="service-icon">🛠️</div>
+                            <div class="service-title">Venta de Equipos</div>
+                            <div class="service-description">Comercialización de partes, piezas y accesorios de telecomunicaciones. Equipos profesionales como fusionadoras Fujikura y OTDR Exfo.</div>
+                        </div>
+                    </div>
+
+                    <!-- Proyectos Recientes -->
+                    <div class="projects-table">
+                        <div class="table-header">
+                            <h3 class="table-title">Proyectos Recientes</h3>
+                            <div class="table-actions">
+                                <button class="btn btn-primary" onclick="showTab('projects')">
+                                    ➕ Nuevo Proyecto
+                                </button>
+                            </div>
+                        </div>
+                        <div class="table-content">
+                            <table>
                                 <thead>
                                     <tr>
-                                        <th>N° Factura</th>
+                                        <th>Proyecto</th>
                                         <th>Cliente</th>
-                                        <th>RUC/DNI</th>
-                                        <th>Monto</th>
+                                        <th>Tipo de Servicio</th>
                                         <th>Estado</th>
                                         <th>Fecha</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="invoicesTableBody">
+                                <tbody id="recentProjectsTable">
                                     <tr>
-                                        <td colspan="7" style="text-align: center; padding: 40px;">
-                                            <p style="color: var(--gray-600);">No hay facturas registradas. <a href="#" onclick="openModal('newInvoice')" style="color: var(--primary);">Crear primera factura</a></p>
+                                        <td>Red FTTH - Sector Norte</td>
+                                        <td>Claro Perú</td>
+                                        <td>Fibra Óptica</td>
+                                        <td><span class="badge badge-active">ACTIVO</span></td>
+                                        <td>2025-01-15</td>
+                                        <td>
+                                            <button class="btn btn-secondary btn-icon" title="Ver detalles">👁</button>
+                                            <button class="btn btn-primary btn-icon" title="Editar">✏️</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cableado Estructurado</td>
+                                        <td>Win Empresas</td>
+                                        <td>Infraestructura</td>
+                                        <td><span class="badge badge-pending">PENDIENTE</span></td>
+                                        <td>2025-01-20</td>
+                                        <td>
+                                            <button class="btn btn-secondary btn-icon" title="Ver detalles">👁</button>
+                                            <button class="btn btn-primary btn-icon" title="Editar">✏️</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Enlaces Microondas</td>
+                                        <td>Herasi S.A.C</td>
+                                        <td>Tecnológico</td>
+                                        <td><span class="badge badge-completed">COMPLETADO</span></td>
+                                        <td>2025-01-10</td>
+                                        <td>
+                                            <button class="btn btn-secondary btn-icon" title="Ver detalles">👁</button>
+                                            <button class="btn btn-success btn-icon" title="Facturar">💰</button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -578,1924 +1093,295 @@
                         </div>
                     </div>
                 </div>
-                
-                <!-- Contabilidad -->
-                <div id="accounting" class="tab-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">💰 Módulo Contable</h3>
-                        </div>
-                        <p>Gestión contable y generación de libros electrónicos conforme a la normativa peruana.</p>
-                        <div class="quick-actions-grid">
-                            <div class="quick-action-card" onclick="generateAccountingBooks()">
-                                <div class="quick-action-icon">📚</div>
-                                <div class="quick-action-label">Libros Electrónicos</div>
-                            </div>
-                            <div class="quick-action-card" onclick="generateFinancialReports()">
-                                <div class="quick-action-icon">📊</div>
-                                <div class="quick-action-label">Reportes Financieros</div>
-                            </div>
-                            <div class="quick-action-card" onclick="checkTaxCompliance()">
-                                <div class="quick-action-icon">⚖️</div>
-                                <div class="quick-action-label">Cumplimiento Tributario</div>
-                            </div>
-                        </div>
-                    </div>
+
+                <!-- Proyectos Tab -->
+                <div id="projects" class="tab-content">
+                    <h2>Gestión de Proyectos de Telecomunicaciones</h2>
+                    <p>Administra todos los proyectos de TECSITEL: desde instalaciones de fibra óptica hasta construcción de sites.</p>
+                    <!-- Contenido específico de proyectos -->
                 </div>
 
-                <!-- Personal -->
+                <!-- Servicios Tab -->
+                <div id="services" class="tab-content">
+                    <h2>Servicios TECSITEL</h2>
+                    <p>Gestión de servicios especializados en telecomunicaciones para el norte del Perú.</p>
+                    <!-- Contenido específico de servicios -->
+                </div>
+
+                <!-- Facturación Tab -->
+                <div id="invoices" class="tab-content">
+                    <h2>Sistema de Facturación</h2>
+                    <p>Facturación electrónica conforme a SUNAT para servicios de telecomunicaciones.</p>
+                    <!-- Contenido específico de facturación -->
+                </div>
+
+                <!-- Personal Tab -->
                 <div id="personnel" class="tab-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">👥 Gestión de Personal</h3>
-                            <button class="btn btn-primary" onclick="openModal('newEmployee')">+ Nuevo Empleado</button>
-                        </div>
-                        <div class="table-container">
-                            <table class="table" id="employeesTable">
-                                <thead>
-                                    <tr>
-                                        <th>DNI</th>
-                                        <th>Nombres</th>
-                                        <th>Apellidos</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="employeesTableBody">
-                                    <!-- Se llena dinámicamente -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">⏰ Registro de Asistencias</h3>
-                            <button class="btn btn-success" onclick="openModal('timeEntry')">+ Registrar Asistencia</button>
-                        </div>
-                        <div class="table-container">
-                            <table class="table" id="timeEntriesTable">
-                                <thead>
-                                    <tr>
-                                        <th>DNI</th>
-                                        <th>Empleado</th>
-                                        <th>Fecha</th>
-                                        <th>Entrada</th>
-                                        <th>Salida</th>
-                                        <th>Horas</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="timeEntriesTableBody">
-                                    <!-- Se llena dinámicamente -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    <h2>Gestión de Personal</h2>
+                    <p>Control de asistencia y gestión del equipo TECSITEL (2 administrativos + 10 operarios).</p>
+                    <!-- Contenido específico de personal -->
                 </div>
-                
-                <!-- Cumplimiento -->
-                <div id="compliance" class="tab-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">⚖️ Cumplimiento Normativo</h3>
-                        </div>
-                        <p>Verificación y cumplimiento de normativas tributarias y laborales del Perú.</p>
-                        <div id="complianceChecklist" style="margin-top: 20px;">
-                            <!-- Se llena dinámicamente -->
-                        </div>
-                        <div style="margin-top: 30px;">
-                            <h4>🇵🇪 Parámetros Tributarios Perú 2024</h4>
-                            <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 15px;">
-                                <div style="padding: 15px; background: var(--primary-alpha); border-radius: var(--radius);"><strong>UIT 2024</strong><br><span style="font-size: 18px; font-weight: bold;">S/ 5,150</span></div>
-                                <div style="padding: 15px; background: var(--success-alpha); border-radius: var(--radius);"><strong>RMV</strong><br><span style="font-size: 18px; font-weight: bold;">S/ 1,025</span></div>
-                                <div style="padding: 15px; background: var(--warning-alpha); border-radius: var(--radius);"><strong>IGV</strong><br><span style="font-size: 18px; font-weight: bold;">18%</span></div>
-                                <div style="padding: 15px; background: var(--info-alpha); border-radius: var(--radius);"><strong>Asig. Familiar</strong><br><span style="font-size: 18px; font-weight: bold;">S/ 102.50</span></div>
-                            </div>
-                        </div>
-                    </div>
+
+                <!-- Inventario Tab -->
+                <div id="inventory" class="tab-content">
+                    <h2>Inventario de Equipos</h2>
+                    <p>Gestión de equipos profesionales: Fusionadoras Fujikura, OTDR Exfo, herramientas especializadas.</p>
+                    <!-- Contenido específico de inventario -->
                 </div>
-                
-                <!-- Respaldos -->
-                <div id="sharepoint" class="tab-content">
-                    <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title">☁️ Respaldos y Exportaciones</h3>
-                        </div>
-                        <p>Gestión de copias de seguridad y exportación de datos del sistema.</p>
-                        <div class="quick-actions-grid">
-                            <div class="quick-action-card" onclick="downloadFullBackup()">
-                                <div class="quick-action-icon">💾</div>
-                                <div class="quick-action-label">Respaldo Completo</div>
-                            </div>
-                            <div class="quick-action-card" onclick="exportInvoices()">
-                                <div class="quick-action-icon">📄</div>
-                                <div class="quick-action-label">Exportar Facturas</div>
-                            </div>
-                            <div class="quick-action-card" onclick="exportEmployees()">
-                                <div class="quick-action-icon">👥</div>
-                                <div class="quick-action-label">Exportar Personal</div>
-                            </div>
-                            <div class="quick-action-card" onclick="exportTimeEntries()">
-                                <div class="quick-action-icon">⏰</div>
-                                <div class="quick-action-label">Exportar Asistencias</div>
-                            </div>
-                        </div>
-                        <div style="margin-top: 30px;">
-                            <h4>📤 Información de Sincronización</h4>
-                            <p id="lastSyncInfo">Última sincronización: No hay registros</p>
-                        </div>
-                    </div>
+
+                <!-- Reportes Tab -->
+                <div id="reports" class="tab-content">
+                    <h2>Reportes y Análisis</h2>
+                    <p>Reportes de rendimiento, evolución desde Google Sheets a sistema profesional.</p>
+                    <!-- Contenido específico de reportes -->
                 </div>
             </div>
         </main>
-        
-        <!-- Navegación Móvil - Bottom Nav -->
-        <nav class="bottom-nav" id="bottomNav">
-            <div class="bottom-nav-container" id="bottomNavContainer">
-                <!-- Se llena dinámicamente según permisos del usuario -->
-            </div>
-        </nav>
     </div>
-
-    <!-- Modals -->
-    <!-- Modal: Nueva Factura -->
-    <div class="modal" id="newInvoice">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">📄 Nueva Factura</h3></div>
-            <div class="modal-body">
-                <form id="newInvoiceForm" onsubmit="createInvoice(event)">
-                    <div class="form-group">
-                        <label class="form-label">Tipo de Comprobante*</label>
-                        <select class="form-select" name="invoiceType" required>
-                            <option value="01">Factura</option>
-                            <option value="03">Boleta de Venta</option>
-                            <option value="07">Nota de Crédito</option>
-                            <option value="08">Nota de Débito</option>
-                        </select>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">RUC Cliente</label>
-                            <input type="text" class="form-input" name="clientRuc" placeholder="20123456789" pattern="[0-9]{11}">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Razón Social/Nombre*</label>
-                            <input type="text" class="form-input" name="clientName" required placeholder="Nombre del cliente">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Monto (sin IGV)*</label>
-                            <input type="number" class="form-input" name="amount" step="0.01" required placeholder="0.00">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Moneda*</label>
-                            <select class="form-select" name="currency" required>
-                                <option value="PEN">Soles (PEN)</option>
-                                <option value="USD">Dólares (USD)</option>
-                                <option value="EUR">Euros (EUR)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Descripción</label>
-                        <textarea class="form-textarea" name="description" placeholder="Descripción del bien o servicio..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('newInvoice')">Cancelar</button>
-                <button type="submit" form="newInvoiceForm" class="btn btn-primary">Crear Factura</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Nuevo Empleado -->
-    <div class="modal" id="newEmployee">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">👤 Nuevo Empleado</h3></div>
-            <div class="modal-body">
-                <form id="newEmployeeForm" onsubmit="createEmployee(event)">
-                    <div class="form-group">
-                        <label class="form-label">DNI*</label>
-                        <input type="text" class="form-input" name="dni" required placeholder="12345678" pattern="[0-9]{8}">
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Nombres*</label>
-                            <input type="text" class="form-input" name="firstName" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Apellidos*</label>
-                            <input type="text" class="form-input" name="lastName" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Estado*</label>
-                        <select class="form-select" name="status" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Vacaciones">Vacaciones</option>
-                            <option value="Descanso Médico">Descanso Médico</option>
-                            <option value="Cesado">Cesado</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Notas / Observaciones</label>
-                        <textarea class="form-textarea" name="notes" placeholder="Observaciones adicionales..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('newEmployee')">Cancelar</button>
-                <button type="submit" form="newEmployeeForm" class="btn btn-primary">Agregar Empleado</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal: Registro de Asistencia -->
-    <div class="modal" id="timeEntry">
-        <div class="modal-content">
-            <div class="modal-header"><h3 class="modal-title">⏰ Registrar Asistencia</h3></div>
-            <div class="modal-body">
-                <form id="timeEntryForm" onsubmit="createTimeEntry(event)">
-                    <div class="form-group">
-                        <label class="form-label">Empleado*</label>
-                        <select class="form-select" name="employeeDni" id="timeEntryEmployee" required>
-                            <option value="">Seleccionar empleado...</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Fecha*</label>
-                        <input type="date" class="form-input" name="date" required>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Hora de Entrada</label>
-                            <input type="time" class="form-input" name="entryTime">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Hora de Salida</label>
-                            <input type="time" class="form-input" name="exitTime">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('timeEntry')">Cancelar</button>
-                <button type="submit" form="timeEntryForm" class="btn btn-primary">Registrar</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="toast-container" id="toastContainer"></div>
 
     <script>
-    // ========================================
-    // Configuración y Estado Global
-    // ========================================
-    const CONFIG = {
-        IGV_RATE: 0.18,
-        SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minutos
-        API_BASE_URL: '/.netlify/functions/api', // URL de tu API
-    };
+        // ===========================
+        // ESTADO DE LA APLICACIÓN TECSITEL
+        // ===========================
+        const TecsitelState = {
+            company: {
+                name: 'TECSITEL PERU E.I.R.L.',
+                ruc: '20605908285',
+                address: 'Cal. Astopilco Nro. 735a P.J. el Porvenir, Trujillo, La Libertad, Perú',
+                services: [
+                    'Redes Ópticas (FTTH, GPON, FTTX)',
+                    'Cableado Estructurado',
+                    'Proyectos Tecnológicos',
+                    'Servicios Eléctricos y Electrónicos',
+                    'Construcción de Sites',
+                    'Venta de Equipos'
+                ],
+                stats: {
+                    serviciosExitosos: 1300,
+                    empleados: 12,
+                    cobertura: 'Norte del Perú',
+                    expansion: 2025
+                }
+            },
+            projects: [
+                {
+                    id: 1,
+                    name: 'Red FTTH - Sector Norte',
+                    client: 'Claro Perú',
+                    type: 'Fibra Óptica',
+                    status: 'ACTIVO',
+                    date: '2025-01-15',
+                    value: 85000
+                },
+                {
+                    id: 2,
+                    name: 'Cableado Estructurado',
+                    client: 'Win Empresas',
+                    type: 'Infraestructura',
+                    status: 'PENDIENTE',
+                    date: '2025-01-20',
+                    value: 45000
+                },
+                {
+                    id: 3,
+                    name: 'Enlaces Microondas',
+                    client: 'Herasi S.A.C',
+                    type: 'Tecnológico',
+                    status: 'COMPLETADO',
+                    date: '2025-01-10',
+                    value: 65000
+                }
+            ],
+            personnel: {
+                administrativos: 2,
+                operarios: 10,
+                total: 12
+            },
+            currentUser: 'Administrador'
+        };
 
-    const AppState = { 
-        user: null,
-        isAuthenticated: false,
-        authToken: null,
-        invoices: [],
-        employees: [],
-        timeEntries: [],
-        invoiceCounter: 1,
-        sessionStart: null,
-    };
-
-    const SYSTEM_USERS = {
-        'admin': { 
-            password: 'admin123', 
-            name: 'Administrador', 
-            role: 'ADMIN', 
-            avatar: 'A', 
-            permissions: ['dashboard', 'invoices', 'accounting', 'personnel', 'compliance', 'sharepoint'],
-            description: 'Acceso completo al sistema'
-        },
-        'contable': { 
-            password: 'cont123', 
-            name: 'Contador', 
-            role: 'ACCOUNTANT', 
-            avatar: 'C', 
-            permissions: ['dashboard', 'invoices', 'accounting', 'compliance'],
-            description: 'Gestión contable y tributaria'
-        },
-        'rrhh': { 
-            password: 'rrhh123', 
-            name: 'Recursos Humanos', 
-            role: 'HR', 
-            avatar: 'R', 
-            permissions: ['dashboard', 'personnel'],
-            description: 'Gestión de personal y asistencias'
-        },
-        'supervisor': { 
-            password: 'super123', 
-            name: 'Supervisor', 
-            role: 'SUPERVISOR', 
-            avatar: 'S', 
-            permissions: ['timeEntry'], // Solo registro de horas
-            description: 'Solo registro de asistencias',
-            dni: '98765432' // DNI del supervisor para auto-asignación
-        }
-    };
-
-    const MODULES = {
-        'dashboard': { name: 'Dashboard', icon: '📊', description: 'Panel principal con estadísticas' },
-        'invoices': { name: 'Facturas', icon: '📄', description: 'Gestión de comprobantes electrónicos' },
-        'accounting': { name: 'Contabilidad', icon: '💰', description: 'Libros contables y reportes financieros' },
-        'personnel': { name: 'Personal', icon: '👥', description: 'Empleados y registro de asistencias' },
-        'compliance': { name: 'Cumplimiento', icon: '⚖️', description: 'Normativas tributarias y laborales' },
-        'sharepoint': { name: 'Respaldos', icon: '☁️', description: 'Exportaciones y copias de seguridad' },
-        'timeEntry': { name: 'Marcar Asistencia', icon: '⏰', description: 'Registro rápido de entrada/salida' }
-    };
-
-    // ========================================
-    // FUNCIONES DE AUTENTICACIÓN MEJORADAS
-    // ========================================
-    async function handleLogin(event) {
-        event.preventDefault();
-        const username = document.getElementById('username').value.toLowerCase().trim();
-        const password = document.getElementById('password').value;
-        
-        clearLoginErrors();
-        
-        if (!username || !password) {
-            showLoginError('Por favor complete todos los campos');
-            return;
-        }
-
-        try {
-            // Intentar autenticación con el backend
-            const response = await fetch(`${CONFIG.API_BASE_URL}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
+        // ===========================
+        // FUNCIONES DE NAVEGACIÓN
+        // ===========================
+        function showTab(tabName) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
             });
 
-            const data = await response.json();
-
-            if (response.ok) {
-                // Login exitoso con backend
-                AppState.isAuthenticated = true;
-                AppState.authToken = data.token;
-                AppState.user = {
-                    username: data.user.username,
-                    name: data.user.name,
-                    role: data.user.role.toUpperCase(),
-                    avatar: data.user.name.charAt(0).toUpperCase(),
-                    permissions: getPermissionsByRole(data.user.role.toUpperCase()),
-                    description: getDescriptionByRole(data.user.role.toUpperCase())
-                };
-                AppState.sessionStart = Date.now();
-                
-                localStorage.setItem('authToken', data.token);
-                proceedToApp();
-                
-            } else {
-                showLoginError(data.error || 'Credenciales incorrectas');
-                shakeLoginForm();
-            }
-
-        } catch (error) {
-            console.error('Error de conexión:', error);
-            
-            // Fallback a autenticación local
-            const user = SYSTEM_USERS[username];
-            
-            if (!user || user.password !== password) {
-                showLoginError('Usuario o contraseña incorrectos');
-                shakeLoginForm();
-                return;
-            }
-            
-            // Login exitoso local
-            AppState.isAuthenticated = true;
-            AppState.user = user;
-            AppState.sessionStart = Date.now();
-            
-            proceedToApp('(Modo offline)');
-        }
-    }
-
-    function proceedToApp(mode = '') {
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('loadingScreen').style.display = 'flex';
-        
-        setupLoadingAnimation();
-        updateLoadingStatus(`Bienvenido ${AppState.user.name}... ${mode}`);
-        
-        setTimeout(() => {
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('appContainer').style.display = 'flex';
-            initializeAppUI();
-            showToast(`✅ Bienvenido ${AppState.user.name} ${mode}`, mode ? 'warning' : 'success');
-        }, 1500);
-    }
-
-    function getPermissionsByRole(role) {
-        const rolePermissions = {
-            'ADMINISTRADOR': ['dashboard', 'invoices', 'accounting', 'personnel', 'compliance', 'sharepoint'],
-            'ADMIN': ['dashboard', 'invoices', 'accounting', 'personnel', 'compliance', 'sharepoint'],
-            'CONTABLE': ['dashboard', 'invoices', 'accounting', 'compliance'],
-            'ACCOUNTANT': ['dashboard', 'invoices', 'accounting', 'compliance'],
-            'RRHH': ['dashboard', 'personnel'],
-            'HR': ['dashboard', 'personnel'],
-            'SUPERVISOR': ['timeEntry']
-        };
-        return rolePermissions[role] || ['dashboard'];
-    }
-
-    function getDescriptionByRole(role) {
-        const roleDescriptions = {
-            'ADMINISTRADOR': 'Acceso completo al sistema',
-            'ADMIN': 'Acceso completo al sistema',
-            'CONTABLE': 'Gestión contable y tributaria',
-            'ACCOUNTANT': 'Gestión contable y tributaria',
-            'RRHH': 'Gestión de personal y asistencias',
-            'HR': 'Gestión de personal y asistencias',
-            'SUPERVISOR': 'Solo registro de asistencias'
-        };
-        return roleDescriptions[role] || 'Usuario del sistema';
-    }
-
-    // ========================================
-    // INICIALIZACIÓN Y UI
-    // ========================================
-    function initializeAppUI() {
-        const user = AppState.user;
-        
-        // Actualizar información del usuario
-        document.getElementById('userName').textContent = user.name;
-        document.getElementById('userAvatar').textContent = user.avatar;
-        
-        // Agregar badge de rol
-        addRoleBadge();
-        
-        // Cargar datos iniciales
-        loadInitialData();
-        
-        // Configurar navegación
-        setupNavigation();
-        
-        // El supervisor tiene comportamiento especial
-        if (user.role === 'SUPERVISOR') {
-            handleSupervisorFlow();
-        } else {
-            setupStandardUserFlow();
-        }
-    }
-
-    function addRoleBadge() {
-        const headerRight = document.querySelector('.header-right');
-        const existingBadge = headerRight.querySelector('.role-badge');
-        if (existingBadge) existingBadge.remove();
-        
-        const roleBadge = document.createElement('div');
-        roleBadge.className = 'role-badge';
-        roleBadge.textContent = AppState.user.role;
-        headerRight.insertBefore(roleBadge, headerRight.firstChild);
-    }
-
-    function handleSupervisorFlow() {
-        // Ocultar elementos no necesarios
-        document.getElementById('quickActionsCard').style.display = 'none';
-        document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
-        
-        // Mostrar modal de asistencia inmediatamente
-        document.getElementById('pageTitle').textContent = "Marcar Asistencia";
-        populateEmployeeDropdown(); // Precargar supervisor
-        openModal('timeEntry');
-    }
-
-    function setupStandardUserFlow() {
-        setupQuickActions();
-        setupModulesInfo();
-        showTab('dashboard');
-    }
-
-    function setupNavigation() {
-        const navMenu = document.getElementById('navMenu');
-        const bottomNavContainer = document.getElementById('bottomNavContainer');
-        
-        navMenu.innerHTML = '';
-        bottomNavContainer.innerHTML = '';
-
-        if (AppState.user.role === 'SUPERVISOR') {
-            // Navegación especial para supervisor
-            setupSupervisorNavigation(navMenu, bottomNavContainer);
-            return;
-        }
-
-        // Navegación normal para otros roles
-        AppState.user.permissions.forEach(perm => {
-            const module = MODULES[perm];
-            if (module) {
-                // Sidebar navigation
-                const navItem = document.createElement('button');
-                navItem.className = 'nav-item';
-                navItem.dataset.tab = perm;
-                navItem.innerHTML = `<span class="nav-icon">${module.icon}</span><span class="nav-text">${module.name}</span>`;
-                navItem.onclick = () => showTab(perm);
-                navMenu.appendChild(navItem);
-
-                // Bottom navigation para móvil
-                const bottomNavItem = document.createElement('div');
-                bottomNavItem.className = 'bottom-nav-item';
-                bottomNavItem.dataset.tab = perm;
-                bottomNavItem.innerHTML = `
-                    <div class="bottom-nav-icon">${module.icon}</div>
-                    <div class="bottom-nav-label">${module.name}</div>
-                `;
-                bottomNavItem.onclick = () => showTab(perm);
-                bottomNavContainer.appendChild(bottomNavItem);
-            }
-        });
-    }
-
-    function setupSupervisorNavigation(navMenu, bottomNavContainer) {
-        // Sidebar para supervisor (tablet/desktop)
-        const timeEntryNav = document.createElement('button');
-        timeEntryNav.className = 'nav-item active special-supervisor';
-        timeEntryNav.innerHTML = `<span class="nav-icon">⏰</span><span class="nav-text">Marcar Asistencia</span>`;
-        timeEntryNav.onclick = () => openModal('timeEntry');
-        navMenu.appendChild(timeEntryNav);
-
-        // Bottom nav para supervisor (móvil)
-        const bottomTimeEntry = document.createElement('div');
-        bottomTimeEntry.className = 'bottom-nav-item supervisor-special active';
-        bottomTimeEntry.innerHTML = `
-            <div class="bottom-nav-icon">⏰</div>
-            <div class="bottom-nav-label">Marcar Asistencia</div>
-        `;
-        bottomTimeEntry.onclick = () => openModal('timeEntry');
-        bottomNavContainer.appendChild(bottomTimeEntry);
-    }
-
-    function setupQuickActions() {
-        const quickActionsContainer = document.getElementById('quickActions');
-        if (!quickActionsContainer) return;
-        
-        quickActionsContainer.innerHTML = '';
-        
-        AppState.user.permissions.forEach(perm => {
-            if (perm !== 'dashboard') { // No incluir dashboard en acciones rápidas
-                const module = MODULES[perm];
-                if (module) {
-                    const actionCard = document.createElement('div');
-                    actionCard.className = 'quick-action-card';
-                    actionCard.onclick = () => showTab(perm);
-                    actionCard.innerHTML = `
-                        <div class="quick-action-icon">${module.icon}</div>
-                        <div class="quick-action-label">${module.name}</div>
-                    `;
-                    quickActionsContainer.appendChild(actionCard);
-                }
-            }
-        });
-    }
-
-    function setupModulesInfo() {
-        const modulesContainer = document.getElementById('modulesInfo');
-        if (!modulesContainer) return;
-        
-        modulesContainer.innerHTML = '';
-        
-        AppState.user.permissions.forEach(perm => {
-            const module = MODULES[perm];
-            if (module) {
-                const moduleCard = document.createElement('div');
-                moduleCard.style.cssText = `
-                    padding: 15px; 
-                    background: var(--primary-alpha); 
-                    border-radius: var(--radius); 
-                    border-left: 4px solid var(--primary);
-                    cursor: pointer;
-                    transition: all var(--transition);
-                `;
-                moduleCard.onmouseover = () => moduleCard.style.background = 'var(--gray-200)';
-                moduleCard.onmouseout = () => moduleCard.style.background = 'var(--primary-alpha)';
-                moduleCard.onclick = () => showTab(perm);
-                moduleCard.innerHTML = `
-                    <strong>${module.icon} ${module.name}</strong><br>
-                    <small style="color: var(--gray-600);">${module.description}</small>
-                `;
-                modulesContainer.appendChild(moduleCard);
-            }
-        });
-    }
-
-    function loadInitialData() {
-        // Datos de muestra
-        AppState.employees = [
-            { dni: '48756231', firstName: 'Juan', lastName: 'Pérez García', status: 'Activo', notes: '' },
-            { dni: '71234567', firstName: 'María', lastName: 'Rodríguez', status: 'Vacaciones', notes: 'Vacaciones hasta el 15/01' },
-            { dni: '78945612', firstName: 'Carlos', lastName: 'Sánchez', status: 'Activo', notes: '' },
-            { dni: '12345678', firstName: 'Ana', lastName: 'Torres', status: 'Cesado', notes: 'Fin de contrato' },
-            { dni: '98765432', firstName: 'Lucia', lastName: 'Supervisor', status: 'Activo', notes: 'Supervisor de turno' }
-        ];
-        
-        AppState.invoices = [
-            { id: 1, invoice_number: 'F001-000001', clientName: 'Empresa XYZ SAC', clientRuc: '20123456789', amount: 1500, currency: 'PEN', status: 'Emitida', date: '2025-07-01' },
-            { id: 2, invoice_number: 'F001-000002', clientName: 'Comercial ABC EIRL', clientRuc: '20987654321', amount: 2500, currency: 'PEN', status: 'Pagada', date: '2025-07-05' }
-        ];
-        
-        AppState.timeEntries = [
-            { id: 1, dni: '48756231', name: 'Juan Pérez García', date: '2025-07-09', entryTime: '09:00', exitTime: '18:00' },
-            { id: 2, dni: '71234567', name: 'María Rodríguez', date: '2025-07-09', entryTime: '08:30', exitTime: '17:30' }
-        ];
-        
-        AppState.invoiceCounter = 3;
-        
-        updateDashboardStats();
-        updateAllTables();
-        populateEmployeeDropdown();
-        setupComplianceChecklist();
-    }
-
-    // ========================================
-    // NAVEGACIÓN Y PESTAÑAS MEJORADAS
-    // ========================================
-    function showTab(tabName) {
-        if (AppState.user.role === 'SUPERVISOR') {
-            openModal('timeEntry');
-            return;
-        }
-        
-        if (!AppState.user.permissions.includes(tabName)) {
-            showToast('❌ No tienes permisos para acceder a esta sección', 'error');
-            return;
-        }
-        
-        // Ocultar todas las pestañas
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        
-        // Mostrar la pestaña seleccionada
-        const targetTab = document.getElementById(tabName);
-        if (targetTab) targetTab.classList.add('active');
-        
-        // Actualizar navegación activa en sidebar
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.classList.toggle('active', item.dataset.tab === tabName);
-        });
-        
-        // Actualizar navegación activa en bottom nav
-        document.querySelectorAll('.bottom-nav-item').forEach(item => {
-            item.classList.toggle('active', item.dataset.tab === tabName);
-        });
-        
-        // Actualizar título
-        const module = MODULES[tabName];
-        if (module) {
-            document.getElementById('pageTitle').textContent = module.name;
-        }
-        
-        // Cerrar sidebar en móvil/tablet después de seleccionar
-        if (window.innerWidth <= 1024) {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.remove('active');
-        }
-        
-        // Cargar datos específicos si es necesario
-        loadTabData(tabName);
-    }
-
-    function loadTabData(tabName) {
-        switch(tabName) {
-            case 'dashboard':
-                updateDashboardStats();
-                break;
-            case 'invoices':
-                updateInvoicesTable();
-                break;
-            case 'personnel':
-                updateEmployeesTable();
-                updateTimeEntriesTable();
-                break;
-            case 'compliance':
-                setupComplianceChecklist();
-                break;
-        }
-    }
-
-    // ========================================
-    // ESTADÍSTICAS Y TABLAS
-    // ========================================
-    function updateDashboardStats() {
-        document.getElementById('totalInvoices').textContent = AppState.invoices.length;
-        
-        const totalAmount = AppState.invoices.reduce((sum, inv) => sum + (parseFloat(inv.amount) || 0), 0);
-        document.getElementById('totalAmount').textContent = `S/ ${totalAmount.toFixed(2)}`;
-        
-        const activeEmployees = AppState.employees.filter(emp => emp.status === 'Activo').length;
-        document.getElementById('totalEmployees').textContent = activeEmployees;
-        
-        const pendingInvoices = AppState.invoices.filter(inv => inv.status === 'Pendiente').length;
-        document.getElementById('pendingTasks').textContent = pendingInvoices;
-    }
-
-    function updateAllTables() {
-        updateInvoicesTable();
-        updateEmployeesTable();
-        updateTimeEntriesTable();
-    }
-
-    function updateInvoicesTable() {
-        const tbody = document.getElementById('invoicesTableBody');
-        if (!tbody) return;
-        
-        if (AppState.invoices.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;"><p style="color: var(--gray-600);">No hay facturas registradas. <a href="#" onclick="openModal(\'newInvoice\')" style="color: var(--primary);">Crear primera factura</a></p></td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = AppState.invoices.map(inv => `
-            <tr>
-                <td>${inv.invoice_number}</td>
-                <td>${inv.clientName}</td>
-                <td>${inv.clientRuc || inv.clientDni || '-'}</td>
-                <td>S/ ${parseFloat(inv.amount).toFixed(2)}</td>
-                <td><span class="badge ${inv.status.toLowerCase()}">${inv.status}</span></td>
-                <td>${inv.date}</td>
-                <td>
-                    <button class="btn-sm btn-primary" onclick="viewInvoice(${inv.id})" style="background: var(--info);">👁️ Ver</button>
-                    <button class="btn-sm btn-danger" onclick="deleteInvoice(${inv.id})">🗑️ Eliminar</button>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    function updateEmployeesTable() {
-        const tbody = document.getElementById('employeesTableBody');
-        if (!tbody) return;
-        
-        if (AppState.employees.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 40px;">No hay empleados registrados.</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = AppState.employees.map(emp => `
-            <tr>
-                <td>${emp.dni}</td>
-                <td>${emp.firstName}</td>
-                <td>${emp.lastName}</td>
-                <td><span class="badge ${emp.status.toLowerCase()}">${emp.status}</span></td>
-                <td>
-                    <button class="btn-sm btn-primary" onclick="editEmployee('${emp.dni}')" style="background: var(--info);">✏️ Editar</button>
-                    <button class="btn-sm btn-danger" onclick="deleteEmployee('${emp.dni}')">🗑️ Eliminar</button>
-                </td>
-            </tr>
-        `).join('');
-    }
-
-    function updateTimeEntriesTable() {
-        const tbody = document.getElementById('timeEntriesTableBody');
-        if (!tbody) return;
-        
-        if (AppState.timeEntries.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px;">No hay registros de asistencia.</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = AppState.timeEntries.map(entry => {
-            const hours = calculateHours(entry.entryTime, entry.exitTime);
-            return `
-                <tr>
-                    <td>${entry.dni}</td>
-                    <td>${entry.name}</td>
-                    <td>${entry.date}</td>
-                    <td>${entry.entryTime || '-'}</td>
-                    <td>${entry.exitTime || '-'}</td>
-                    <td>${hours}</td>
-                    <td>
-                        <button class="btn-sm btn-primary" onclick="editTimeEntry(${entry.id})" style="background: var(--info);">✏️ Editar</button>
-                        <button class="btn-sm btn-danger" onclick="deleteTimeEntry(${entry.id})">🗑️ Eliminar</button>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    // ========================================
-    // FUNCIONES DE GESTIÓN (CRUD)
-    // ========================================
-    function createInvoice(event) {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-        
-        const invoiceType = formData.get('invoiceType');
-        const clientRuc = formData.get('clientRuc');
-        const clientName = formData.get('clientName');
-        const amount = parseFloat(formData.get('amount'));
-        const currency = formData.get('currency');
-        const description = formData.get('description');
-        
-        if (!clientName || amount <= 0) {
-            showToast('❌ Complete todos los campos obligatorios', 'error');
-            return;
-        }
-        
-        if (clientRuc && !validateRUC(clientRuc)) {
-            showToast('❌ RUC inválido', 'error');
-            return;
-        }
-        
-        const invoiceNumber = `F001-${String(AppState.invoiceCounter).padStart(6, '0')}`;
-        
-        const newInvoice = {
-            id: Date.now(),
-            invoice_number: invoiceNumber,
-            invoiceType: invoiceType,
-            clientRuc: sanitizeInput(clientRuc || ''),
-            clientName: sanitizeInput(clientName),
-            amount: amount,
-            currency: currency,
-            description: sanitizeInput(description || ''),
-            status: 'Emitida',
-            date: new Date().toISOString().split('T')[0],
-            isExport: currency !== 'PEN'
-        };
-        
-        AppState.invoices.push(newInvoice);
-        AppState.invoiceCounter++;
-        
-        updateInvoicesTable();
-        updateDashboardStats();
-        closeModal('newInvoice');
-        form.reset();
-        
-        showToast(`✅ Factura ${invoiceNumber} creada exitosamente`, 'success');
-    }
-
-    function createEmployee(event) {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-        
-        const dni = formData.get('dni');
-        const firstName = formData.get('firstName');
-        const lastName = formData.get('lastName');
-        const status = formData.get('status');
-        const notes = formData.get('notes');
-        
-        if (!validateDNI(dni)) {
-            showToast('❌ DNI debe tener 8 dígitos', 'error');
-            return;
-        }
-        
-        if (AppState.employees.find(emp => emp.dni === dni)) {
-            showToast('❌ Ya existe un empleado con este DNI', 'error');
-            return;
-        }
-        
-        const newEmployee = {
-            dni: sanitizeInput(dni),
-            firstName: sanitizeInput(firstName),
-            lastName: sanitizeInput(lastName),
-            status: status,
-            notes: sanitizeInput(notes || '')
-        };
-        
-        AppState.employees.push(newEmployee);
-        updateEmployeesTable();
-        populateEmployeeDropdown();
-        updateDashboardStats();
-        closeModal('newEmployee');
-        form.reset();
-        
-        showToast(`✅ Empleado ${firstName} ${lastName} agregado exitosamente`, 'success');
-    }
-
-    function createTimeEntry(event) {
-        event.preventDefault();
-        const form = event.target;
-        const formData = new FormData(form);
-        
-        const employeeDni = formData.get('employeeDni');
-        const date = formData.get('date');
-        const entryTime = formData.get('entryTime');
-        const exitTime = formData.get('exitTime');
-        
-        const employee = AppState.employees.find(emp => emp.dni === employeeDni);
-        if (!employee) {
-            showToast('❌ Empleado no encontrado', 'error');
-            return;
-        }
-        
-        // Verificar si ya existe registro para esta fecha
-        const existingEntry = AppState.timeEntries.find(entry => 
-            entry.dni === employeeDni && entry.date === date
-        );
-        
-        if (existingEntry) {
-            showToast('❌ Ya existe un registro para este empleado en esta fecha', 'error');
-            return;
-        }
-        
-        const newEntry = {
-            id: Date.now(),
-            dni: employeeDni,
-            name: `${employee.firstName} ${employee.lastName}`,
-            date: date,
-            entryTime: entryTime || '',
-            exitTime: exitTime || ''
-        };
-        
-        AppState.timeEntries.push(newEntry);
-        updateTimeEntriesTable();
-        closeModal('timeEntry');
-        form.reset();
-        
-        showToast(`✅ Asistencia registrada para ${employee.firstName} ${employee.lastName}`, 'success');
-    }
-
-    function populateEmployeeDropdown() {
-        const select = document.getElementById('timeEntryEmployee');
-        if (!select) return;
-        
-        select.innerHTML = '<option value="">Seleccionar empleado...</option>';
-        
-        AppState.employees.forEach(emp => {
-            const option = document.createElement('option');
-            option.value = emp.dni;
-            option.textContent = `${emp.dni} - ${emp.firstName} ${emp.lastName}`;
-            select.appendChild(option);
-        });
-        
-        // Si es supervisor, auto-seleccionar y deshabilitar
-        if (AppState.user.role === 'SUPERVISOR' && AppState.user.dni) {
-            select.value = AppState.user.dni;
-            select.disabled = true;
-            
-            // Auto-llenar fecha actual
-            const dateInput = document.querySelector('input[name="date"]');
-            if (dateInput) {
-                dateInput.value = new Date().toISOString().split('T')[0];
-            }
-        }
-    }
-
-    // ========================================
-    // FUNCIONES DE UTILIDAD
-    // ========================================
-    function calculateHours(entryTime, exitTime) {
-        if (!entryTime || !exitTime) return '-';
-        
-        const [entryHours, entryMinutes] = entryTime.split(':').map(Number);
-        const [exitHours, exitMinutes] = exitTime.split(':').map(Number);
-        
-        const entryTotalMinutes = entryHours * 60 + entryMinutes;
-        const exitTotalMinutes = exitHours * 60 + exitMinutes;
-        
-        const diffMinutes = exitTotalMinutes - entryTotalMinutes;
-        const hours = Math.floor(diffMinutes / 60);
-        const minutes = diffMinutes % 60;
-        
-        return `${hours}h ${minutes}m`;
-    }
-
-    function validateRUC(ruc) {
-        return /^[0-9]{11}$/.test(ruc);
-    }
-
-    function validateDNI(dni) {
-        return /^[0-9]{8}$/.test(dni);
-    }
-
-    function sanitizeInput(input) {
-        const div = document.createElement('div');
-        div.textContent = input;
-        return div.innerHTML;
-    }
-
-    function viewInvoice(id) {
-        const invoice = AppState.invoices.find(inv => inv.id === id);
-        if (!invoice) return;
-        
-        alert(`Factura: ${invoice.invoice_number}\nCliente: ${invoice.clientName}\nMonto: S/ ${invoice.amount}\nFecha: ${invoice.date}`);
-    }
-
-    function deleteInvoice(id) {
-        if (confirm('¿Está seguro de eliminar esta factura?')) {
-            const invoiceIndex = AppState.invoices.findIndex(inv => inv.id === id);
-            if (invoiceIndex !== -1) {
-                const invoice = AppState.invoices[invoiceIndex];
-                AppState.invoices.splice(invoiceIndex, 1);
-                updateInvoicesTable();
-                updateDashboardStats();
-                showToast(`✅ Factura ${invoice.invoice_number} eliminada`, 'info');
-            }
-        }
-    }
-
-    function deleteEmployee(dni) {
-        if (confirm('¿Está seguro de eliminar este empleado?')) {
-            const employeeIndex = AppState.employees.findIndex(emp => emp.dni === dni);
-            if (employeeIndex !== -1) {
-                const employee = AppState.employees[employeeIndex];
-                AppState.employees.splice(employeeIndex, 1);
-                
-                // Eliminar asistencias relacionadas
-                AppState.timeEntries = AppState.timeEntries.filter(entry => entry.dni !== dni);
-                
-                updateEmployeesTable();
-                updateTimeEntriesTable();
-                populateEmployeeDropdown();
-                updateDashboardStats();
-                
-                showToast(`✅ Empleado ${employee.firstName} ${employee.lastName} eliminado`, 'info');
-            }
-        }
-    }
-
-    function deleteTimeEntry(id) {
-        if (confirm('¿Está seguro de eliminar este registro de asistencia?')) {
-            const entryIndex = AppState.timeEntries.findIndex(entry => entry.id === id);
-            if (entryIndex !== -1) {
-                AppState.timeEntries.splice(entryIndex, 1);
-                updateTimeEntriesTable();
-                showToast('✅ Registro de asistencia eliminado', 'info');
-            }
-        }
-    }
-
-    // ========================================
-    // CUMPLIMIENTO NORMATIVO
-    // ========================================
-    function setupComplianceChecklist() {
-        const container = document.getElementById('complianceChecklist');
-        if (!container) return;
-        
-        const items = [
-            { label: 'Inscripción en SUNAT', status: 'completed', description: 'RUC activo y al día' },
-            { label: 'Facturación Electrónica', status: 'completed', description: 'Sistema implementado' },
-            { label: 'Declaraciones Mensuales', status: 'pending', description: 'PDT 621 pendiente' },
-            { label: 'Registro de Empleados T-REGISTRO', status: 'completed', description: 'Actualizado' },
-            { label: 'Pagos Seguridad Social', status: 'warning', description: 'Verificar pagos EsSalud' },
-            { label: 'Obligaciones Tributarias', status: 'completed', description: 'Al día con SUNAT' }
-        ];
-        
-        const statusColors = { completed: 'var(--success)', warning: 'var(--warning)', pending: 'var(--danger)' };
-        const statusIcons = { completed: '✅', warning: '⚠️', pending: '❌' };
-        
-        container.innerHTML = items.map(item => `
-            <div style="display: flex; align-items: center; padding: 15px; margin: 10px 0; background: var(--white); border-radius: var(--radius); border-left: 4px solid ${statusColors[item.status]}; box-shadow: var(--shadow);">
-                <span style="font-size: 24px; margin-right: 15px;">${statusIcons[item.status]}</span>
-                <div style="flex: 1;">
-                    <strong>${item.label}</strong>
-                    <br>
-                    <small style="color: var(--gray-600);">${item.description}</small>
-                </div>
-                <button class="btn btn-sm" style="background: var(--info);" onclick="checkComplianceDetail('${item.label}')">Ver Detalle</button>
-            </div>
-        `).join('');
-    }
-
-    function checkComplianceDetail(item) {
-        showToast(`ℹ️ Verificando detalles de: ${item}`, 'info');
-    }
-
-    function generateAccountingBooks() {
-        showToast('📚 Generando libros electrónicos...', 'info');
-        setTimeout(() => showToast('✅ Libros electrónicos generados exitosamente', 'success'), 2000);
-    }
-
-    function generateFinancialReports() {
-        showToast('📊 Generando reportes financieros...', 'info');
-        setTimeout(() => showToast('✅ Reportes financieros listos para descarga', 'success'), 2000);
-    }
-
-    function checkTaxCompliance() {
-        showToast('⚖️ Verificando cumplimiento tributario...', 'info');
-        setTimeout(() => showToast('✅ Verificación completada - Todo en orden', 'success'), 2000);
-    }
-
-    // ========================================
-    // FUNCIONES DE EXPORTACIÓN
-    // ========================================
-    function downloadFullBackup() {
-        showToast('📥 Generando respaldo completo...', 'info');
-
-        const toCsv = (data, headers) => {
-            const headerRow = headers.join(',') + '\n';
-            const dataRows = data.map(row => 
-                headers.map(header => {
-                    let cell = row[header] === null || row[header] === undefined ? '' : `"${String(row[header]).replace(/"/g, '""')}"`;
-                    return cell;
-                }).join(',')
-            ).join('\n');
-            return headerRow + dataRows;
-        };
-
-        let fullCsv = 'RESPALDO TECSITEL - ' + new Date().toLocaleDateString() + '\n\n';
-        
-        fullCsv += 'SECCIÓN: FACTURAS\n';
-        const invoiceHeaders = ['id', 'invoice_number', 'clientRuc', 'clientName', 'currency', 'amount', 'status', 'date'];
-        fullCsv += toCsv(AppState.invoices, invoiceHeaders) + '\n\n';
-
-        fullCsv += 'SECCIÓN: EMPLEADOS\n';
-        const employeeHeaders = ['dni', 'firstName', 'lastName', 'status', 'notes'];
-        fullCsv += toCsv(AppState.employees, employeeHeaders) + '\n\n';
-
-        fullCsv += 'SECCIÓN: REGISTRO DE ASISTENCIA\n';
-        const timeEntryHeaders = ['id', 'dni', 'name', 'date', 'entryTime', 'exitTime'];
-        fullCsv += toCsv(AppState.timeEntries, timeEntryHeaders) + '\n\n';
-
-        downloadCSVFile(fullCsv, `tecsitel_respaldo_${new Date().toISOString().split('T')[0]}.csv`);
-        showToast('✅ Respaldo CSV descargado exitosamente', 'success');
-    }
-
-    function exportInvoices() {
-        if (AppState.invoices.length === 0) {
-            showToast('ℹ️ No hay facturas para exportar', 'info');
-            return;
-        }
-        
-        const csvContent = generateCSV(AppState.invoices, ['invoice_number', 'clientName', 'clientRuc', 'amount', 'currency', 'status', 'date']);
-        downloadCSVFile(csvContent, 'facturas_tecsitel.csv');
-        showToast('✅ Facturas exportadas exitosamente', 'success');
-    }
-
-    function exportEmployees() {
-        if (AppState.employees.length === 0) {
-            showToast('ℹ️ No hay empleados para exportar', 'info');
-            return;
-        }
-        
-        const csvContent = generateCSV(AppState.employees, ['dni', 'firstName', 'lastName', 'status', 'notes']);
-        downloadCSVFile(csvContent, 'empleados_tecsitel.csv');
-        showToast('✅ Empleados exportados exitosamente', 'success');
-    }
-
-    function exportTimeEntries() {
-        if (AppState.timeEntries.length === 0) {
-            showToast('ℹ️ No hay registros de asistencia para exportar', 'info');
-            return;
-        }
-        
-        const csvContent = generateCSV(AppState.timeEntries, ['dni', 'name', 'date', 'entryTime', 'exitTime']);
-        downloadCSVFile(csvContent, 'asistencias_tecsitel.csv');
-        showToast('✅ Asistencias exportadas exitosamente', 'success');
-    }
-
-    function generateCSV(data, headers) {
-        const headerRow = headers.join(',') + '\n';
-        const dataRows = data.map(row => 
-            headers.map(header => {
-                let cell = row[header] === null || row[header] === undefined ? '' : `"${String(row[header]).replace(/"/g, '""')}"`;
-                return cell;
-            }).join(',')
-        ).join('\n');
-        return headerRow + dataRows;
-    }
-
-    function downloadCSVFile(content, filename) {
-        const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", filename);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-    }
-
-    // ========================================
-    // MODALES Y UI
-    // ========================================
-    function openModal(id) {
-        const modal = document.getElementById(id);
-        if (modal) {
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden';
-            
-            // Auto-rellenar fecha actual en modales de tiempo
-            if (id === 'timeEntry') {
-                const dateInput = modal.querySelector('input[name="date"]');
-                if (dateInput && !dateInput.value) {
-                    dateInput.value = new Date().toISOString().split('T')[0];
-                }
-                populateEmployeeDropdown();
-            }
-        }
-    }
-
-    function closeModal(id) {
-        const modal = document.getElementById(id);
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-            
-            // Limpiar formularios
-            const forms = modal.querySelectorAll('form');
-            forms.forEach(form => form.reset());
-        }
-    }
-
-    // ========================================
-    // SISTEMA DE NOTIFICACIONES (TOAST)
-    // ========================================
-    function showToast(message, type = 'info') {
-        const container = document.getElementById('toastContainer');
-        if (!container) return;
-        
-        const toast = document.createElement('div');
-        toast.className = `toast ${type}`;
-        toast.textContent = message;
-        
-        container.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.animation = 'slideOut 0.3s ease forwards';
-            setTimeout(() => {
-                if (container.contains(toast)) {
-                    container.removeChild(toast);
-                }
-            }, 300);
-        }, 4000);
-    }
-
-    // ========================================
-    // LOADING Y UTILIDADES
-    // ========================================
-    function setupLoadingAnimation() {
-        const particlesContainer = document.getElementById('loadingParticles');
-        if (!particlesContainer) return;
-        
-        particlesContainer.innerHTML = '';
-        
-        for (let i = 0; i < 30; i++) {
-            const particle = document.createElement('div');
-            particle.style.cssText = `
-                position: absolute;
-                width: 4px;
-                height: 4px;
-                background: rgba(255, 255, 255, 0.7);
-                border-radius: 50%;
-                top: ${Math.random() * 100}%;
-                left: ${Math.random() * 100}%;
-                animation: float ${2 + Math.random() * 4}s ease-in-out infinite;
-                animation-delay: ${Math.random() * 2}s;
-            `;
-            particlesContainer.appendChild(particle);
-        }
-    }
-
-    function updateLoadingStatus(message) {
-        const statusElement = document.getElementById('loadingStatus');
-        if (statusElement) {
-            statusElement.textContent = message;
-        }
-    }
-
-    function showLoginError(message) {
-        const loginForm = document.getElementById('loginForm');
-        let errorDiv = loginForm.querySelector('.login-error');
-        
-        if (!errorDiv) {
-            errorDiv = document.createElement('div');
-            errorDiv.className = 'login-error';
-            loginForm.appendChild(errorDiv);
-        }
-        
-        errorDiv.textContent = message;
-        errorDiv.style.display = 'block';
-    }
-
-    function clearLoginErrors() {
-        const errorDiv = document.querySelector('.login-error');
-        if (errorDiv) {
-            errorDiv.style.display = 'none';
-        }
-        
-        // Limpiar estilos de error en inputs
-        document.getElementById('username').classList.remove('error');
-        document.getElementById('password').classList.remove('error');
-    }
-
-    function shakeLoginForm() {
-        const loginForm = document.querySelector('.login-form');
-        loginForm.style.animation = 'shake 0.5s ease-in-out';
-        
-        setTimeout(() => {
-            loginForm.style.animation = '';
-        }, 500);
-        
-        // Limpiar campos
-        document.getElementById('username').value = '';
-        document.getElementById('password').value = '';
-        document.getElementById('username').focus();
-    }
-
-    function logout() {
-        // Limpiar estado
-        AppState.isAuthenticated = false;
-        AppState.user = null;
-        AppState.authToken = null;
-        AppState.sessionStart = null;
-        
-        // Limpiar token guardado
-        localStorage.removeItem('authToken');
-        
-        // Limpiar elementos de la interfaz
-        const roleBadge = document.querySelector('.role-badge');
-        if (roleBadge) roleBadge.remove();
-        
-        const specialSupervisor = document.querySelector('.special-supervisor');
-        if (specialSupervisor) specialSupervisor.remove();
-        
-        const roleWelcome = document.querySelector('.role-welcome');
-        if (roleWelcome) roleWelcome.remove();
-        
-        // Mostrar pantalla de login
-        document.getElementById('appContainer').style.display = 'none';
-        document.getElementById('loginScreen').style.display = 'flex';
-        
-        // Limpiar formulario
-        document.getElementById('loginForm').reset();
-        clearLoginErrors();
-        
-        showToast('👋 Sesión cerrada correctamente', 'info');
-    }
-
-    function checkSession() {
-        if (AppState.sessionStart && (Date.now() - AppState.sessionStart > CONFIG.SESSION_TIMEOUT)) {
-            logout();
-            showToast('Su sesión ha expirado', 'warning');
-        }
-    }
-
-    // ========================================
-    // FUNCIONES ADICIONALES PARA EDICIÓN
-    // ========================================
-    function editEmployee(dni) {
-        showToast('ℹ️ Función de edición en desarrollo', 'info');
-    }
-
-    function editTimeEntry(id) {
-        showToast('ℹ️ Función de edición en desarrollo', 'info');
-    }
-
-    // ========================================
-    // EVENT LISTENERS Y INICIALIZACIÓN
-    // ========================================
-    document.addEventListener('DOMContentLoaded', function() {
-        // Funcionalidad para hacer clic en las tarjetas de usuario
-        const userCards = document.querySelectorAll('.user-card');
-        
-        userCards.forEach(card => {
-            card.addEventListener('click', function() {
-                const username = this.dataset.user;
-                const password = this.dataset.pass;
-                
-                // Llenar automáticamente los campos
-                document.getElementById('username').value = username;
-                document.getElementById('password').value = password;
-                
-                // Resaltar temporalmente
-                this.style.background = 'var(--primary-alpha)';
-                setTimeout(() => {
-                    this.style.background = '';
-                }, 300);
-                
-                // Focus en el botón de login
-                setTimeout(() => {
-                    document.querySelector('button[type="submit"]').focus();
-                }, 100);
+            // Mostrar la pestaña seleccionada
+            document.getElementById(tabName).classList.add('active');
+
+            // Actualizar navegación
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
             });
-        });
-        
-        // Cerrar modal al hacer clic fuera
-        document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('modal')) {
-                closeModal(event.target.id);
-            }
-        });
-        
-        // Verificar token guardado al cargar la página
-        checkSavedToken();
-        
-        // Mostrar pantalla de login por defecto
-        document.getElementById('loginScreen').style.display = 'flex';
-        
-        console.log('🔐 Sistema TECSITEL cargado correctamente');
-        console.log('👥 Usuarios disponibles:', Object.keys(SYSTEM_USERS));
-        console.log('📱 Sistema completamente responsive');
-    });
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
 
-    // Verificar token guardado
-    function checkSavedToken() {
-        const savedToken = localStorage.getItem('authToken');
-        if (savedToken) {
-            console.log('Token guardado encontrado:', savedToken);
-            // Aquí podrías validar el token con el backend
-        }
-    }
-
-    // Verificar sesión periódicamente
-    setInterval(checkSession, 60000); // Cada minuto
-
-    // ========================================
-    // MEJORAS ADICIONALES PARA SUPERVISOR
-    // ========================================
-    function quickTimeEntryForSupervisor() {
-        if (AppState.user.role !== 'SUPERVISOR') return;
-        
-        const now = new Date();
-        const currentTime = now.toTimeString().slice(0, 5);
-        const currentDate = now.toISOString().split('T')[0];
-        
-        // Verificar si ya hay un registro para hoy
-        const todayEntry = AppState.timeEntries.find(entry => 
-            entry.dni === AppState.user.dni && entry.date === currentDate
-        );
-        
-        if (!todayEntry) {
-            // Marcar entrada
-            const newEntry = {
-                id: Date.now(),
-                dni: AppState.user.dni,
-                name: AppState.user.name,
-                date: currentDate,
-                entryTime: currentTime,
-                exitTime: ''
+            // Actualizar título
+            const titles = {
+                dashboard: 'Dashboard TECSITEL',
+                projects: 'Proyectos de Telecomunicaciones',
+                services: 'Servicios Especializados',
+                invoices: 'Facturación Electrónica',
+                personnel: 'Gestión de Personal',
+                inventory: 'Inventario de Equipos',
+                reports: 'Reportes y Análisis'
             };
-            
-            AppState.timeEntries.push(newEntry);
-            showToast(`✅ Entrada marcada: ${currentTime}`, 'success');
-        } else if (!todayEntry.exitTime) {
-            // Marcar salida
-            todayEntry.exitTime = currentTime;
-            showToast(`✅ Salida marcada: ${currentTime}`, 'success');
-        } else {
-            showToast('ℹ️ Ya tienes entrada y salida registradas para hoy', 'info');
+            document.getElementById('pageTitle').textContent = titles[tabName] || tabName;
+
+            // Mostrar mensaje específico según la pestaña
+            showToast(`📍 Accediendo a ${titles[tabName]}`, 'info');
         }
-        
-        // Actualizar tabla si está visible
-        updateTimeEntriesTable();
-    }
 
-    // ========================================
-    // OPTIMIZACIONES PARA RESPONSIVE Y MÓVIL
-    // ========================================
-    function handleResponsiveChanges() {
-        const isMobile = window.innerWidth <= 768;
-        const isTablet = window.innerWidth <= 1024 && window.innerWidth > 768;
-        const isDesktop = window.innerWidth > 1024;
-        
-        // Manejar visibilidad de navegaciones
-        const sidebar = document.getElementById('sidebar');
-        const bottomNav = document.getElementById('bottomNav');
-        const menuToggle = document.querySelector('.menu-toggle');
-        
-        if (isMobile) {
-            // MÓVIL: Bottom nav activo, sidebar oculto
-            sidebar.style.display = 'none';
-            bottomNav.style.display = 'block';
-            if (menuToggle) menuToggle.style.display = 'none';
-            
-            // Ajustar padding del contenido
-            const content = document.querySelector('.content');
-            if (content) content.style.paddingBottom = '90px';
-            
-            // Optimizar grids para móvil
-            optimizeGridsForMobile();
-            
-        } else if (isTablet) {
-            // TABLET: Sidebar colapsable, no bottom nav
-            sidebar.style.display = 'flex';
-            bottomNav.style.display = 'none';
-            if (menuToggle) menuToggle.style.display = 'block';
-            sidebar.classList.remove('active'); // Colapsado por defecto
-            
-            // Restaurar padding normal
-            const content = document.querySelector('.content');
-            if (content) content.style.paddingBottom = '';
-            
-            // Optimizar grids para tablet
-            optimizeGridsForTablet();
-            
-        } else {
-            // DESKTOP: Sidebar fijo, no bottom nav
-            sidebar.style.display = 'flex';
-            bottomNav.style.display = 'none';
-            if (menuToggle) menuToggle.style.display = 'none';
-            sidebar.classList.remove('active'); // Visible por defecto
-            
-            // Restaurar padding normal
-            const content = document.querySelector('.content');
-            if (content) content.style.paddingBottom = '';
-            
-            // Restaurar grids originales
-            restoreOriginalGrids();
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
         }
-        
-        // Ajustar modales según tamaño
-        adjustModalsForScreen(isMobile, isTablet);
-        
-        // Optimizar tablas
-        optimizeTablesForScreen(isMobile);
-    }
 
-    function optimizeGridsForMobile() {
-        document.querySelectorAll('.stats-grid').forEach(grid => {
-            if (window.innerWidth <= 480) {
-                grid.style.gridTemplateColumns = '1fr';
-                grid.style.gap = '12px';
-            } else {
-                grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-                grid.style.gap = '16px';
-            }
-        });
-        
-        document.querySelectorAll('.quick-actions-grid').forEach(grid => {
-            if (window.innerWidth <= 360) {
-                grid.style.gridTemplateColumns = '1fr';
-                grid.style.gap = '8px';
-            } else if (window.innerWidth <= 480) {
-                grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-                grid.style.gap = '10px';
-            } else {
-                grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-                grid.style.gap = '12px';
-            }
-        });
-    }
-
-    function optimizeGridsForTablet() {
-        document.querySelectorAll('.stats-grid').forEach(grid => {
-            grid.style.gridTemplateColumns = 'repeat(2, 1fr)';
-            grid.style.gap = '20px';
-        });
-        
-        document.querySelectorAll('.quick-actions-grid').forEach(grid => {
-            grid.style.gridTemplateColumns = 'repeat(3, 1fr)';
-            grid.style.gap = '16px';
-        });
-    }
-
-    function restoreOriginalGrids() {
-        document.querySelectorAll('.stats-grid').forEach(grid => {
-            grid.style.gridTemplateColumns = 'repeat(auto-fit, minmax(220px, 1fr))';
-            grid.style.gap = '24px';
-        });
-        
-        document.querySelectorAll('.quick-actions-grid').forEach(grid => {
-            grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
-            grid.style.gap = '16px';
-        });
-    }
-
-    function adjustModalsForScreen(isMobile, isTablet) {
-        document.querySelectorAll('.modal-content').forEach(modal => {
-            if (isMobile) {
-                modal.style.width = window.innerWidth <= 360 ? '98%' : '95%';
-                modal.style.margin = window.innerWidth <= 360 ? '10px auto' : '20px auto';
-                modal.style.maxHeight = '90vh';
-            } else if (isTablet) {
-                modal.style.width = '85%';
-                modal.style.margin = '50px auto';
-                modal.style.maxHeight = '85vh';
-            } else {
-                modal.style.width = '';
-                modal.style.margin = '';
-                modal.style.maxHeight = '90vh';
-            }
-        });
-    }
-
-    function optimizeTablesForScreen(isMobile) {
-        document.querySelectorAll('.table-container').forEach(container => {
-            if (isMobile) {
-                container.style.fontSize = window.innerWidth <= 360 ? '12px' : '14px';
-                // En móviles muy pequeños, podríamos convertir tablas a cards
-                if (window.innerWidth <= 360) {
-                    // Aquí se podría implementar una vista de cards para móviles muy pequeños
-                }
-            } else {
-                container.style.fontSize = '';
-            }
-        });
-    }
-
-    // ========================================
-    // MEJORAS DE UX TÁCTIL PARA MÓVIL
-    // ========================================
-    function setupTouchOptimizations() {
-        // Mejorar área táctil para elementos pequeños
-        const style = document.createElement('style');
-        style.textContent = `
-            @media (max-width: 768px) {
-                .btn-sm {
-                    min-height: 44px;
-                    min-width: 44px;
-                    padding: 8px 12px;
-                }
-                
-                .bottom-nav-item {
-                    min-height: 70px;
-                    min-width: 70px;
-                }
-                
-                .quick-action-card {
-                    min-height: 80px;
-                    padding: 20px 16px;
-                }
-                
-                .user-card {
-                    min-height: 80px;
-                    min-width: 80px;
-                }
-                
-                .form-input, .form-select {
-                    min-height: 44px;
-                }
-                
-                .nav-item {
-                    min-height: 50px;
-                }
-            }
-            
-            @media (max-width: 360px) {
-                .btn-sm {
-                    min-height: 40px;
-                    min-width: 40px;
-                }
-                
-                .bottom-nav-item {
-                    min-height: 65px;
-                    min-width: 60px;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    // ========================================
-    // DETECCIÓN DE ORIENTACIÓN Y AJUSTES
-    // ========================================
-    function handleOrientationChange() {
-        setTimeout(() => {
-            handleResponsiveChanges();
-            
-            // Ajustes específicos para landscape en móvil
-            if (window.innerHeight < 500 && window.innerWidth > window.innerHeight) {
-                // Modo landscape en móvil
-                const header = document.querySelector('.header');
-                if (header && window.innerWidth <= 768) {
-                    header.style.height = '50px';
-                }
-                
-                const bottomNav = document.getElementById('bottomNav');
-                if (bottomNav && window.innerWidth <= 768) {
-                    bottomNav.style.height = '60px';
-                }
-                
-                // Ajustar stats grid para landscape
-                document.querySelectorAll('.stats-grid').forEach(grid => {
-                    if (window.innerWidth <= 768) {
-                        grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
-                        grid.style.gap = '8px';
-                    }
-                });
-            } else {
-                // Restaurar alturas normales
-                const header = document.querySelector('.header');
-                if (header) header.style.height = '';
-                
-                const bottomNav = document.getElementById('bottomNav');
-                if (bottomNav) bottomNav.style.height = '';
-            }
-        }, 100);
-    }
-
-    // ========================================
-    // FUNCIONES DE SWIPE PARA MÓVIL
-    // ========================================
-    function setupSwipeNavigation() {
-        if (window.innerWidth > 768) return;
-        
-        let startX = 0;
-        let endX = 0;
-        
-        const content = document.querySelector('.content');
-        if (!content) return;
-        
-        content.addEventListener('touchstart', (e) => {
-            startX = e.touches[0].clientX;
-        }, { passive: true });
-        
-        content.addEventListener('touchend', (e) => {
-            endX = e.changedTouches[0].clientX;
-            handleSwipe();
-        }, { passive: true });
-        
-        function handleSwipe() {
-            const diffX = startX - endX;
-            const minSwipeDistance = 50;
-            
-            if (Math.abs(diffX) < minSwipeDistance) return;
-            
-            const currentTabIndex = getCurrentTabIndex();
-            const permissions = AppState.user.permissions;
-            
-            if (diffX > 0 && currentTabIndex < permissions.length - 1) {
-                // Swipe left - next tab
-                showTab(permissions[currentTabIndex + 1]);
-            } else if (diffX < 0 && currentTabIndex > 0) {
-                // Swipe right - previous tab
-                showTab(permissions[currentTabIndex - 1]);
-            }
+        function showUserMenu() {
+            showToast('👤 Menú de usuario - Funcionalidad en desarrollo', 'info');
         }
-        
-        function getCurrentTabIndex() {
-            const activeTab = document.querySelector('.tab-content.active');
-            if (!activeTab) return 0;
-            
-            const currentTabName = activeTab.id;
-            return AppState.user.permissions.indexOf(currentTabName);
-        }
-    }
 
-    // ========================================
-    // MEJORAS DE PERFORMANCE PARA MÓVIL
-    // ========================================
-    function optimizePerformanceForMobile() {
-        if (window.innerWidth > 768) return;
-        
-        // Reducir animaciones en dispositivos lentos
-        if (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) {
-            const style = document.createElement('style');
-            style.textContent = `
-                * {
-                    animation-duration: 0.1s !important;
-                    transition-duration: 0.1s !important;
-                }
+        // ===========================
+        // SISTEMA DE NOTIFICACIONES TECSITEL
+        // ===========================
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div style="flex: 1;">${message}</div>
+                <button onclick="this.parentElement.remove()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--tecsitel-gray-dark);">&times;</button>
             `;
-            document.head.appendChild(style);
+
+            document.getElementById('toastContainer').appendChild(toast);
+
+            // Auto-remove después de 4 segundos
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.animation = 'slideOutRight 0.3s ease-in forwards';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
         }
-        
-        // Lazy loading para elementos pesados
-        const images = document.querySelectorAll('img');
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        if (img.dataset.src) {
-                            img.src = img.dataset.src;
-                            img.removeAttribute('data-src');
-                            imageObserver.unobserve(img);
-                        }
-                    }
+
+        // ===========================
+        // INICIALIZACIÓN
+        // ===========================
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mostrar mensaje de bienvenida específico de TECSITEL
+            setTimeout(() => {
+                showToast('🎉 ¡Bienvenido al Sistema TECSITEL v3.0!', 'success');
+            }, 500);
+
+            // Mensaje sobre la evolución del sistema
+            setTimeout(() => {
+                showToast('📈 Sistema evolucionado desde Google Sheets/Excel', 'info');
+            }, 2000);
+
+            // Información sobre nivel de madurez digital
+            setTimeout(() => {
+                showToast('🚀 Nivel de Madurez Digital: En desarrollo hacia Intermedio', 'warning');
+            }, 4000);
+
+            // Efectos de animación para las tarjetas
+            document.querySelectorAll('.metric-card, .service-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-12px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
                 });
             });
-            
-            images.forEach(img => imageObserver.observe(img));
+
+            // Actualizar métricas dinámicamente
+            updateMetrics();
+        });
+
+        // ===========================
+        // ACTUALIZACIÓN DE MÉTRICAS
+        // ===========================
+        function updateMetrics() {
+            // Proyectos activos
+            const activeProjects = TecsitelState.projects.filter(p => p.status === 'ACTIVO').length;
+            document.getElementById('totalProjects').textContent = activeProjects;
+
+            // Ingresos mensuales (suma de proyectos del mes)
+            const monthlyRevenue = TecsitelState.projects.reduce((sum, project) => {
+                return sum + project.value;
+            }, 0);
+            document.getElementById('monthlyRevenue').textContent = monthlyRevenue.toLocaleString();
+
+            // Personal total
+            document.getElementById('totalEmployees').textContent = TecsitelState.personnel.total;
         }
-    }
 
-    // Escuchar cambios de tamaño de ventana
-    window.addEventListener('resize', handleResponsiveChanges);
-
-    // ========================================
-    // FUNCIONES DE ACCESIBILIDAD
-    // ========================================
-    function setupAccessibility() {
-        // Navegación por teclado
-        document.addEventListener('keydown', function(event) {
-            // Escape para cerrar modales
-            if (event.key === 'Escape') {
-                const openModals = document.querySelectorAll('.modal[style*="flex"]');
-                openModals.forEach(modal => {
-                    closeModal(modal.id);
-                });
-            }
-            
-            // Alt + número para navegación rápida (solo si no es supervisor)
-            if (event.altKey && AppState.user && AppState.user.role !== 'SUPERVISOR') {
-                const number = parseInt(event.key);
-                const permissions = AppState.user.permissions;
-                if (number > 0 && number <= permissions.length) {
-                    const targetTab = permissions[number - 1];
-                    showTab(targetTab);
-                    event.preventDefault();
-                }
+        // ===========================
+        // RESPONSIVE DESIGN
+        // ===========================
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('active');
             }
         });
+
+        // Cerrar sidebar al hacer clic fuera en móvil
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('sidebar');
+            const isClickInsideSidebar = sidebar.contains(e.target);
+            const isMenuButton = e.target.closest('.btn-secondary');
+            
+            if (!isClickInsideSidebar && !isMenuButton && window.innerWidth <= 768) {
+                sidebar.classList.remove('active');
+            }
+        });
+
+        // ===========================
+        // FUNCIONES ESPECÍFICAS TECSITEL
+        // ===========================
+        function exportToExcel() {
+            showToast('📊 Exportando a Excel - Migración desde Google Sheets', 'info');
+            // Funcionalidad de exportación que mejora su proceso actual
+        }
+
+        function syncWithWhatsApp() {
+            showToast('📱 Sincronizando con WhatsApp Business', 'info');
+            // Integración con su canal de comunicación actual
+        }
+
+        function generateSUNATReport() {
+            showToast('📄 Generando reporte SUNAT - Cumplimiento normativo', 'success');
+            // Funcionalidad de cumplimiento legal
+        }
+
+        function backupToCloud() {
+            showToast('☁️ Creando respaldo en la nube - Seguridad de datos', 'info');
+            // Mejora sobre su sistema actual de registros
+        }
+
+        // ===========================
+        // MEJORAS SOBRE SISTEMA ACTUAL
+        // ===========================
         
-        // Mejorar focus visible
-        const style = document.createElement('style');
-        style.textContent = `
-            *:focus {
-                outline: 2px solid var(--primary);
-                outline-offset: 2px;
-            }
-            
-            .btn:focus, .form-input:focus, .form-select:focus {
-                box-shadow: 0 0 0 3px var(--primary-alpha);
-            }
-        `;
-        document.head.appendChild(style);
-    }
+        // Mostrar evolución desde su estado actual
+        function showEvolution() {
+            const evolutionSteps = [
+                'Google Sheets → Base de Datos Estructurada',
+                'Registros en Papel → Sistema Digital',
+                'WhatsApp → Sistema de Comunicación Integrado',
+                'Control Manual → Automatización de Procesos',
+                'Sin Web → Presencia Digital Profesional'
+            ];
 
-    // ========================================
-    // VALIDACIONES MEJORADAS
-    // ========================================
-    function setupFormValidations() {
-        // Validación en tiempo real para RUC
-        document.addEventListener('input', function(event) {
-            if (event.target.name === 'clientRuc' || event.target.name === 'ruc') {
-                const isValid = !event.target.value || validateRUC(event.target.value);
-                event.target.style.borderColor = isValid ? '' : 'var(--danger)';
-                
-                let errorMsg = event.target.parentElement.querySelector('.validation-error');
-                if (!isValid && event.target.value) {
-                    if (!errorMsg) {
-                        errorMsg = document.createElement('div');
-                        errorMsg.className = 'validation-error';
-                        errorMsg.style.cssText = 'color: var(--danger); font-size: 12px; margin-top: 5px;';
-                        event.target.parentElement.appendChild(errorMsg);
-                    }
-                    errorMsg.textContent = 'RUC debe tener 11 dígitos';
-                } else if (errorMsg) {
-                    errorMsg.remove();
-                }
-            }
-            
-            // Validación para DNI
-            if (event.target.name === 'dni') {
-                const isValid = !event.target.value || validateDNI(event.target.value);
-                event.target.style.borderColor = isValid ? '' : 'var(--danger)';
-                
-                let errorMsg = event.target.parentElement.querySelector('.validation-error');
-                if (!isValid && event.target.value) {
-                    if (!errorMsg) {
-                        errorMsg = document.createElement('div');
-                        errorMsg.className = 'validation-error';
-                        errorMsg.style.cssText = 'color: var(--danger); font-size: 12px; margin-top: 5px;';
-                        event.target.parentElement.appendChild(errorMsg);
-                    }
-                    errorMsg.textContent = 'DNI debe tener 8 dígitos';
-                } else if (errorMsg) {
-                    errorMsg.remove();
-                }
-            }
-        });
-    }
-
-    // ========================================
-    // INFORMACIÓN DE ÚLTIMA SINCRONIZACIÓN
-    // ========================================
-    function updateLastSyncInfo() {
-        const info = document.getElementById('lastSyncInfo');
-        if (info) {
-            const now = new Date();
-            info.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 10px; padding: 15px; background: var(--success-alpha); border-radius: var(--radius); margin-top: 10px;">
-                    <span style="font-size: 24px;">✅</span>
-                    <div>
-                        <strong>Última sincronización exitosa</strong><br>
-                        <small style="color: var(--gray-600);">${now.toLocaleString('es-PE')} - Todos los datos están actualizados</small>
-                    </div>
-                </div>
-            `;
+            evolutionSteps.forEach((step, index) => {
+                setTimeout(() => {
+                    showToast(`🔄 ${step}`, 'info');
+                }, (index + 1) * 1500);
+            });
         }
-    }
 
-    // ========================================
-    // INICIALIZACIÓN FINAL
-    // ========================================
-    
-    // Ejecutar configuraciones adicionales cuando el DOM esté listo
-    document.addEventListener('DOMContentLoaded', function() {
-        setupAccessibility();
-        setupFormValidations();
-        handleResponsiveChanges();
-        updateLastSyncInfo();
-    });
-
-    // Mensaje de confirmación de carga completa
-    console.log('🎉 TECSITEL v6.0 - Sistema completamente cargado');
-    console.log('🔧 Características habilitadas:');
-    console.log('   ✅ Autenticación con backend + fallback local');
-    console.log('   ✅ 4 roles de usuario con permisos específicos');
-    console.log('   ✅ Interface completamente responsive');
-    console.log('   ✅ Sistema de exportación completo');
-    console.log('   ✅ Cumplimiento normativo peruano');
-    console.log('   ✅ Accesibilidad mejorada');
-    console.log('   ✅ Validaciones en tiempo real');
-    console.log('📱 Compatible con: Desktop, Tablet, Mobile, todas las resoluciones');
-    
+        // Función para mostrar la evolución después de 10 segundos
+        setTimeout(showEvolution, 10000);
     </script>
 </body>
 </html>
