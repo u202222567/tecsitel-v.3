@@ -1,0 +1,3239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="TECSITEL PERU E.I.R.L. - Sistema de Gestión Empresarial Integrado con Facturación Electrónica, HCM y Cumplimiento Normativo">
+    <meta name="author" content="TECSITEL PERU E.I.R.L.">
+    <meta name="theme-color" content="#dc143c">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://i.imgur.com data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    
+    <title>TECSITEL - Sistema de Gestión Profesional v4.0</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://i.imgur.com/6XXdcPR.png">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/6XXdcPR.png">
+    
+    <style>
+        /* =============================================
+           VARIABLES CORPORATIVAS TECSITEL
+        ============================================= */
+        :root {
+            --tecsitel-red: #dc143c;
+            --tecsitel-red-dark: #b91c3c;
+            --tecsitel-red-light: #ff4757;
+            --tecsitel-white: #ffffff;
+            --tecsitel-gray-50: #f8fafc;
+            --tecsitel-gray-100: #f1f5f9;
+            --tecsitel-gray-200: #e2e8f0;
+            --tecsitel-gray-300: #cbd5e1;
+            --tecsitel-gray-600: #475569;
+            --tecsitel-gray-700: #334155;
+            --tecsitel-gray-800: #1e293b;
+            --tecsitel-gray-900: #0f172a;
+            
+            /* Estados */
+            --success: #10b981;
+            --success-light: #34d399;
+            --warning: #f59e0b;
+            --warning-light: #fbbf24;
+            --danger: #ef4444;
+            --danger-light: #f87171;
+            --info: #3b82f6;
+            --info-light: #60a5fa;
+            
+            /* Alphas */
+            --tecsitel-alpha: rgba(220, 20, 60, 0.1);
+            --success-alpha: rgba(16, 185, 129, 0.1);
+            --warning-alpha: rgba(245, 158, 11, 0.1);
+            --danger-alpha: rgba(239, 68, 68, 0.1);
+            --info-alpha: rgba(59, 130, 246, 0.1);
+            
+            /* Sombras profesionales */
+            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            
+            /* Transiciones suaves */
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-bounce: 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            
+            /* Espaciado */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-5: 1.25rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-10: 2.5rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --space-20: 5rem;
+            
+            /* Border radius */
+            --radius-sm: 0.125rem;
+            --radius: 0.25rem;
+            --radius-md: 0.375rem;
+            --radius-lg: 0.5rem;
+            --radius-xl: 0.75rem;
+            --radius-2xl: 1rem;
+            --radius-3xl: 1.5rem;
+            --radius-full: 9999px;
+            
+            /* Layout */
+            --header-height: 80px;
+            --sidebar-width: 300px;
+            --sidebar-collapsed: 80px;
+        }
+
+        /* =============================================
+           RESET Y BASE
+        ============================================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--tecsitel-gray-50) 0%, var(--tecsitel-gray-100) 100%);
+            color: var(--tecsitel-gray-900);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* =============================================
+           PANTALLA DE LOGIN SIMPLIFICADA
+        ============================================= */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity var(--transition-slow);
+        }
+
+        .login-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .login-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        .login-container {
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: var(--space-10);
+            border-radius: var(--radius-3xl);
+            box-shadow: var(--shadow-2xl);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            animation: slideInUp 0.8s var(--transition-bounce);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(60px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .login-logo-container {
+            margin-bottom: var(--space-8);
+            position: relative;
+        }
+
+        .login-logo {
+            width: 100px;
+            height: 100px;
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-full);
+            margin: 0 auto var(--space-6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid var(--tecsitel-red);
+            animation: logoFloat 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .login-logo img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .login-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--tecsitel-red);
+            margin-bottom: var(--space-2);
+            letter-spacing: -0.025em;
+        }
+
+        .login-subtitle {
+            color: var(--tecsitel-gray-600);
+            font-size: 1rem;
+            margin-bottom: var(--space-8);
+            font-weight: 500;
+        }
+
+        /* =============================================
+           FORMULARIO DE LOGIN
+        ============================================= */
+        .login-form {
+            margin-bottom: var(--space-8);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-6);
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: var(--space-2);
+            font-weight: 600;
+            color: var(--tecsitel-gray-700);
+            font-size: 0.875rem;
+        }
+
+        .form-input-container {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: var(--space-4) var(--space-5);
+            border: 2px solid var(--tecsitel-gray-200);
+            border-radius: var(--radius-xl);
+            font-size: 1rem;
+            transition: all var(--transition-normal);
+            background: var(--tecsitel-white);
+            padding-left: var(--space-12);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--tecsitel-red);
+            box-shadow: 0 0 0 3px var(--tecsitel-alpha);
+            transform: translateY(-2px);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+            box-shadow: 0 0 0 3px var(--danger-alpha);
+        }
+
+        .form-icon {
+            position: absolute;
+            left: var(--space-4);
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.25rem;
+            color: var(--tecsitel-gray-400);
+            transition: color var(--transition-normal);
+        }
+
+        .form-input:focus + .form-icon {
+            color: var(--tecsitel-red);
+        }
+
+        .btn {
+            padding: var(--space-4) var(--space-8);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--space-2);
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            min-height: 48px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
+            color: var(--tecsitel-white);
+            width: 100%;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-sm {
+            padding: var(--space-2) var(--space-4);
+            font-size: 0.875rem;
+            min-height: 36px;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--tecsitel-white);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: var(--tecsitel-white);
+        }
+
+        .btn-secondary {
+            background: var(--tecsitel-gray-200);
+            color: var(--tecsitel-gray-700);
+        }
+
+        /* =============================================
+           USUARIOS HORIZONTALES CON SCROLL
+        ============================================= */
+        .users-demo {
+            background: var(--tecsitel-white);
+            padding: var(--space-6);
+            border-radius: var(--radius-2xl);
+            border: 2px solid var(--tecsitel-gray-200);
+            margin-bottom: var(--space-6);
+        }
+
+        .users-demo h4 {
+            color: var(--tecsitel-red);
+            font-size: 1rem;
+            margin-bottom: var(--space-4);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .users-scroll-container {
+            display: flex;
+            overflow-x: auto;
+            gap: var(--space-3);
+            padding: var(--space-2) 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--tecsitel-red) var(--tecsitel-gray-200);
+        }
+
+        .users-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .users-scroll-container::-webkit-scrollbar-track {
+            background: var(--tecsitel-gray-200);
+            border-radius: var(--radius-full);
+        }
+
+        .users-scroll-container::-webkit-scrollbar-thumb {
+            background: var(--tecsitel-red);
+            border-radius: var(--radius-full);
+        }
+
+        .user-demo {
+            background: var(--tecsitel-gray-50);
+            padding: var(--space-4);
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 2px solid transparent;
+            text-align: center;
+            min-width: 120px;
+            flex-shrink: 0;
+        }
+
+        .user-demo:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--tecsitel-red);
+            background: var(--tecsitel-white);
+        }
+
+        .user-demo.selected {
+            background: var(--tecsitel-alpha);
+            border-color: var(--tecsitel-red);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .user-demo-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
+            color: var(--tecsitel-white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            margin: 0 auto var(--space-2);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .user-demo-name {
+            font-weight: 600;
+            color: var(--tecsitel-gray-900);
+            font-size: 0.875rem;
+        }
+
+        .user-demo-role {
+            font-size: 0.75rem;
+            color: var(--tecsitel-gray-600);
+            margin-top: var(--space-1);
+        }
+
+        /* =============================================
+           PANTALLA DE CARGA CON LOGO GIRATORIO
+        ============================================= */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            flex-direction: column;
+        }
+
+        .loading-screen.active {
+            display: flex;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: var(--tecsitel-white);
+        }
+
+        .loading-logo-container {
+            width: 120px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-full);
+            margin: 0 auto var(--space-8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            animation: containerPulse 2s ease-in-out infinite;
+        }
+
+        .loading-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: logoSpin 3s linear infinite;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .loading-logo img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+        }
+
+        @keyframes containerPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.05); opacity: 1; }
+        }
+
+        @keyframes logoSpin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: var(--space-4);
+            animation: titleGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
+        }
+
+        .loading-subtitle {
+            font-size: 1.25rem;
+            margin-bottom: var(--space-8);
+            opacity: 0.9;
+        }
+
+        .loading-status {
+            font-size: 1.125rem;
+            margin-bottom: var(--space-8);
+            min-height: 28px;
+            font-weight: 500;
+        }
+
+        .loading-progress {
+            width: 300px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-full);
+            width: 0%;
+            animation: progressLoad 3s ease-out forwards;
+        }
+
+        @keyframes progressLoad {
+            0% { width: 0%; }
+            20% { width: 30%; }
+            50% { width: 70%; }
+            80% { width: 90%; }
+            100% { width: 100%; }
+        }
+
+        /* =============================================
+           LAYOUT PRINCIPAL MEJORADO
+        ============================================= */
+        .app-container {
+            display: none;
+            min-height: 100vh;
+            background: var(--tecsitel-gray-50);
+            opacity: 0;
+            transition: opacity var(--transition-slow);
+        }
+
+        .app-container.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--tecsitel-gray-900) 0%, var(--tecsitel-gray-800) 100%);
+            color: var(--tecsitel-white);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            transition: transform var(--transition-normal);
+            z-index: 1000;
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed);
+        }
+
+        .sidebar-header {
+            padding: var(--space-8);
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .sidebar-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-full);
+            margin: 0 auto var(--space-4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: 3px solid var(--tecsitel-red);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .sidebar-logo img {
+            width: 70%;
+            height: 70%;
+            object-fit: contain;
+        }
+
+        .sidebar-logo:hover {
+            transform: scale(1.05) rotate(-5deg);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .sidebar-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: var(--space-2);
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.875rem;
+            opacity: 0.7;
+            font-weight: 500;
+        }
+
+        .sidebar-nav {
+            padding: var(--space-6);
+        }
+
+        .nav-item {
+            width: 100%;
+            padding: var(--space-4) var(--space-6);
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--space-2);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left var(--transition-normal);
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--tecsitel-white);
+            transform: translateX(8px);
+        }
+
+        .nav-item:hover::before {
+            left: 100%;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
+            color: var(--tecsitel-white);
+            transform: translateX(8px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .nav-icon {
+            font-size: 1.25rem;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        .nav-text {
+            font-weight: 500;
+        }
+
+        /* =============================================
+           CONTENIDO PRINCIPAL
+        ============================================= */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            min-height: 100vh;
+            transition: all var(--transition-normal);
+        }
+
+        .main-content.expanded {
+            margin-left: var(--sidebar-collapsed);
+            width: calc(100% - var(--sidebar-collapsed));
+        }
+
+        .header {
+            height: var(--header-height);
+            background: var(--tecsitel-white);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 var(--space-8);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+            border-bottom: 3px solid var(--tecsitel-red);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .sidebar-toggle {
+            width: 48px;
+            height: 48px;
+            border: none;
+            background: var(--tecsitel-gray-100);
+            border-radius: var(--radius-xl);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-normal);
+            font-size: 1.25rem;
+        }
+
+        .sidebar-toggle:hover {
+            background: var(--tecsitel-red);
+            color: var(--tecsitel-white);
+            transform: scale(1.05);
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--tecsitel-gray-900);
+            margin: 0;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: var(--space-3);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-2) var(--space-4);
+            background: var(--tecsitel-gray-100);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .user-menu:hover {
+            background: var(--tecsitel-red);
+            color: var(--tecsitel-white);
+            transform: scale(1.02);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--tecsitel-white);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+            line-height: 1.2;
+        }
+
+        .user-role {
+            font-size: 0.75rem;
+            opacity: 0.7;
+            line-height: 1.2;
+        }
+
+        /* =============================================
+           CONTENT AREA
+        ============================================= */
+        .content-area {
+            padding: var(--space-8);
+            min-height: calc(100vh - var(--header-height));
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =============================================
+           DASHBOARD CARDS MEJORADAS
+        ============================================= */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-8);
+            margin-bottom: var(--space-12);
+        }
+
+        .metric-card {
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: 1px solid var(--tecsitel-gray-200);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+        }
+
+        .metric-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-2xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
+            color: var(--tecsitel-white);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .metric-value {
+            font-size: 2.75rem;
+            font-weight: 800;
+            color: var(--tecsitel-gray-900);
+            margin-bottom: var(--space-2);
+            line-height: 1;
+        }
+
+        .metric-label {
+            color: var(--tecsitel-gray-600);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: var(--space-3);
+        }
+
+        .metric-change {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .metric-change.positive {
+            color: var(--success);
+        }
+
+        .metric-change.negative {
+            color: var(--danger);
+        }
+
+        .metric-change-icon {
+            font-size: 1rem;
+        }
+
+        /* =============================================
+           PANELS Y TABLAS
+        ============================================= */
+        .panel {
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: var(--space-8);
+            overflow: hidden;
+            border: 1px solid var(--tecsitel-gray-200);
+        }
+
+        .panel-header {
+            padding: var(--space-6) var(--space-8);
+            border-bottom: 1px solid var(--tecsitel-gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--tecsitel-gray-50);
+        }
+
+        .panel-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--tecsitel-gray-900);
+            margin: 0;
+        }
+
+        .panel-body {
+            padding: var(--space-8);
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            margin: -var(--space-4);
+            padding: var(--space-4);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .table th,
+        .table td {
+            padding: var(--space-4);
+            text-align: left;
+            border-bottom: 1px solid var(--tecsitel-gray-200);
+        }
+
+        .table th {
+            background: var(--tecsitel-gray-50);
+            font-weight: 600;
+            color: var(--tecsitel-gray-700);
+            position: sticky;
+            top: 0;
+        }
+
+        .table tr:hover {
+            background: var(--tecsitel-gray-50);
+        }
+
+        /* =============================================
+           BADGES Y ESTADOS
+        ============================================= */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .badge-success {
+            background: var(--success-alpha);
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: var(--warning-alpha);
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: var(--danger-alpha);
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background: var(--info-alpha);
+            color: var(--info);
+        }
+
+        /* =============================================
+           FORMULARIOS Y MODALES
+        ============================================= */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            padding: var(--space-4);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-2xl);
+            animation: modalSlideIn 0.3s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-6);
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid var(--tecsitel-gray-200);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--tecsitel-gray-900);
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--tecsitel-gray-400);
+            padding: var(--space-2);
+            border-radius: var(--radius);
+            transition: all var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            background: var(--tecsitel-gray-100);
+            color: var(--tecsitel-gray-600);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--space-4);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: var(--space-3) var(--space-4);
+            border: 2px solid var(--tecsitel-gray-200);
+            border-radius: var(--radius-lg);
+            font-size: 1rem;
+            transition: all var(--transition-normal);
+            background: var(--tecsitel-white);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--tecsitel-red);
+            box-shadow: 0 0 0 3px var(--tecsitel-alpha);
+        }
+
+        .form-control:invalid {
+            border-color: var(--danger);
+        }
+
+        /* =============================================
+           COMPLIANCE CARDS
+        ============================================= */
+        .compliance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: var(--space-8);
+            margin-bottom: var(--space-8);
+        }
+
+        .compliance-card {
+            background: var(--tecsitel-white);
+            border-radius: var(--radius-2xl);
+            padding: var(--space-8);
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--tecsitel-gray-200);
+        }
+
+        .compliance-header {
+            display: flex;
+            align-items: center;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+
+        .compliance-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--radius-2xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+        }
+
+        .compliance-info h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--tecsitel-gray-900);
+            margin: 0;
+        }
+
+        .compliance-info p {
+            color: var(--tecsitel-gray-600);
+            font-size: 0.875rem;
+            margin: 0;
+        }
+
+        .compliance-list {
+            margin-bottom: var(--space-6);
+        }
+
+        .compliance-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3) 0;
+            border-bottom: 1px solid var(--tecsitel-gray-100);
+        }
+
+        .compliance-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--tecsitel-white);
+            flex-shrink: 0;
+        }
+
+        .compliance-progress {
+            padding: var(--space-4);
+            background: var(--tecsitel-gray-50);
+            border-radius: var(--radius-xl);
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--space-3);
+        }
+
+        .progress {
+            height: 8px;
+            background: var(--tecsitel-gray-200);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width var(--transition-normal);
+        }
+
+        /* =============================================
+           NOTIFICACIONES TOAST
+        ============================================= */
+        .toast-container {
+            position: fixed;
+            top: var(--space-6);
+            right: var(--space-6);
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+            max-width: 400px;
+        }
+
+        .toast {
+            background: var(--tecsitel-white);
+            padding: var(--space-4) var(--space-6);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            border-left: 4px solid;
+            animation: toastSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toast::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 2px;
+            background: currentColor;
+            width: 100%;
+            animation: toastProgress 4s linear;
+        }
+
+        @keyframes toastSlideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes toastProgress {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+
+        .toast.success {
+            border-left-color: var(--success);
+            color: var(--success);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .toast.warning {
+            border-left-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .toast.info {
+            border-left-color: var(--info);
+            color: var(--info);
+        }
+
+        .toast-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .toast-content {
+            flex: 1;
+            color: var(--tecsitel-gray-900);
+        }
+
+        .toast-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.125rem;
+            color: var(--tecsitel-gray-400);
+            padding: var(--space-1);
+            border-radius: var(--radius);
+            transition: all var(--transition-fast);
+        }
+
+        .toast-close:hover {
+            background: var(--tecsitel-gray-100);
+            color: var(--tecsitel-gray-600);
+        }
+
+        /* =============================================
+           ALERTAS
+        ============================================= */
+        .alert {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+            padding: var(--space-4) var(--space-6);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--space-6);
+            border: 1px solid;
+        }
+
+        .alert-info {
+            background: var(--info-alpha);
+            border-color: var(--info);
+            color: var(--info);
+        }
+
+        .alert-success {
+            background: var(--success-alpha);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .alert-warning {
+            background: var(--warning-alpha);
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .alert-danger {
+            background: var(--danger-alpha);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .alert-icon {
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .alert-content {
+            flex: 1;
+            color: var(--tecsitel-gray-900);
+        }
+
+        .alert-content strong {
+            color: inherit;
+        }
+
+        /* =============================================
+           BALANCE SHEET
+        ============================================= */
+        .balance-sheet {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--space-8);
+        }
+
+        .balance-section {
+            background: var(--tecsitel-gray-50);
+            padding: var(--space-6);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--tecsitel-gray-200);
+        }
+
+        .balance-section h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--tecsitel-red);
+            margin-bottom: var(--space-4);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .balance-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-3) 0;
+            border-bottom: 1px solid var(--tecsitel-gray-200);
+        }
+
+        .balance-item:last-of-type {
+            border-bottom: none;
+        }
+
+        .balance-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--space-4) 0 var(--space-2);
+            margin-top: var(--space-4);
+            border-top: 2px solid var(--tecsitel-red);
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--tecsitel-gray-900);
+        }
+
+        /* =============================================
+           RESPONSIVE DESIGN
+        ============================================= */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .sidebar-toggle {
+                display: flex;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --space-8: 1.5rem;
+                --space-6: 1rem;
+                --space-4: 0.75rem;
+            }
+            
+            .login-container {
+                padding: var(--space-8);
+                margin: var(--space-4);
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: var(--space-6);
+            }
+            
+            .content-area {
+                padding: var(--space-6);
+            }
+            
+            .header {
+                padding: 0 var(--space-4);
+            }
+            
+            .page-title {
+                font-size: 1.5rem;
+            }
+            
+            .user-info {
+                display: none;
+            }
+            
+            .users-scroll-container {
+                gap: var(--space-2);
+            }
+            
+            .user-demo {
+                min-width: 100px;
+                padding: var(--space-3);
+            }
+
+            .compliance-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .balance-sheet {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .table-responsive {
+                font-size: 0.75rem;
+            }
+
+            .hide-mobile {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .toast-container {
+                top: var(--space-4);
+                right: var(--space-4);
+                left: var(--space-4);
+                max-width: none;
+            }
+
+            .modal-content {
+                margin: var(--space-2);
+                padding: var(--space-6);
+            }
+        }
+
+        /* =============================================
+           UTILIDADES
+        ============================================= */
+        .hidden { display: none !important; }
+        .text-center { text-align: center; }
+        .font-bold { font-weight: 700; }
+        .font-semibold { font-weight: 600; }
+        .text-sm { font-size: 0.875rem; }
+        .text-xs { font-size: 0.75rem; }
+        .text-red { color: var(--tecsitel-red); }
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-danger { color: var(--danger); }
+        .text-info { color: var(--info); }
+        .mb-4 { margin-bottom: var(--space-4); }
+        .mb-6 { margin-bottom: var(--space-6); }
+        .mt-4 { margin-top: var(--space-4); }
+        .mt-6 { margin-top: var(--space-6); }
+    </style>
+</head>
+<body>
+    <!-- Pantalla de Login -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-background"></div>
+        <div class="login-container">
+            <div class="login-logo-container">
+                <div class="login-logo">
+                    <img src="https://i.imgur.com/6XXdcPR.png" alt="TECSITEL Logo">
+                </div>
+                <h1 class="login-title">TECSITEL</h1>
+                <p class="login-subtitle">Sistema de Gestión Empresarial</p>
+            </div>
+
+            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label">Usuario</label>
+                    <div class="form-input-container">
+                        <input type="text" class="form-input" id="username" placeholder="Ingresa tu usuario" required autocomplete="username">
+                        <div class="form-icon">👤</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Contraseña</label>
+                    <div class="form-input-container">
+                        <input type="password" class="form-input" id="password" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
+                        <div class="form-icon">🔒</div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="loginBtn">
+                    <span>🚀</span>
+                    <span>Acceder al Sistema</span>
+                </button>
+            </form>
+
+            <div class="users-demo">
+                <h4>👥 Selecciona un Usuario de Prueba</h4>
+                <div class="users-scroll-container">
+                    <div class="user-demo" data-user="admin" data-pass="admin123">
+                        <div class="user-demo-avatar">A</div>
+                        <div class="user-demo-name">admin</div>
+                        <div class="user-demo-role">Administrador</div>
+                    </div>
+                    <div class="user-demo" data-user="contable" data-pass="cont123">
+                        <div class="user-demo-avatar">C</div>
+                        <div class="user-demo-name">contable</div>
+                        <div class="user-demo-role">Contador</div>
+                    </div>
+                    <div class="user-demo" data-user="supervisor" data-pass="super123">
+                        <div class="user-demo-avatar">S</div>
+                        <div class="user-demo-name">supervisor</div>
+                        <div class="user-demo-role">Supervisor</div>
+                    </div>
+                    <div class="user-demo" data-user="rrhh" data-pass="rrhh123">
+                        <div class="user-demo-avatar">R</div>
+                        <div class="user-demo-name">rrhh</div>
+                        <div class="user-demo-role">Recursos Humanos</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Pantalla de Carga -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="loading-logo-container">
+                <div class="loading-logo">
+                    <img src="https://i.imgur.com/6XXdcPR.png" alt="TECSITEL Logo">
+                </div>
+            </div>
+            <h1 class="loading-title">TECSITEL</h1>
+            <p class="loading-subtitle">PERU E.I.R.L.</p>
+            <div class="loading-status" id="loadingStatus">Iniciando sistema...</div>
+            <div class="loading-progress">
+                <div class="loading-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aplicación Principal -->
+    <div class="app-container" id="appContainer">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo" onclick="showTab('dashboard')">
+                    <img src="https://i.imgur.com/6XXdcPR.png" alt="TECSITEL Logo">
+                </div>
+                <h2 class="sidebar-title">TECSITEL</h2>
+                <p class="sidebar-subtitle">Gestión Empresarial v4.0</p>
+            </div>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <!-- Se llenará dinámicamente -->
+            </nav>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="main-content" id="mainContent">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
+                        <span>☰</span>
+                    </button>
+                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <div class="header-actions">
+                        <button class="btn" style="padding: 8px 16px; background: var(--tecsitel-gray-100); color: var(--tecsitel-gray-700); font-size: 0.875rem;" onclick="exportData()">
+                            📤 Exportar
+                        </button>
+                        <button class="btn" style="padding: 8px 16px; background: var(--tecsitel-gray-100); color: var(--tecsitel-gray-700); font-size: 0.875rem;" onclick="logout()">
+                            🚪 Salir
+                        </button>
+                    </div>
+                    <div class="user-menu" onclick="showUserMenu()">
+                        <div class="user-avatar" id="userAvatar">A</div>
+                        <div class="user-info">
+                            <div class="user-name" id="userName">Administrador</div>
+                            <div class="user-role" id="userRole">TECSITEL</div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Área de Contenido -->
+            <div class="content-area">
+                <!-- Dashboard -->
+                <div id="dashboard" class="tab-content active">
+                    <div class="dashboard-grid">
+                        <div class="metric-card" onclick="showTab('invoices')">
+                            <div class="metric-header">
+                                <div class="metric-icon">💰</div>
+                            </div>
+                            <div class="metric-value" id="totalIncome">S/ 0.00</div>
+                            <div class="metric-label">Ingresos Totales</div>
+                            <div class="metric-change positive">
+                                <span class="metric-change-icon">↗</span>
+                                <span>Facturación activa</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card" onclick="showTab('invoices')">
+                            <div class="metric-header">
+                                <div class="metric-icon">📋</div>
+                            </div>
+                            <div class="metric-value" id="pendingInvoices">0</div>
+                            <div class="metric-label">Facturas Pendientes</div>
+                            <div class="metric-change warning">
+                                <span class="metric-change-icon">⚠</span>
+                                <span>Por cobrar</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card" onclick="showTab('personnel')">
+                            <div class="metric-header">
+                                <div class="metric-icon">👥</div>
+                            </div>
+                            <div class="metric-value" id="totalEmployees">12</div>
+                            <div class="metric-label">Empleados Activos</div>
+                            <div class="metric-change positive">
+                                <span class="metric-change-icon">↗</span>
+                                <span>Personal completo</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card" onclick="showTab('compliance')">
+                            <div class="metric-header">
+                                <div class="metric-icon">⚖️</div>
+                            </div>
+                            <div class="metric-value" id="complianceScore">95%</div>
+                            <div class="metric-label">Cumplimiento</div>
+                            <div class="metric-change positive">
+                                <span class="metric-change-icon">✓</span>
+                                <span>SUNAT/SUNAFIL</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de la empresa -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">🏢 TECSITEL PERU E.I.R.L.</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert alert-info">
+                                <span class="alert-icon">ℹ️</span>
+                                <div class="alert-content">
+                                    <strong>RUC: 20605908285</strong><br>
+                                    Sistema integrado de gestión empresarial con cumplimiento normativo SUNAT y SUNAFIL.
+                                    Más de 1,300 servicios de telecomunicaciones exitosos realizados.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Facturación -->
+                <div id="invoices" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">📄 Gestión de Facturas</h3>
+                            <button class="btn btn-primary" onclick="showModal('newInvoice')">
+                                ➕ Nueva Factura
+                            </button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert alert-success">
+                                <span class="alert-icon">✓</span>
+                                <div class="alert-content">
+                                    <strong>Facturación Electrónica 3.0 Activa</strong><br>
+                                    Cumpliendo con normativas SUNAT. Sistema homologado.
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table" id="invoicesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>N° Factura</th>
+                                            <th>Cliente</th>
+                                            <th class="hide-mobile">RUC</th>
+                                            <th>Total</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="6" style="text-align: center; padding: 2rem;">
+                                                No hay facturas registradas. Haz clic en "Nueva Factura" para comenzar.
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contabilidad -->
+                <div id="accounting" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">💰 Estado de Situación Financiera</h3>
+                            <button class="btn btn-primary" onclick="updateFinancials()">
+                                🔄 Actualizar
+                            </button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="balance-sheet">
+                                <div class="balance-section">
+                                    <h4>ACTIVOS</h4>
+                                    <div class="balance-item">
+                                        <span>Efectivo y Bancos</span>
+                                        <span id="cashBalance">S/ 12,500.00</span>
+                                    </div>
+                                    <div class="balance-item">
+                                        <span>Cuentas por Cobrar</span>
+                                        <span id="receivables">S/ 0.00</span>
+                                    </div>
+                                    <div class="balance-item">
+                                        <span>Inventario</span>
+                                        <span>S/ 4,200.00</span>
+                                    </div>
+                                    <div class="balance-total">
+                                        <span>Total Activos</span>
+                                        <span id="totalAssets">S/ 16,700.00</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="balance-section">
+                                    <h4>PASIVOS</h4>
+                                    <div class="balance-item">
+                                        <span>Cuentas por Pagar</span>
+                                        <span>S/ 3,100.00</span>
+                                    </div>
+                                    <div class="balance-item">
+                                        <span>Impuestos por Pagar</span>
+                                        <span id="taxesPayable">S/ 0.00</span>
+                                    </div>
+                                    <div class="balance-total">
+                                        <span>Total Pasivos</span>
+                                        <span id="totalLiabilities">S/ 3,100.00</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="balance-section">
+                                    <h4>PATRIMONIO</h4>
+                                    <div class="balance-item">
+                                        <span>Capital Social</span>
+                                        <span>S/ 15,000.00</span>
+                                    </div>
+                                    <div class="balance-item">
+                                        <span>Utilidades Retenidas</span>
+                                        <span id="retainedEarnings">S/ -1,400.00</span>
+                                    </div>
+                                    <div class="balance-total">
+                                        <span>Total Patrimonio</span>
+                                        <span id="totalEquity">S/ 13,600.00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal -->
+                <div id="personnel" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">👥 Gestión de Empleados</h3>
+                            <button class="btn btn-primary" onclick="showModal('newEmployee')">
+                                ➕ Nuevo Empleado
+                            </button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table" id="employeesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>DNI</th>
+                                            <th>Nombre Completo</th>
+                                            <th class="hide-mobile">Puesto</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Se llenará dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">⏰ Control de Asistencia Digital</h3>
+                            <button class="btn btn-primary" onclick="showModal('timeEntry')">
+                                ➕ Nueva Marcación
+                            </button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert alert-info">
+                                <span class="alert-icon">ℹ️</span>
+                                <div class="alert-content">
+                                    <strong>Cumplimiento SUNAFIL.</strong> El registro de control de asistencia es obligatorio.
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table" id="timeTrackingTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Trabajador</th>
+                                            <th>Entrada</th>
+                                            <th>Salida</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Se llenará dinámicamente -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cumplimiento -->
+                <div id="compliance" class="tab-content">
+                    <div class="compliance-grid">
+                        <div class="compliance-card">
+                            <div class="compliance-header">
+                                <div class="compliance-icon" style="background: var(--success-alpha);">🏛️</div>
+                                <div class="compliance-info">
+                                    <h3>SUNAT</h3>
+                                    <p>Superintendencia Nacional</p>
+                                </div>
+                            </div>
+                            <div class="compliance-list">
+                                <div class="compliance-item">
+                                    <div class="check-icon" style="background: var(--success);">✓</div>
+                                    <span>Facturación Electrónica 3.0</span>
+                                </div>
+                                <div class="compliance-item">
+                                    <div class="check-icon" style="background: var(--success);">✓</div>
+                                    <span>Libros Electrónicos al día</span>
+                                </div>
+                                <div class="compliance-item">
+                                    <div class="check-icon" style="background: var(--warning);">!</div>
+                                    <span>PDT 621 - Vence en 10 días</span>
+                                </div>
+                            </div>
+                            <div class="compliance-progress">
+                                <div class="progress-header">
+                                    <span>Cumplimiento</span>
+                                    <strong>95%</strong>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 95%; background: var(--success);"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="compliance-card">
+                            <div class="compliance-header">
+                                <div class="compliance-icon" style="background: var(--info-alpha);">⚖️</div>
+                                <div class="compliance-info">
+                                    <h3>SUNAFIL</h3>
+                                    <p>Fiscalización Laboral</p>
+                                </div>
+                            </div>
+                            <div class="compliance-list">
+                                <div class="compliance-item">
+                                    <div class="check-icon" style="background: var(--success);">✓</div>
+                                    <span>T-REGISTRO actualizado</span>
+                                </div>
+                                <div class="compliance-item">
+                                    <div class="check-icon" style="background: var(--success);">✓</div>
+                                    <span>Control de asistencia digital</span>
+                                </div>
+                                <div class="compliance-item">
+                                    <div class="check-icon" style="background: var(--success);">✓</div>
+                                    <span>Registro de jornadas laborales</span>
+                                </div>
+                            </div>
+                            <div class="compliance-progress">
+                                <div class="progress-header">
+                                    <span>Cumplimiento</span>
+                                    <strong>100%</strong>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 100%; background: var(--success);"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">📊 Reporte de Cumplimiento</h3>
+                            <button class="btn btn-primary" onclick="generateComplianceReport()">
+                                📄 Generar Reporte
+                            </button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert alert-success">
+                                <span class="alert-icon">✅</span>
+                                <div class="alert-content">
+                                    <strong>Estado Excelente:</strong> TECSITEL mantiene un 97.5% de cumplimiento general con todas las normativas vigentes.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modales -->
+    <!-- Modal Nueva Factura -->
+    <div class="modal" id="newInvoiceModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">📄 Nueva Factura</h3>
+                <button class="modal-close" onclick="closeModal('newInvoiceModal')">×</button>
+            </div>
+            <form id="invoiceForm" onsubmit="createInvoice(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Cliente</label>
+                        <input type="text" class="form-control" name="client" placeholder="Nombre del cliente" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">RUC</label>
+                        <input type="text" class="form-control" name="ruc" placeholder="20123456789" maxlength="11" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Servicio</label>
+                        <select class="form-control" name="service" required>
+                            <option value="">Seleccionar servicio</option>
+                            <option value="Instalación FTTH">Instalación FTTH</option>
+                            <option value="Cableado Estructurado">Cableado Estructurado</option>
+                            <option value="Enlaces Microondas">Enlaces Microondas</option>
+                            <option value="Mantenimiento">Mantenimiento</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Monto</label>
+                        <input type="number" class="form-control" name="amount" placeholder="0.00" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Moneda</label>
+                        <select class="form-control" name="currency" required>
+                            <option value="PEN">Soles (PEN)</option>
+                            <option value="USD">Dólares (USD)</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: var(--space-6); text-align: right;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('newInvoiceModal')">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="margin-left: var(--space-3);">
+                        💾 Guardar Factura
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Nuevo Empleado -->
+    <div class="modal" id="newEmployeeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">👤 Nuevo Empleado</h3>
+                <button class="modal-close" onclick="closeModal('newEmployeeModal')">×</button>
+            </div>
+            <form id="employeeForm" onsubmit="createEmployee(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">DNI</label>
+                        <input type="text" class="form-control" name="dni" placeholder="12345678" maxlength="8" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombres</label>
+                        <input type="text" class="form-control" name="firstName" placeholder="Nombres" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Apellidos</label>
+                        <input type="text" class="form-control" name="lastName" placeholder="Apellidos" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Puesto</label>
+                        <select class="form-control" name="position" required>
+                            <option value="">Seleccionar puesto</option>
+                            <option value="Técnico de Campo">Técnico de Campo</option>
+                            <option value="Supervisor">Supervisor</option>
+                            <option value="Administrativo">Administrativo</option>
+                            <option value="Gerente">Gerente</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Salario</label>
+                        <input type="number" class="form-control" name="salary" placeholder="0.00" step="0.01" min="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado</label>
+                        <select class="form-control" name="status" required>
+                            <option value="Activo">Activo</option>
+                            <option value="Inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: var(--space-6); text-align: right;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('newEmployeeModal')">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="margin-left: var(--space-3);">
+                        💾 Guardar Empleado
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Marcación de Tiempo -->
+    <div class="modal" id="timeEntryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">⏰ Nueva Marcación</h3>
+                <button class="modal-close" onclick="closeModal('timeEntryModal')">×</button>
+            </div>
+            <form id="timeEntryForm" onsubmit="createTimeEntry(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Empleado</label>
+                        <select class="form-control" name="employeeId" required>
+                            <option value="">Seleccionar empleado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Tipo</label>
+                        <select class="form-control" name="type" required>
+                            <option value="entrada">Entrada</option>
+                            <option value="salida">Salida</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha</label>
+                        <input type="date" class="form-control" name="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Hora</label>
+                        <input type="time" class="form-control" name="time" required>
+                    </div>
+                </div>
+                <div style="margin-top: var(--space-6); text-align: right;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('timeEntryModal')">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary" style="margin-left: var(--space-3);">
+                        💾 Registrar Marcación
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contenedor de Toasts -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // =============================================
+        // CONFIGURACIÓN Y ESTADO GLOBAL
+        // =============================================
+        const TECSITEL_CONFIG = {
+            empresa: {
+                ruc: '20605908285',
+                razonSocial: 'TECSITEL PERU E.I.R.L.',
+                serviciosExitosos: 1300,
+                empleadosTotal: 12,
+                empleadosAdmin: 2,
+                empleadosOperarios: 10
+            },
+            
+            usuarios: {
+                'admin': {
+                    password: 'admin123',
+                    name: 'Administrador General',
+                    role: 'Administrador',
+                    area: 'Administración',
+                    avatar: 'A',
+                    permissions: ['all']
+                },
+                'contable': {
+                    password: 'cont123',
+                    name: 'Contador Externo',
+                    role: 'Contador',
+                    area: 'Contabilidad',
+                    avatar: 'C',
+                    permissions: ['invoices', 'accounting', 'reports', 'exports']
+                },
+                'supervisor': {
+                    password: 'super123',
+                    name: 'Supervisor de Campo',
+                    role: 'Supervisor',
+                    area: 'Operaciones',
+                    avatar: 'S',
+                    permissions: ['timeentry', 'dashboard']
+                },
+                'rrhh': {
+                    password: 'rrhh123',
+                    name: 'Recursos Humanos',
+                    role: 'RRHH',
+                    area: 'Recursos Humanos',
+                    avatar: 'R',
+                    permissions: ['personnel', 'timeentry', 'compliance', 'dashboard']
+                }
+            },
+            
+            modulos: {
+                'dashboard': { name: 'Dashboard', icon: '📊' },
+                'invoices': { name: 'Facturas', icon: '📄' },
+                'accounting': { name: 'Contabilidad', icon: '💰' },
+                'personnel': { name: 'Personal', icon: '👥' },
+                'timeentry': { name: 'Marcaje', icon: '⏰' },
+                'compliance': { name: 'Cumplimiento', icon: '⚖️' },
+                'reports': { name: 'Reportes', icon: '📊' },
+                'exports': { name: 'Exportaciones', icon: '📤' }
+            }
+        };
+
+        // Estado global de la aplicación
+        const AppState = {
+            currentUser: null,
+            invoices: [],
+            employees: [
+                { id: 1, dni: '12345678', firstName: 'Juan', lastName: 'Pérez', position: 'Técnico de Campo', salary: 1500, status: 'Activo' },
+                { id: 2, dni: '87654321', firstName: 'María', lastName: 'García', position: 'Administrativo', salary: 2000, status: 'Activo' }
+            ],
+            timeEntries: [],
+            nextId: {
+                invoice: 1,
+                employee: 3,
+                timeEntry: 1
+            }
+        };
+
+        let sidebarCollapsed = false;
+
+        // =============================================
+        // SISTEMA DE AUTENTICACIÓN
+        // =============================================
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value.toLowerCase().trim();
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            
+            if (!username || !password) {
+                showToast('⚠️ Por favor completa todos los campos', 'warning');
+                return;
+            }
+            
+            // Validar credenciales
+            const user = TECSITEL_CONFIG.usuarios[username];
+            if (!user || user.password !== password) {
+                showToast('❌ Credenciales incorrectas', 'error');
+                document.getElementById('username').classList.add('error');
+                document.getElementById('password').classList.add('error');
+                return;
+            }
+            
+            // Login exitoso
+            AppState.currentUser = { username, ...user };
+            
+            // Deshabilitar botón y mostrar loading
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span>🔄</span><span>Validando...</span>';
+            
+            // Mostrar pantalla de carga
+            setTimeout(() => {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('loadingScreen').classList.add('active');
+                startLoadingSequence();
+            }, 500);
+        }
+
+        function startLoadingSequence() {
+            const statusMessages = [
+                'Validando credenciales...',
+                'Conectando con sistema TECSITEL...',
+                'Verificando permisos de usuario...',
+                'Cargando módulos del sistema...',
+                'Inicializando base de datos...',
+                'Verificando cumplimiento SUNAT...',
+                'Verificando cumplimiento SUNAFIL...',
+                'Preparando interfaz de usuario...',
+                '¡Bienvenido a TECSITEL!'
+            ];
+            
+            let currentIndex = 0;
+            const statusElement = document.getElementById('loadingStatus');
+            
+            const updateStatus = () => {
+                if (currentIndex < statusMessages.length) {
+                    statusElement.textContent = statusMessages[currentIndex];
+                    currentIndex++;
+                    setTimeout(updateStatus, 400);
+                } else {
+                    setTimeout(showMainApp, 800);
+                }
+            };
+            
+            updateStatus();
+        }
+
+        function showMainApp() {
+            document.getElementById('loadingScreen').classList.remove('active');
+            document.getElementById('appContainer').classList.add('active');
+            
+            initializeApp();
+            showToast(`🎉 Bienvenido ${AppState.currentUser.name}`, 'success');
+        }
+
+        function logout() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                AppState.currentUser = null;
+                document.getElementById('appContainer').classList.remove('active');
+                document.getElementById('loginScreen').classList.remove('hidden');
+                
+                // Resetear formulario
+                document.getElementById('loginForm').reset();
+                document.getElementById('loginBtn').disabled = false;
+                document.getElementById('loginBtn').innerHTML = '<span>🚀</span><span>Acceder al Sistema</span>';
+                
+                // Limpiar selección de usuarios
+                document.querySelectorAll('.user-demo').forEach(c => c.classList.remove('selected'));
+                
+                showToast('👋 Sesión cerrada exitosamente', 'info');
+            }
+        }
+
+        // =============================================
+        // INICIALIZACIÓN DE LA APLICACIÓN
+        // =============================================
+        function initializeApp() {
+            setupUserInterface();
+            setupNavigation();
+            loadInitialData();
+            renderDashboard();
+        }
+
+        function setupUserInterface() {
+            document.getElementById('userAvatar').textContent = AppState.currentUser.avatar;
+            document.getElementById('userName').textContent = AppState.currentUser.name;
+            document.getElementById('userRole').textContent = `${AppState.currentUser.role} - TECSITEL`;
+        }
+
+        function setupNavigation() {
+            const sidebarNav = document.getElementById('sidebarNav');
+            sidebarNav.innerHTML = '';
+            
+            // Obtener módulos disponibles según permisos
+            const availableModules = getAvailableModules();
+            
+            availableModules.forEach(moduleId => {
+                const module = TECSITEL_CONFIG.modulos[moduleId];
+                if (module) {
+                    const navItem = document.createElement('button');
+                    navItem.className = `nav-item ${moduleId === 'dashboard' ? 'active' : ''}`;
+                    navItem.dataset.tab = moduleId;
+                    navItem.onclick = () => showTab(moduleId);
+                    navItem.innerHTML = `
+                        <span class="nav-icon">${module.icon}</span>
+                        <span class="nav-text">${module.name}</span>
+                    `;
+                    sidebarNav.appendChild(navItem);
+                }
+            });
+        }
+
+        function getAvailableModules() {
+            if (AppState.currentUser.permissions.includes('all')) {
+                return Object.keys(TECSITEL_CONFIG.modulos);
+            }
+            
+            // Dashboard siempre disponible + permisos específicos
+            return ['dashboard', ...AppState.currentUser.permissions];
+        }
+
+        function loadInitialData() {
+            // Datos de ejemplo para demostración
+            AppState.employees.forEach(emp => {
+                emp.avatar = emp.firstName.charAt(0).toUpperCase();
+            });
+
+            updateDashboardMetrics();
+            renderEmployees();
+            renderTimeEntries();
+        }
+
+        // =============================================
+        // NAVEGACIÓN Y TABS
+        // =============================================
+        function showTab(tabName) {
+            // Ocultar todas las pestañas
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar pestaña seleccionada
+            const targetTab = document.getElementById(tabName);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+            
+            // Actualizar navegación
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const activeNavItem = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeNavItem) {
+                activeNavItem.classList.add('active');
+            }
+            
+            // Actualizar título
+            const module = TECSITEL_CONFIG.modulos[tabName];
+            if (module) {
+                document.getElementById('pageTitle').textContent = module.name;
+            }
+
+            // Cargar datos específicos de la pestaña
+            switch(tabName) {
+                case 'invoices':
+                    renderInvoices();
+                    break;
+                case 'accounting':
+                    updateFinancials();
+                    break;
+                case 'personnel':
+                    renderEmployees();
+                    renderTimeEntries();
+                    populateEmployeeSelect();
+                    break;
+            }
+        }
+
+        // =============================================
+        // FUNCIONES DE INTERFAZ
+        // =============================================
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (window.innerWidth <= 1024) {
+                sidebar.classList.toggle('active');
+            } else {
+                sidebarCollapsed = !sidebarCollapsed;
+                
+                if (sidebarCollapsed) {
+                    sidebar.classList.add('collapsed');
+                    mainContent.classList.add('expanded');
+                } else {
+                    sidebar.classList.remove('collapsed');
+                    mainContent.classList.remove('expanded');
+                }
+            }
+        }
+
+        function showUserMenu() {
+            showToast(`👤 ${AppState.currentUser.name} - ${AppState.currentUser.role}`, 'info');
+        }
+
+        // =============================================
+        // DASHBOARD Y MÉTRICAS
+        // =============================================
+        function renderDashboard() {
+            updateDashboardMetrics();
+        }
+
+        function updateDashboardMetrics() {
+            // Calcular ingresos totales
+            const totalIncome = AppState.invoices
+                .filter(inv => inv.status === 'Aprobada')
+                .reduce((sum, inv) => sum + (inv.currency === 'USD' ? inv.amount * 3.75 : inv.amount), 0);
+            
+            // Facturas pendientes
+            const pendingInvoices = AppState.invoices.filter(inv => inv.status === 'Pendiente').length;
+            
+            // Empleados activos
+            const activeEmployees = AppState.employees.filter(emp => emp.status === 'Activo').length;
+            
+            // Actualizar DOM
+            document.getElementById('totalIncome').textContent = `S/ ${totalIncome.toFixed(2)}`;
+            document.getElementById('pendingInvoices').textContent = pendingInvoices;
+            document.getElementById('totalEmployees').textContent = activeEmployees;
+        }
+
+        // =============================================
+        // GESTIÓN DE FACTURAS
+        // =============================================
+        function renderInvoices() {
+            const tableBody = document.querySelector('#invoicesTable tbody');
+            
+            if (AppState.invoices.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--tecsitel-gray-600);">
+                            📄 No hay facturas registradas. Haz clic en "Nueva Factura" para comenzar.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = AppState.invoices.map(invoice => `
+                <tr>
+                    <td><strong>${invoice.number}</strong></td>
+                    <td>${sanitizeInput(invoice.client)}</td>
+                    <td class="hide-mobile">${invoice.ruc}</td>
+                    <td>${invoice.currency === 'USD' ? '
+                 : 'S/'} ${invoice.amount.toFixed(2)}</td>
+                    <td>
+                        <span class="badge badge-${getStatusClass(invoice.status)}">
+                            ${invoice.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-success" onclick="approveInvoice(${invoice.id})" 
+                                ${invoice.status === 'Aprobada' ? 'disabled' : ''}>
+                            ✓ Aprobar
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteInvoice(${invoice.id})">
+                            🗑 Eliminar
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function createInvoice(event) {
+            event.preventDefault();
+            
+            if (!hasPermission(['invoices', 'all'])) {
+                showToast('❌ No tienes permisos para crear facturas', 'error');
+                return;
+            }
+            
+            const formData = new FormData(event.target);
+            const invoiceData = {
+                id: AppState.nextId.invoice++,
+                number: `F001-${String(AppState.nextId.invoice).padStart(6, '0')}`,
+                client: formData.get('client'),
+                ruc: formData.get('ruc'),
+                service: formData.get('service'),
+                amount: parseFloat(formData.get('amount')),
+                currency: formData.get('currency'),
+                status: 'Pendiente',
+                date: new Date().toLocaleDateString('es-PE'),
+                createdBy: AppState.currentUser.name
+            };
+            
+            // Validaciones
+            if (!validateRUC(invoiceData.ruc)) {
+                showToast('❌ RUC inválido', 'error');
+                return;
+            }
+            
+            AppState.invoices.push(invoiceData);
+            closeModal('newInvoiceModal');
+            document.getElementById('invoiceForm').reset();
+            
+            showToast(`✅ Factura ${invoiceData.number} creada exitosamente`, 'success');
+            
+            if (document.getElementById('invoices').classList.contains('active')) {
+                renderInvoices();
+            }
+            updateDashboardMetrics();
+        }
+
+        function approveInvoice(id) {
+            if (!hasPermission(['invoices', 'all'])) {
+                showToast('❌ No tienes permisos para aprobar facturas', 'error');
+                return;
+            }
+            
+            const invoice = AppState.invoices.find(inv => inv.id === id);
+            if (invoice) {
+                invoice.status = 'Aprobada';
+                invoice.approvedBy = AppState.currentUser.name;
+                invoice.approvedDate = new Date().toLocaleDateString('es-PE');
+                
+                showToast(`✅ Factura ${invoice.number} aprobada`, 'success');
+                renderInvoices();
+                updateDashboardMetrics();
+                updateFinancials();
+            }
+        }
+
+        function deleteInvoice(id) {
+            if (!hasPermission(['invoices', 'all'])) {
+                showToast('❌ No tienes permisos para eliminar facturas', 'error');
+                return;
+            }
+            
+            if (confirm('¿Estás seguro de eliminar esta factura?')) {
+                AppState.invoices = AppState.invoices.filter(inv => inv.id !== id);
+                showToast('🗑 Factura eliminada', 'info');
+                renderInvoices();
+                updateDashboardMetrics();
+                updateFinancials();
+            }
+        }
+
+        // =============================================
+        // GESTIÓN DE EMPLEADOS
+        // =============================================
+        function renderEmployees() {
+            const tableBody = document.querySelector('#employeesTable tbody');
+            
+            if (AppState.employees.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                            👥 No hay empleados registrados.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            tableBody.innerHTML = AppState.employees.map(employee => `
+                <tr>
+                    <td><strong>${employee.dni}</strong></td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: var(--space-3);">
+                            <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.875rem;">
+                                ${employee.avatar || employee.firstName.charAt(0)}
+                            </div>
+                            ${sanitizeInput(employee.firstName)} ${sanitizeInput(employee.lastName)}
+                        </div>
+                    </td>
+                    <td class="hide-mobile">${employee.position}</td>
+                    <td>
+                        <span class="badge badge-${employee.status === 'Activo' ? 'success' : 'danger'}">
+                            ${employee.status}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-secondary" onclick="editEmployee(${employee.id})">
+                            ✏️ Editar
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteEmployee(${employee.id})">
+                            🗑 Eliminar
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function createEmployee(event) {
+            event.preventDefault();
+            
+            if (!hasPermission(['personnel', 'all'])) {
+                showToast('❌ No tienes permisos para gestionar personal', 'error');
+                return;
+            }
+            
+            const formData = new FormData(event.target);
+            const employeeData = {
+                id: AppState.nextId.employee++,
+                dni: formData.get('dni'),
+                firstName: formData.get('firstName'),
+                lastName: formData.get('lastName'),
+                position: formData.get('position'),
+                salary: parseFloat(formData.get('salary')),
+                status: formData.get('status'),
+                avatar: formData.get('firstName').charAt(0).toUpperCase(),
+                hireDate: new Date().toLocaleDateString('es-PE'),
+                createdBy: AppState.currentUser.name
+            };
+            
+            // Validaciones
+            if (!validateDNI(employeeData.dni)) {
+                showToast('❌ DNI inválido', 'error');
+                return;
+            }
+            
+            if (AppState.employees.find(emp => emp.dni === employeeData.dni)) {
+                showToast('❌ Ya existe un empleado con ese DNI', 'error');
+                return;
+            }
+            
+            AppState.employees.push(employeeData);
+            closeModal('newEmployeeModal');
+            document.getElementById('employeeForm').reset();
+            
+            showToast(`✅ Empleado ${employeeData.firstName} ${employeeData.lastName} registrado`, 'success');
+            
+            renderEmployees();
+            populateEmployeeSelect();
+            updateDashboardMetrics();
+        }
+
+        function editEmployee(id) {
+            showToast('ℹ️ Función de edición en desarrollo', 'info');
+        }
+
+        function deleteEmployee(id) {
+            if (!hasPermission(['personnel', 'all'])) {
+                showToast('❌ No tienes permisos para eliminar empleados', 'error');
+                return;
+            }
+            
+            const employee = AppState.employees.find(emp => emp.id === id);
+            if (employee && confirm(`¿Eliminar empleado ${employee.firstName} ${employee.lastName}?`)) {
+                AppState.employees = AppState.employees.filter(emp => emp.id !== id);
+                showToast('🗑 Empleado eliminado', 'info');
+                renderEmployees();
+                populateEmployeeSelect();
+                updateDashboardMetrics();
+            }
+        }
+
+        // =============================================
+        // CONTROL DE TIEMPO Y ASISTENCIA
+        // =============================================
+        function renderTimeEntries() {
+            const tableBody = document.querySelector('#timeTrackingTable tbody');
+            
+            if (AppState.timeEntries.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 2rem;">
+                            ⏰ No hay marcaciones registradas.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Agrupar por empleado y fecha
+            const groupedEntries = groupTimeEntriesByEmployeeAndDate();
+            
+            tableBody.innerHTML = groupedEntries.map(entry => {
+                const statusClass = entry.exitTime !== '--:--' ? 'success' : 'warning';
+                const statusText = entry.exitTime !== '--:--' ? 'Completo' : 'En jornada';
+                
+                return `
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: var(--space-3);">
+                                <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.875rem;">
+                                    ${entry.avatar}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 600;">${sanitizeInput(entry.name)}</div>
+                                    <div style="font-size: 0.75rem; color: var(--tecsitel-gray-600);">${entry.date}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><strong>${entry.entryTime}</strong></td>
+                        <td><strong>${entry.exitTime}</strong></td>
+                        <td>
+                            <span class="badge badge-${statusClass}">
+                                ${statusText}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteTimeEntry('${entry.employeeId}', '${entry.date}')">
+                                🗑 Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function createTimeEntry(event) {
+            event.preventDefault();
+            
+            if (!hasPermission(['timeentry', 'personnel', 'all'])) {
+                showToast('❌ No tienes permisos para registrar marcaciones', 'error');
+                return;
+            }
+            
+            const formData = new FormData(event.target);
+            const timeEntryData = {
+                id: AppState.nextId.timeEntry++,
+                employeeId: parseInt(formData.get('employeeId')),
+                type: formData.get('type'),
+                date: formData.get('date'),
+                time: formData.get('time'),
+                timestamp: new Date().toISOString(),
+                createdBy: AppState.currentUser.name
+            };
+            
+            // Validar que no exista ya una marcación del mismo tipo para el mismo empleado en la misma fecha
+            const existingEntry = AppState.timeEntries.find(entry => 
+                entry.employeeId === timeEntryData.employeeId && 
+                entry.date === timeEntryData.date && 
+                entry.type === timeEntryData.type
+            );
+            
+            if (existingEntry) {
+                showToast(`❌ Ya existe una marcación de ${timeEntryData.type} para este empleado en esta fecha`, 'error');
+                return;
+            }
+            
+            AppState.timeEntries.push(timeEntryData);
+            closeModal('timeEntryModal');
+            document.getElementById('timeEntryForm').reset();
+            
+            const employee = AppState.employees.find(emp => emp.id === timeEntryData.employeeId);
+            showToast(`✅ Marcación de ${timeEntryData.type} registrada para ${employee.firstName}`, 'success');
+            
+            renderTimeEntries();
+        }
+
+        function deleteTimeEntry(employeeId, date) {
+            if (!hasPermission(['timeentry', 'personnel', 'all'])) {
+                showToast('❌ No tienes permisos para eliminar marcaciones', 'error');
+                return;
+            }
+            
+            if (confirm('¿Eliminar todas las marcaciones de este empleado para esta fecha?')) {
+                AppState.timeEntries = AppState.timeEntries.filter(entry => 
+                    !(entry.employeeId == employeeId && entry.date === date)
+                );
+                showToast('🗑 Marcaciones eliminadas', 'info');
+                renderTimeEntries();
+            }
+        }
+
+        function groupTimeEntriesByEmployeeAndDate() {
+            const grouped = {};
+            
+            AppState.timeEntries.forEach(entry => {
+                const employee = AppState.employees.find(emp => emp.id === entry.employeeId);
+                if (!employee) return;
+                
+                const key = `${entry.employeeId}-${entry.date}`;
+                
+                if (!grouped[key]) {
+                    grouped[key] = {
+                        employeeId: entry.employeeId,
+                        name: `${employee.firstName} ${employee.lastName}`,
+                        avatar: employee.avatar,
+                        date: entry.date,
+                        entryTime: '--:--',
+                        exitTime: '--:--'
+                    };
+                }
+                
+                if (entry.type === 'entrada') {
+                    grouped[key].entryTime = entry.time;
+                } else if (entry.type === 'salida') {
+                    grouped[key].exitTime = entry.time;
+                }
+            });
+            
+            return Object.values(grouped).sort((a, b) => new Date(b.date) - new Date(a.date));
+        }
+
+        function populateEmployeeSelect() {
+            const select = document.querySelector('#timeEntryForm select[name="employeeId"]');
+            if (!select) return;
+            
+            select.innerHTML = '<option value="">Seleccionar empleado...</option>';
+            
+            AppState.employees.filter(emp => emp.status === 'Activo').forEach(employee => {
+                const option = document.createElement('option');
+                option.value = employee.id;
+                option.textContent = `${employee.firstName} ${employee.lastName} - ${employee.position}`;
+                select.appendChild(option);
+            });
+        }
+
+        // =============================================
+        // CONTABILIDAD Y FINANZAS
+        // =============================================
+        function updateFinancials() {
+            if (!hasPermission(['accounting', 'all'])) {
+                showToast('❌ No tienes permisos para ver información contable', 'error');
+                return;
+            }
+            
+            // Calcular ingresos aprobados
+            const approvedIncome = AppState.invoices
+                .filter(inv => inv.status === 'Aprobada')
+                .reduce((sum, inv) => sum + (inv.currency === 'USD' ? inv.amount * 3.75 : inv.amount), 0);
+            
+            // Calcular cuentas por cobrar (facturas pendientes)
+            const receivables = AppState.invoices
+                .filter(inv => inv.status === 'Pendiente')
+                .reduce((sum, inv) => sum + (inv.currency === 'USD' ? inv.amount * 3.75 : inv.amount), 0);
+            
+            // Calcular IGV a pagar (18% de ingresos aprobados)
+            const taxesPayable = approvedIncome * 0.18;
+            
+            // Activos
+            const cash = 12500.00 + approvedIncome;
+            const inventory = 4200.00;
+            const totalAssets = cash + receivables + inventory;
+            
+            // Pasivos
+            const payables = 3100.00;
+            const totalLiabilities = payables + taxesPayable;
+            
+            // Patrimonio
+            const capital = 15000.00;
+            const retainedEarnings = totalAssets - totalLiabilities - capital;
+            const totalEquity = capital + retainedEarnings;
+            
+            // Actualizar DOM
+            document.getElementById('cashBalance').textContent = `S/ ${cash.toFixed(2)}`;
+            document.getElementById('receivables').textContent = `S/ ${receivables.toFixed(2)}`;
+            document.getElementById('totalAssets').textContent = `S/ ${totalAssets.toFixed(2)}`;
+            document.getElementById('taxesPayable').textContent = `S/ ${taxesPayable.toFixed(2)}`;
+            document.getElementById('totalLiabilities').textContent = `S/ ${totalLiabilities.toFixed(2)}`;
+            document.getElementById('retainedEarnings').textContent = `S/ ${retainedEarnings.toFixed(2)}`;
+            document.getElementById('totalEquity').textContent = `S/ ${totalEquity.toFixed(2)}`;
+            
+            showToast('📊 Estados financieros actualizados', 'success');
+        }
+
+        // =============================================
+        // MODALES
+        // =============================================
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId + 'Modal');
+            if (modal) {
+                modal.classList.add('active');
+                
+                // Configuraciones específicas por modal
+                if (modalId === 'timeEntry') {
+                    // Establecer fecha actual por defecto
+                    const dateInput = modal.querySelector('input[name="date"]');
+                    if (dateInput) {
+                        dateInput.value = new Date().toISOString().split('T')[0];
+                    }
+                    
+                    // Establecer hora actual por defecto
+                    const timeInput = modal.querySelector('input[name="time"]');
+                    if (timeInput) {
+                        const now = new Date();
+                        const timeString = now.toTimeString().slice(0, 5);
+                        timeInput.value = timeString;
+                    }
+                    
+                    populateEmployeeSelect();
+                }
+            }
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        // =============================================
+        // EXPORTACIÓN DE DATOS
+        // =============================================
+        function exportData() {
+            if (!hasPermission(['exports', 'reports', 'all'])) {
+                showToast('❌ No tienes permisos para exportar datos', 'error');
+                return;
+            }
+            
+            const exportData = {
+                empresa: TECSITEL_CONFIG.empresa,
+                fechaExportacion: new Date().toISOString(),
+                exportadoPor: AppState.currentUser.name,
+                facturas: AppState.invoices,
+                empleados: AppState.employees,
+                marcaciones: AppState.timeEntries,
+                resumenFinanciero: {
+                    totalIngresos: AppState.invoices
+                        .filter(inv => inv.status === 'Aprobada')
+                        .reduce((sum, inv) => sum + (inv.currency === 'USD' ? inv.amount * 3.75 : inv.amount), 0),
+                    facturasPendientes: AppState.invoices.filter(inv => inv.status === 'Pendiente').length,
+                    empleadosActivos: AppState.employees.filter(emp => emp.status === 'Activo').length
+                }
+            };
+            
+            // Crear archivo JSON
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+            
+            const exportFileDefaultName = `TECSITEL_Export_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', exportFileDefaultName);
+            linkElement.click();
+            
+            showToast('📤 Datos exportados exitosamente', 'success');
+        }
+
+        function generateComplianceReport() {
+            if (!hasPermission(['compliance', 'reports', 'all'])) {
+                showToast('❌ No tienes permisos para generar reportes de cumplimiento', 'error');
+                return;
+            }
+            
+            const report = {
+                empresa: 'TECSITEL PERU E.I.R.L.',
+                ruc: '20605908285',
+                fechaReporte: new Date().toLocaleDateString('es-PE'),
+                generadoPor: AppState.currentUser.name,
+                cumplimientoSUNAT: {
+                    facturacionElectronica: 'Activa - Versión 3.0',
+                    librosElectronicos: 'Al día',
+                    pdt621: 'Próximo vencimiento en 10 días',
+                    porcentajeCumplimiento: '95%'
+                },
+                cumplimientoSUNAFIL: {
+                    tRegistro: 'Actualizado',
+                    controlAsistencia: 'Implementado digitalmente',
+                    registroJornadas: 'Completo',
+                    porcentajeCumplimiento: '100%'
+                },
+                estadisticas: {
+                    totalEmpleados: AppState.employees.length,
+                    empleadosActivos: AppState.employees.filter(emp => emp.status === 'Activo').length,
+                    marcacionesRegistradas: AppState.timeEntries.length,
+                    facturasEmitidas: AppState.invoices.length
+                }
+            };
+            
+            const reportStr = JSON.stringify(report, null, 2);
+            const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(reportStr);
+            
+            const fileName = `TECSITEL_Reporte_Cumplimiento_${new Date().toISOString().split('T')[0]}.json`;
+            
+            const linkElement = document.createElement('a');
+            linkElement.setAttribute('href', dataUri);
+            linkElement.setAttribute('download', fileName);
+            linkElement.click();
+            
+            showToast('📄 Reporte de cumplimiento generado', 'success');
+        }
+
+        // =============================================
+        // UTILIDADES Y VALIDACIONES
+        // =============================================
+        function hasPermission(permissions) {
+            if (!AppState.currentUser) return false;
+            if (AppState.currentUser.permissions.includes('all')) return true;
+            
+            if (Array.isArray(permissions)) {
+                return permissions.some(perm => AppState.currentUser.permissions.includes(perm));
+            }
+            
+            return AppState.currentUser.permissions.includes(permissions);
+        }
+
+        function validateRUC(ruc) {
+            return /^\d{11}$/.test(ruc);
+        }
+
+        function validateDNI(dni) {
+            return /^\d{8}$/.test(dni);
+        }
+
+        function sanitizeInput(input) {
+            const div = document.createElement('div');
+            div.textContent = input;
+            return div.innerHTML;
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'Aprobada': return 'success';
+                case 'Pendiente': return 'warning';
+                case 'Rechazada': return 'danger';
+                default: return 'info';
+            }
+        }
+
+        // =============================================
+        // SISTEMA DE NOTIFICACIONES
+        // =============================================
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            toast.innerHTML = `
+                <div class="toast-icon">${icons[type] || icons.info}</div>
+                <div class="toast-content">${message}</div>
+                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Auto-remove después de 4 segundos
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(() => toast.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        // =============================================
+        // EVENT LISTENERS Y SETUP
+        // =============================================
+        function setupEventListeners() {
+            // Click en tarjetas de usuario para autocompletar
+            document.querySelectorAll('.user-demo').forEach(card => {
+                card.addEventListener('click', function() {
+                    const username = this.dataset.user;
+                    const password = this.dataset.pass;
+                    
+                    document.getElementById('username').value = username;
+                    document.getElementById('password').value = password;
+                    
+                    // Limpiar errores
+                    document.getElementById('username').classList.remove('error');
+                    document.getElementById('password').classList.remove('error');
+                    
+                    // Marcar como seleccionado
+                    document.querySelectorAll('.user-demo').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Limpiar errores al escribir
+            document.addEventListener('input', function(e) {
+                if (e.target.classList.contains('form-input') || e.target.classList.contains('form-control')) {
+                    e.target.classList.remove('error');
+                }
+            });
+            
+            // Cerrar modales al hacer click fuera
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('active');
+                }
+            });
+            
+            // Responsive sidebar
+            function handleResize() {
+                if (window.innerWidth <= 1024) {
+                    const sidebar = document.getElementById('sidebar');
+                    if (!sidebar.classList.contains('active')) {
+                        sidebar.classList.remove('active');
+                    }
+                }
+            }
+            
+            window.addEventListener('resize', handleResize);
+            
+            // Click fuera del sidebar en móvil
+            document.addEventListener('click', function(e) {
+                const sidebar = document.getElementById('sidebar');
+                const sidebarToggle = document.getElementById('sidebarToggle');
+                
+                if (window.innerWidth <= 1024 && 
+                    !sidebar.contains(e.target) && 
+                    !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.remove('active');
+                }
+            });
+        }
+
+        // =============================================
+        // INICIALIZACIÓN
+        // =============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log(`
+🏢 TECSITEL PERU E.I.R.L. - Sistema v4.0
+========================================
+RUC: ${TECSITEL_CONFIG.empresa.ruc}
+Servicios: +${TECSITEL_CONFIG.empresa.serviciosExitosos} exitosos
+Personal: ${TECSITEL_CONFIG.empresa.empleadosTotal} empleados
+
+👥 Usuarios disponibles:
+${Object.keys(TECSITEL_CONFIG.usuarios).map(u => `• ${u}/${TECSITEL_CONFIG.usuarios[u].password} - ${TECSITEL_CONFIG.usuarios[u].role}`).join('\n')}
+
+🚀 Sistema listo para usar!
+            `);
+            
+            setupEventListeners();
+            
+            // Enfocar campo de usuario
+            document.getElementById('username').focus();
+        });
+
+        // Exponer funciones globalmente
+        window.handleLogin = handleLogin;
+        window.logout = logout;
+        window.showTab = showTab;
+        window.toggleSidebar = toggleSidebar;
+        window.showUserMenu = showUserMenu;
+        window.showModal = showModal;
+        window.closeModal = closeModal;
+        window.createInvoice = createInvoice;
+        window.approveInvoice = approveInvoice;
+        window.deleteInvoice = deleteInvoice;
+        window.createEmployee = createEmployee;
+        window.editEmployee = editEmployee;
+        window.deleteEmployee = deleteEmployee;
+        window.createTimeEntry = createTimeEntry;
+        window.deleteTimeEntry = deleteTimeEntry;
+        window.updateFinancials = updateFinancials;
+        window.exportData = exportData;
+        window.generateComplianceReport = generateComplianceReport;
+    </script>
+</body>
+</html>
+                
