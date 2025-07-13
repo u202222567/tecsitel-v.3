@@ -13,9 +13,15 @@ app.use(cors({
 
 app.use(express.json());
 
-// Logging
+// Middleware para manejar las rutas de Netlify
 app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+    // Limpiar la ruta para que funcione correctamente
+    if (req.path.startsWith('/.netlify/functions/api')) {
+        req.url = req.url.replace('/.netlify/functions/api', '');
+        req.path = req.path.replace('/.netlify/functions/api', '');
+    }
+    
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.path || req.url}`);
     next();
 });
 
@@ -31,7 +37,8 @@ app.get('/health', (req, res) => {
         message: 'Tecsitel API v4.0 funcionando correctamente',
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV || 'development',
-        netlify: 'SI'
+        netlify: 'SI',
+        version: '4.0'
     });
 });
 
@@ -76,6 +83,23 @@ app.get('/test-db', async (req, res) => {
         const result = await client.query('SELECT NOW() as current_time, version() as version');
         console.log('Query ejecutada exitosamente');
 
+        // Verificar si existen las tablas
+        const tablesResult = await client.query(`
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            ORDER BY table_name
+        `);
+
+        // Verificar usuarios si existe la tabla
+        let userCount = 0;
+        try {
+            const usersResult = await client.query('SELECT COUNT(*) as count FROM users');
+            userCount = parseInt(usersResult.rows[0].count);
+        } catch (error) {
+            console.log('Tabla users no existe:', error.message);
+        }
+
         client.release();
         await pool.end();
 
@@ -85,7 +109,9 @@ app.get('/test-db', async (req, res) => {
             data: {
                 current_time: result.rows[0].current_time,
                 postgres_version: result.rows[0].version.split(' ')[0],
-                connection_successful: true
+                connection_successful: true,
+                tables_found: tablesResult.rows.map(row => row.table_name),
+                user_count: userCount
             }
         });
 
@@ -127,12 +153,15 @@ app.post('/init-db', async (req, res) => {
                 password_hash VARCHAR(255) NOT NULL,
                 full_name VARCHAR(100) NOT NULL,
                 role VARCHAR(20) NOT NULL,
-                permissions JSONB DEFAULT '{}',
+                permissions JSONB DEFAULT '[]',
                 is_active BOOLEAN DEFAULT true,
                 created_at TIMESTAMP DEFAULT NOW(),
+                updated_at TIMESTAMP DEFAULT NOW(),
                 last_login TIMESTAMP
             )
         `);
+
+        console.log('Tabla users creada o verificada');
 
         // Crear usuarios demo
         const users = [
@@ -142,14 +171,32 @@ app.post('/init-db', async (req, res) => {
             { username: 'supervisor', password: 'super123', name: 'Usuario Supervisor', role: 'supervisor' }
         ];
 
+        let usersCreated = 0;
+
         for (const user of users) {
-            const hashedPassword = await bcrypt.hash(user.password, 10);
-            await client.query(`
-                INSERT INTO users (username, password_hash, full_name, role, permissions)
-                VALUES ($1, $2, $3, $4, $5)
-                ON CONFLICT (username) DO NOTHING
-            `, [user.username, hashedPassword, user.name, user.role, JSON.stringify([])]);
+            try {
+                const hashedPassword = await bcrypt.hash(user.password, 10);
+                const result = await client.query(`
+                    INSERT INTO users (username, password_hash, full_name, role, permissions)
+                    VALUES ($1, $2, $3, $4, $5)
+                    ON CONFLICT (username) DO NOTHING
+                    RETURNING id
+                `, [user.username, hashedPassword, user.name, user.role, JSON.stringify([])]);
+                
+                if (result.rows.length > 0) {
+                    usersCreated++;
+                    console.log(`Usuario creado: ${user.username}`);
+                } else {
+                    console.log(`Usuario ya existe: ${user.username}`);
+                }
+            } catch (error) {
+                console.error(`Error creando usuario ${user.username}:`, error);
+            }
         }
+
+        // Verificar usuarios creados
+        const totalUsersResult = await client.query('SELECT COUNT(*) as count FROM users');
+        const totalUsers = parseInt(totalUsersResult.rows[0].count);
 
         client.release();
         await pool.end();
@@ -157,14 +204,19 @@ app.post('/init-db', async (req, res) => {
         res.json({
             success: true,
             message: 'Base de datos inicializada correctamente',
-            users_created: users.map(u => ({ username: u.username, role: u.role }))
+            data: {
+                users_created: usersCreated,
+                total_users: totalUsers,
+                available_users: users.map(u => ({ username: u.username, role: u.role }))
+            }
         });
 
     } catch (error) {
         console.error('Error inicializando DB:', error);
         res.status(500).json({
             success: false,
-            error: error.message
+            error: error.message,
+            details: error.stack
         });
     }
 });
@@ -196,6 +248,7 @@ app.post('/auth/login', async (req, res) => {
         const result = await client.query('SELECT * FROM users WHERE username = $1 AND is_active = true', [username]);
 
         if (result.rows.length === 0) {
+            console.log(`Usuario no encontrado: ${username}`);
             client.release();
             await pool.end();
             return res.status(401).json({
@@ -208,6 +261,7 @@ app.post('/auth/login', async (req, res) => {
         const validPassword = await bcrypt.compare(password, user.password_hash);
 
         if (!validPassword) {
+            console.log(`Contraseña incorrecta para: ${username}`);
             client.release();
             await pool.end();
             return res.status(401).json({
@@ -216,11 +270,16 @@ app.post('/auth/login', async (req, res) => {
             });
         }
 
+        // Actualizar último login
+        await client.query('UPDATE users SET last_login = NOW() WHERE id = $1', [user.id]);
+
         const token = jwt.sign(
             { userId: user.id, username: user.username, role: user.role, name: user.full_name },
             process.env.JWT_SECRET,
             { expiresIn: '8h' }
         );
+
+        console.log(`Login exitoso para: ${username}`);
 
         client.release();
         await pool.end();
@@ -233,7 +292,7 @@ app.post('/auth/login', async (req, res) => {
                 username: user.username,
                 role: user.role,
                 name: user.full_name,
-                permissions: user.permissions
+                permissions: user.permissions || []
             }
         });
 
@@ -241,18 +300,38 @@ app.post('/auth/login', async (req, res) => {
         console.error('Error en login:', error);
         res.status(500).json({
             success: false,
-            error: 'Error interno del servidor'
+            error: 'Error interno del servidor',
+            details: error.message
         });
     }
 });
 
+// Ruta raíz para testing
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        message: 'Tecsitel API v4.0',
+        available_routes: [
+            'GET /health',
+            'GET /test-env', 
+            'GET /test-db',
+            'POST /init-db',
+            'POST /auth/login'
+        ],
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Ruta 404
 app.use('*', (req, res) => {
+    console.log(`Ruta no encontrada: ${req.method} ${req.originalUrl || req.url}`);
     res.status(404).json({ 
         success: false,
         error: 'Ruta no encontrada',
-        path: req.originalUrl,
+        path: req.originalUrl || req.url,
+        method: req.method,
         available_routes: [
+            'GET /',
             'GET /health',
             'GET /test-env', 
             'GET /test-db',
