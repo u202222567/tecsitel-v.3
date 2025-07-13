@@ -13,6 +13,9 @@
   # Variables específicas para el build
   NODE_VERSION = "18"
   NPM_VERSION = "9"
+  ENABLE_ANALYTICS = "true"
+  ENABLE_ERROR_REPORTING = "true"
+  TECSITEL_VERSION = "4.0.0"
 
 # =============================================
 # CONFIGURACIÓN DE FUNCIONES SERVERLESS
@@ -82,7 +85,6 @@
   status = 200
 
 # Redirección para SPA (Single Page Application)
-# Para que todas las rutas del frontend funcionen correctamente
 [[redirects]]
   from = "/*"
   to = "/index.html"
@@ -104,13 +106,10 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    # Seguridad general
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    
-    # Content Security Policy para TECSITEL
     Content-Security-Policy = '''
       default-src 'self';
       script-src 'self' 'unsafe-inline' 'unsafe-eval';
@@ -122,7 +121,6 @@
       base-uri 'self';
     '''
 
-# Headers específicos para el archivo principal
 [[headers]]
   for = "/index.html"
   [headers.values]
@@ -130,7 +128,6 @@
     Pragma = "no-cache"
     Expires = "0"
 
-# Headers para archivos estáticos
 [[headers]]
   for = "/assets/*"
   [headers.values]
@@ -139,8 +136,6 @@
 # =============================================
 # CONFIGURACIÓN DE EDGE FUNCTIONS (OPCIONAL)
 # =============================================
-# Si necesitas funciones que corran en el edge para mejor performance
-
 [[edge_functions]]
   function = "auth-check"
   path = "/api/auth/*"
@@ -151,7 +146,6 @@
 # Estas se configuran desde el panel de Netlify:
 # Site Settings > Environment variables
 
-# Variables críticas que deben estar configuradas:
 # JWT_SECRET=tecsitel-jwt-v4-2025-hX7k5ZZrDetHFzpYrCZppd9hGgEB3Kxa
 # COMPANY_RUC=20605908285
 # COMPANY_NAME=TECSITEL PERU E.I.R.L.
@@ -159,9 +153,8 @@
 # NODE_ENV=production
 
 # =============================================
-# CONFIGURACIÓN DE FORMULARIOS (SI SE NECESITA)
+# CONFIGURACIÓN DE FORMULARIOS
 # =============================================
-# Para formularios de contacto o feedback
 [build.processing]
   skip_processing = false
 
@@ -184,14 +177,12 @@
 
 [[plugins]]
   package = "netlify-plugin-lighthouse"
-  
   [plugins.inputs]
     output_path = "reports/lighthouse.html"
 
 # =============================================
-# CONFIGURACIÓN DE SPLIT TESTING (A/B)
+# SPLIT TESTING (A/B)
 # =============================================
-# Para probar diferentes versiones del sistema
 # [[split_tests]]
 #   path = "/"
 #   branches = ["main", "feature-new-ui"]
@@ -199,8 +190,6 @@
 # =============================================
 # CONFIGURACIÓN DE CONTEXTO
 # =============================================
-# Configuraciones específicas por branch o contexto
-
 [context.production]
   environment = { NODE_ENV = "production", LOG_LEVEL = "info" }
 
@@ -213,31 +202,10 @@
 # =============================================
 # CONFIGURACIÓN DE PERFORMANCE
 # =============================================
-# Optimizaciones para mejor rendimiento
 [build.processing.images]
   compress = true
 
 # =============================================
-# CONFIGURACIÓN DE MONITOREO
+# MONITOREO
 # =============================================
 # Para analytics y monitoreo del sistema
-[build.environment]
-  ENABLE_ANALYTICS = "true"
-  ENABLE_ERROR_REPORTING = "true"
-  TECSITEL_VERSION = "4.0.0"
-
-# =============================================
-# NOTAS DE CONFIGURACIÓN
-# =============================================
-# Este archivo configura:
-# 1. Redirecciones de API hacia funciones serverless
-# 2. Headers de seguridad apropiados para TECSITEL
-# 3. Configuración CORS para el frontend y API
-# 4. Optimizaciones de performance
-# 5. Variables de entorno específicas
-#
-# Para que funcione correctamente:
-# 1. Coloca este archivo como netlify.toml en la raíz del proyecto
-# 2. Asegúrate de que el archivo API esté en netlify/functions/api.js
-# 3. Configura las variables de entorno en el panel de Netlify
-# 4. El frontend (index.html) debe estar en la raíz del proyecto
