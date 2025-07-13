@@ -1884,7 +1884,7 @@ document.head.appendChild(style);// ========================================
 // Configuración Global y Estado
 // ========================================
 const CONFIG = {
-    API_BASE_URL: '/.netlify/functions/api',
+    API_BASE_URL: '/api',
     IGV_RATE: 0.18,
     LOADING_DURATION: 3000,
     SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minutos
