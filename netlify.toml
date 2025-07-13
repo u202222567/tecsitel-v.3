@@ -1,48 +1,167 @@
+# =============================================
+# TECSITEL PERU E.I.R.L. - Configuración Netlify v4.0
+# Sistema Sincronizado Frontend + Backend
+# =============================================
+
 [build]
+  # Directorio donde están los archivos del frontend
   publish = "."
-  functions = "netlify/functions"
-  command = "echo 'Static site deployment'"
+  # Comando para build (si fuera necesario)
+  command = "echo 'TECSITEL v4.0 - No build required for static files'"
 
 [build.environment]
+  # Variables específicas para el build
   NODE_VERSION = "18"
+  NPM_VERSION = "9"
 
+# =============================================
+# CONFIGURACIÓN DE FUNCIONES SERVERLESS
+# =============================================
+[functions]
+  # Directorio donde están las funciones
+  directory = "netlify/functions"
+  # Configuración específica para las funciones
+  node_bundler = "nft"
+
+# =============================================
+# REDIRECCIONES Y RUTEO
+# =============================================
+
+# Redirección principal de la API
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
+  force = true
 
+# Redirección para autenticación
+[[redirects]]
+  from = "/auth/*"
+  to = "/.netlify/functions/api/auth/:splat"
+  status = 200
+
+# Redirecciones específicas de endpoints
+[[redirects]]
+  from = "/api/config"
+  to = "/.netlify/functions/api/config"
+  status = 200
+
+[[redirects]]
+  from = "/api/dashboard"
+  to = "/.netlify/functions/api/dashboard"
+  status = 200
+
+[[redirects]]
+  from = "/api/invoices"
+  to = "/.netlify/functions/api/invoices"
+  status = 200
+
+[[redirects]]
+  from = "/api/employees"
+  to = "/.netlify/functions/api/employees"
+  status = 200
+
+[[redirects]]
+  from = "/api/timeentries"
+  to = "/.netlify/functions/api/timeentries"
+  status = 200
+
+[[redirects]]
+  from = "/api/compliance"
+  to = "/.netlify/functions/api/compliance"
+  status = 200
+
+[[redirects]]
+  from = "/api/export"
+  to = "/.netlify/functions/api/export"
+  status = 200
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/api/health"
+  status = 200
+
+# Redirección para SPA (Single Page Application)
+# Para que todas las rutas del frontend funcionen correctamente
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
+  conditions = {Role = ["admin", "user"]}
 
-[functions]
-  directory = "netlify/functions"
-  node_bundler = "esbuild"
+# =============================================
+# HEADERS DE SEGURIDAD
+# =============================================
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://tecsitel.netlify.app"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization, X-Requested-With"
+    Access-Control-Allow-Credentials = "true"
+    Content-Type = "application/json; charset=utf-8"
 
 [[headers]]
   for = "/*"
   [headers.values]
+    # Seguridad general
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    
+    # Content Security Policy para TECSITEL
+    Content-Security-Policy = '''
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval';
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' https://i.imgur.com data:;
+      font-src 'self';
+      connect-src 'self' https://tecsitel.netlify.app;
+      frame-ancestors 'none';
+      base-uri 'self';
+    '''
 
+# Headers específicos para el archivo principal
 [[headers]]
-  for = "/api/*"
+  for = "/index.html"
   [headers.values]
-    Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
 
-[dev]
-  command = "echo 'Development server started'"
-  port = 8888
-  publish = "."
-  functions = "netlify/functions"
+# Headers para archivos estáticos
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
 
-# Security and performance settings
+# =============================================
+# CONFIGURACIÓN DE EDGE FUNCTIONS (OPCIONAL)
+# =============================================
+# Si necesitas funciones que corran en el edge para mejor performance
+
+[[edge_functions]]
+  function = "auth-check"
+  path = "/api/auth/*"
+
+# =============================================
+# VARIABLES DE ENTORNO EN NETLIFY
+# =============================================
+# Estas se configuran desde el panel de Netlify:
+# Site Settings > Environment variables
+
+# Variables críticas que deben estar configuradas:
+# JWT_SECRET=tecsitel-jwt-v4-2025-hX7k5ZZrDetHFzpYrCZppd9hGgEB3Kxa
+# COMPANY_RUC=20605908285
+# COMPANY_NAME=TECSITEL PERU E.I.R.L.
+# NETLIFY_DATABASE_URL=postgresql://...
+# NODE_ENV=production
+
+# =============================================
+# CONFIGURACIÓN DE FORMULARIOS (SI SE NECESITA)
+# =============================================
+# Para formularios de contacto o feedback
 [build.processing]
   skip_processing = false
 
@@ -57,12 +176,52 @@
 [build.processing.html]
   pretty_urls = true
 
-# Environment variables for production
-[context.production.environment]
-  NODE_ENV = "production"
-  
-[context.deploy-preview.environment]
-  NODE_ENV = "staging"
+# =============================================
+# CONFIGURACIÓN DE PLUGINS
+# =============================================
+[[plugins]]
+  package = "@netlify/plugin-sitemap"
 
-[context.branch-deploy.environment]
-  NODE_ENV = "development"
+[[plugins]]
+  package = "netlify-plugin-lighthouse"
+  
+  [plugins.inputs]
+    output_path = "reports/lighthouse.html"
+
+# =============================================
+# CONFIGURACIÓN DE SPLIT TESTING (A/B)
+# =============================================
+# Para probar diferentes versiones del sistema
+# [[split_tests]]
+#   path = "/"
+#   branches = ["main", "feature-new-ui"]
+
+# =============================================
+# CONFIGURACIÓN DE CONTEXTO
+# =============================================
+# Configuraciones específicas por branch o contexto
+
+[context.production]
+  environment = { NODE_ENV = "production", LOG_LEVEL = "info" }
+
+[context.deploy-preview]
+  environment = { NODE_ENV = "staging", LOG_LEVEL = "debug" }
+
+[context.branch-deploy]
+  environment = { NODE_ENV = "development", LOG_LEVEL = "debug" }
+
+# =============================================
+# CONFIGURACIÓN DE PERFORMANCE
+# =============================================
+# Optimizaciones para mejor rendimiento
+[build.processing.images]
+  compress = true
+
+# =============================================
+# CONFIGURACIÓN DE MONITOREO
+# =============================================
+# Para analytics y monitoreo del sistema
+[build.environment]
+  ENABLE_ANALYTICS = "true"
+  ENABLE_ERROR_REPORTING = "true"
+  TECSITEL_VERSION = "4.0.0"
