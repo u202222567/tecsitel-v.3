@@ -1,28 +1,60 @@
 # =============================================
 # TECSITEL PERU E.I.R.L. - Configuración Netlify v4.0
-# Archivo corregido sin errores de sintaxis
+# Optimizada para resolver "Module not found"
 # =============================================
 
 [build]
   publish = "."
-  command = "npm run build"
+  command = "npm ci --production --silent && npm run build"
   functions = "netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "18"
-  NPM_VERSION = "9"
+  NODE_VERSION = "18.19.0"
+  NPM_VERSION = "10"
+  NODE_ENV = "production"
+  NPM_CONFIG_PRODUCTION = "true"
+  NETLIFY_EXPERIMENTAL_BUILD_NODE_VERSION = "18"
 
+# =============================================
+# CONFIGURACIÓN DE FUNCIONES OPTIMIZADA
+# =============================================
 [functions]
   directory = "netlify/functions"
+  node_bundler = "nft"
+  
+  # Configuración específica para resolver dependencias
+  [functions."api"]
+    node_bundler = "nft"
+    external_node_modules = ["pg-native"]
 
 # =============================================
-# REDIRECCIONES SIMPLIFICADAS
+# CONFIGURACIÓN DE PROCESSING
 # =============================================
+[build.processing]
+  skip_processing = false
 
+[build.processing.css]
+  bundle = false
+  minify = false
+
+[build.processing.js]
+  bundle = false
+  minify = false
+
+[build.processing.html]
+  pretty_urls = true
+
+[build.processing.images]
+  compress = false
+
+# =============================================
+# REDIRECCIONES API
+# =============================================
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
+  force = true
 
 [[redirects]]
   from = "/*"
@@ -30,18 +62,42 @@
   status = 200
 
 # =============================================
-# HEADERS BÁSICOS
+# HEADERS DE SEGURIDAD
 # =============================================
-
 [[headers]]
   for = "/api/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Access-Control-Allow-Headers = "Content-Type, Authorization, X-Requested-With"
+    Content-Type = "application/json; charset=utf-8"
+    Cache-Control = "no-cache, no-store, must-revalidate"
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# =============================================
+# CONFIGURACIÓN POR CONTEXTO
+# =============================================
+[context.production]
+  command = "npm ci --production --silent && npm run build"
+  [context.production.environment]
+    NODE_ENV = "production"
+    NETLIFY_ENV = "production"
+
+[context.deploy-preview]
+  command = "npm ci --production --silent && npm run build"
+  [context.deploy-preview.environment]
+    NODE_ENV = "staging"
+    NETLIFY_ENV = "preview"
+
+[context.branch-deploy]
+  command = "npm ci --production --silent && npm run build"
+  [context.branch-deploy.environment]
+    NODE_ENV = "development"
+    NETLIFY_ENV = "development"
