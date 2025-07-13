@@ -121,13 +121,19 @@ function handleLogin(event) {
         AppState.sessionStart = Date.now();
         AppState.permissions = getUserPermissions(username);
         
+        // Ocultar pantalla de login
         document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('loadingScreen').style.display = 'flex';
         
-        // Simular carga y configuración
+        // Mostrar pantalla de loading con animación
+        const loadingScreen = document.getElementById('loadingScreen');
+        loadingScreen.style.display = 'flex';
+        
+        // Inicializar animaciones inmediatamente
         setTimeout(() => {
+            setupLoadingAnimation();
             initializeApp();
-        }, 1500);
+        }, 100);
+        
     } else {
         showToast('❌ Usuario o contraseña incorrectos', 'error');
         // Limpiar campos
@@ -1182,84 +1188,140 @@ function downloadCSV(csvContent, filename) {
 }
 
 // ========================================
-// Animación de Carga Mejorada
+// Animación de Carga Mejorada con Logo Girando
 // ========================================
 function setupLoadingAnimation() {
     const particles = document.getElementById('loadingParticles');
     if (!particles) return;
     
-    // Crear partículas animadas
-    for (let i = 0; i < 50; i++) {
+    // Limpiar partículas existentes
+    particles.innerHTML = '';
+    
+    // Crear partículas animadas mejoradas
+    for (let i = 0; i < 60; i++) {
         const particle = document.createElement('div');
+        const size = Math.random() * 6 + 2; // Tamaño entre 2px y 8px
+        const duration = Math.random() * 4 + 3; // Duración entre 3s y 7s
+        const delay = Math.random() * 5; // Delay hasta 5s
+        const left = Math.random() * 100;
+        const top = Math.random() * 100;
+        
         particle.style.cssText = `
             position: absolute;
-            width: 4px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.6);
+            width: ${size}px;
+            height: ${size}px;
+            background: rgba(255, 255, 255, ${Math.random() * 0.6 + 0.4});
             border-radius: 50%;
-            animation: float ${3 + Math.random() * 4}s ease-in-out infinite;
-            animation-delay: ${Math.random() * 5}s;
-            left: ${Math.random() * 100}%;
-            top: ${Math.random() * 100}%;
+            left: ${left}%;
+            top: ${top}%;
+            animation: 
+                float ${duration}s ease-in-out infinite,
+                fadeInOut ${duration * 0.8}s ease-in-out infinite;
+            animation-delay: ${delay}s;
+            pointer-events: none;
         `;
         particles.appendChild(particle);
+    }
+    
+    // Agregar algunas partículas más grandes para efecto especial
+    for (let i = 0; i < 10; i++) {
+        const bigParticle = document.createElement('div');
+        const size = Math.random() * 4 + 8; // Tamaño entre 8px y 12px
+        const duration = Math.random() * 6 + 4;
+        const delay = Math.random() * 3;
+        const left = Math.random() * 100;
+        const top = Math.random() * 100;
+        
+        bigParticle.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            left: ${left}%;
+            top: ${top}%;
+            animation: float ${duration}s ease-in-out infinite;
+            animation-delay: ${delay}s;
+            pointer-events: none;
+            box-shadow: 0 0 ${size}px rgba(255, 255, 255, 0.3);
+        `;
+        particles.appendChild(bigParticle);
     }
 }
 
 function updateLoadingStatus(message, isError = false) {
     const statusEl = document.getElementById('loadingStatus');
     if (statusEl) {
-        statusEl.textContent = message;
-        statusEl.className = `loading-status ${isError ? 'error' : ''}`;
+        // Animación de salida
+        statusEl.style.opacity = '0';
+        statusEl.style.transform = 'translateY(-10px)';
+        
+        setTimeout(() => {
+            statusEl.textContent = message;
+            statusEl.className = `loading-status ${isError ? 'error' : ''}`;
+            
+            // Animación de entrada
+            statusEl.style.opacity = '1';
+            statusEl.style.transform = 'translateY(0)';
+        }, 200);
     }
 }
 
 // ========================================
 // Inicialización de la Aplicación
 // ========================================
+// ========================================
+// Inicialización de la Aplicación Mejorada
+// ========================================
 function initializeApp() {
+    // Configurar animaciones de loading
     setupLoadingAnimation();
-    updateLoadingStatus('Configurando sistema de roles...', false);
+    updateLoadingStatus('🔐 Validando credenciales...', false);
     
     setTimeout(() => {
-        updateLoadingStatus('Cargando datos del usuario...', false);
-        loadSampleData();
+        updateLoadingStatus('📊 Configurando sistema de roles...', false);
         
         setTimeout(() => {
-            updateLoadingStatus('Construyendo interfaz...', false);
-            buildNavigationMenu();
-            buildBottomNavigation();
+            updateLoadingStatus('🗄️ Cargando datos del usuario...', false);
+            loadSampleData();
             
             setTimeout(() => {
-                updateLoadingStatus('Actualizando información de usuario...', false);
-                updateUserInterface();
+                updateLoadingStatus('🎨 Construyendo interfaz...', false);
+                buildNavigationMenu();
+                buildBottomNavigation();
                 
                 setTimeout(() => {
-                    updateLoadingStatus('¡Sistema listo!', false);
+                    updateLoadingStatus('👤 Actualizando información de usuario...', false);
+                    updateUserInterface();
                     
                     setTimeout(() => {
-                        document.getElementById('loadingScreen').style.display = 'none';
-                        const appContainer = document.getElementById('appContainer');
-                        appContainer.style.display = 'flex';
+                        updateLoadingStatus('🚀 ¡Sistema listo!', false);
                         
                         setTimeout(() => {
-                            appContainer.classList.add('loaded');
+                            // Ocultar loading screen
+                            document.getElementById('loadingScreen').style.display = 'none';
+                            const appContainer = document.getElementById('appContainer');
+                            appContainer.style.display = 'flex';
                             
-                            // Cargar contenido inicial
-                            showTab('dashboard');
-                            setupEventListeners();
-                            
-                            // Mostrar mensaje de bienvenida
                             setTimeout(() => {
-                                showToast(`🎉 ¡Bienvenido ${AppState.user.name}!`, 'success', 3000);
-                            }, 500);
-                            
-                        }, 100);
-                    }, 1000);
-                }, 300);
-            }, 300);
-        }, 300);
-    }, 300);
+                                appContainer.classList.add('loaded');
+                                
+                                // Cargar contenido inicial
+                                showTab('dashboard');
+                                setupEventListeners();
+                                
+                                // Mostrar mensaje de bienvenida
+                                setTimeout(() => {
+                                    showToast(`🎉 ¡Bienvenido ${AppState.user.name}!`, 'success', 3000);
+                                }, 500);
+                                
+                            }, 100);
+                        }, 1500); // Mantener "Sistema listo" más tiempo
+                    }, 500);
+                }, 500);
+            }, 500);
+        }, 500);
+    }, 800); // Tiempo inicial más largo para mostrar las credenciales
 }
 
 function updateUserInterface() {
@@ -1307,27 +1369,6 @@ function setupEventListeners() {
 }
 
 // ========================================
-// Agregar animación de flotación para partículas
-// ========================================
-const floatKeyframes = `
-    @keyframes float {
-        0%, 100% {
-            transform: translateY(0px) rotate(0deg);
-            opacity: 0.6;
-        }
-        50% {
-            transform: translateY(-20px) rotate(180deg);
-            opacity: 1;
-        }
-    }
-`;
-
-// Agregar keyframes al documento
-const keyframeStyle = document.createElement('style');
-keyframeStyle.textContent = floatKeyframes;
-document.head.appendChild(keyframeStyle);
-
-// ========================================
 // Inicialización cuando el DOM esté listo
 // ========================================
 document.addEventListener('DOMContentLoaded', function() {
@@ -1349,6 +1390,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Configurar navegación inicial
     buildBottomNavigation();
+    
+    // Inicializar animación de loading desde el inicio
+    setupLoadingAnimation();
     
     console.log('🚀 Tecsitel v4.0 iniciado correctamente');
     console.log('👨‍💼 Roles disponibles:', Object.keys(USER_ROLES));
