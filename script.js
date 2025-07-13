@@ -656,8 +656,8 @@ async function handleLogin(event) {
             AppState.token = response.token;
             AppState.user = response.user;
             AppState.userRole = response.user.role;
-            AppState.sessionStart = Date.now();
-            AppState.permissions = getUserPermissions(response.user.role);
+AppState.sessionStart = Date.now();
+AppState.permissions = response.user.permissions || getUserPermissions(response.user.role);
             
             // Guardar token en localStorage
             localStorage.setItem('tecsitel_token', response.token);
