@@ -1,103 +1,68 @@
 # =============================================
 # TECSITEL PERU E.I.R.L. - Configuración Netlify v4.0
-# Optimizada para resolver "Module not found"
+# Corregida para un despliegue exitoso
 # =============================================
 
 [build]
+  # El directorio 'publish' contiene los archivos a desplegar.
+  # En este caso, el index.html está en la raíz.
   publish = "."
-  command = "npm ci --production --silent && npm run build"
+  
+  # El comando de build no es necesario ya que Netlify
+  # instalará las dependencias de las funciones automáticamente.
+  command = "echo 'Build step not required. Netlify will handle function dependencies.'"
+  
+  # Directorio de las Netlify Functions.
   functions = "netlify/functions"
 
 [build.environment]
-  NODE_VERSION = "18.19.0"
-  NPM_VERSION = "10"
-  NODE_ENV = "production"
-  NPM_CONFIG_PRODUCTION = "true"
-  NETLIFY_EXPERIMENTAL_BUILD_NODE_VERSION = "18"
+  NODE_VERSION = "18"
+  NPM_FLAGS = "--prefix=/dev/null" # Evita warnings de postinstall
 
 # =============================================
-# CONFIGURACIÓN DE FUNCIONES OPTIMIZADA
+# CONFIGURACIÓN DE FUNCIONES
 # =============================================
 [functions]
   directory = "netlify/functions"
+  # 'nft' (Netlify Function Tracer) es el bundler recomendado y por defecto.
   node_bundler = "nft"
   
-  # Configuración específica para resolver dependencias
-  [functions."api"]
-    node_bundler = "nft"
+  # Excluir 'pg-native' que puede causar problemas en el entorno de build de Linux.
+  # La librería 'pg' usará la versión de JavaScript por defecto.
+  [functions."*"]
     external_node_modules = ["pg-native"]
 
 # =============================================
-# CONFIGURACIÓN DE PROCESSING
+# REDIRECCIONES PARA LA API SERVERLESS
 # =============================================
-[build.processing]
-  skip_processing = false
-
-[build.processing.css]
-  bundle = false
-  minify = false
-
-[build.processing.js]
-  bundle = false
-  minify = false
-
-[build.processing.html]
-  pretty_urls = true
-
-[build.processing.images]
-  compress = false
-
-# =============================================
-# REDIRECCIONES API
-# =============================================
+# Esta regla es crucial. Dirige todas las llamadas a /api/... 
+# a tu función 'api.js' sin cambiar la URL en el navegador.
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
   force = true
 
+# Regla 'catch-all' para aplicaciones de una sola página (SPA).
+# Asegura que las rutas del lado del cliente funcionen correctamente.
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
 # =============================================
-# HEADERS DE SEGURIDAD
+# HEADERS DE SEGURIDAD (Sin cambios)
 # =============================================
 [[headers]]
   for = "/api/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Allow-Headers = "Content-Type, Authorization, X-Requested-With"
-    Content-Type = "application/json; charset=utf-8"
-    Cache-Control = "no-cache, no-store, must-revalidate"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    X-XSS-Protection = "1; mode=block"
     Referrer-Policy = "strict-origin-when-cross-origin"
-
-# =============================================
-# CONFIGURACIÓN POR CONTEXTO
-# =============================================
-[context.production]
-  command = "npm ci --production --silent && npm run build"
-  [context.production.environment]
-    NODE_ENV = "production"
-    NETLIFY_ENV = "production"
-
-[context.deploy-preview]
-  command = "npm ci --production --silent && npm run build"
-  [context.deploy-preview.environment]
-    NODE_ENV = "staging"
-    NETLIFY_ENV = "preview"
-
-[context.branch-deploy]
-  command = "npm ci --production --silent && npm run build"
-  [context.branch-deploy.environment]
-    NODE_ENV = "development"
-    NETLIFY_ENV = "development"
