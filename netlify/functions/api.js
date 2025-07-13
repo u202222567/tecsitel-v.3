@@ -1,23 +1,24 @@
 // ============================================
-// TECSITEL PERU E.I.R.L. - API v4.0 SINCRONIZADA
-// Sistema de Gestión Empresarial Completo
+// TECSITEL PERU E.I.R.L. - API COMPLETA v4.0
+// Sistema de Gestión Empresarial Integrado
+// RUC: 20605908285 | Norte del Perú
 // ============================================
 
 const express = require('express');
 const cors = require('cors');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
 const serverless = require('serverless-http');
 
 // ============================================
-// CONFIGURACIÓN SINCRONIZADA CON FRONTEND
+// CONFIGURACIÓN TECSITEL
 // ============================================
 const TECSITEL_CONFIG = {
     empresa: {
         ruc: process.env.COMPANY_RUC || '20605908285',
         razonSocial: process.env.COMPANY_NAME || 'TECSITEL PERU E.I.R.L.',
-        direccion: process.env.COMPANY_ADDRESS || 'Cal. Astopilco Nro. 735a P.J. el Porvenir, Trujillo, La Libertad, Perú',
+        direccion: 'Cal. Astopilco Nro. 735a P.J. el Porvenir, Trujillo, La Libertad, Perú',
         telefono: '+51 944 123 456',
         email: 'contacto@tecsitel.pe',
         web: 'https://tecsitel.netlify.app',
@@ -27,10 +28,11 @@ const TECSITEL_CONFIG = {
         empleadosTotal: 12,
         empleadosAdmin: 2,
         empleadosOperarios: 10,
-        añoFundacion: 2018
+        añoFundacion: 2018,
+        version: '4.0.0'
     },
     
-    // USUARIOS SINCRONIZADOS CON EL FRONTEND
+    // USUARIOS SINCRONIZADOS CON FRONTEND
     usuarios: {
         'admin': {
             id: 1,
@@ -78,24 +80,43 @@ const TECSITEL_CONFIG = {
         }
     },
     
-    // MÓDULOS SINCRONIZADOS
-    modulos: {
-        'dashboard': { name: 'Dashboard', icon: '📊' },
-        'invoices': { name: 'Facturas', icon: '📄' },
-        'accounting': { name: 'Contabilidad', icon: '💰' },
-        'personnel': { name: 'Personal', icon: '👥' },
-        'timeentry': { name: 'Marcaje', icon: '⏰' },
-        'compliance': { name: 'Cumplimiento', icon: '⚖️' },
-        'reports': { name: 'Reportes', icon: '📊' },
-        'exports': { name: 'Exportaciones', icon: '📤' }
-    }
+    // SERVICIOS TECSITEL
+    servicios: [
+        {
+            id: 1,
+            categoria: 'Redes Ópticas',
+            descripcion: 'Instalación FTTH, GPON, FTTX',
+            precio: 85000,
+            activo: true
+        },
+        {
+            id: 2,
+            categoria: 'Cableado Estructurado',
+            descripcion: 'Infraestructura Cat 6A',
+            precio: 45000,
+            activo: true
+        },
+        {
+            id: 3,
+            categoria: 'Enlaces Microondas',
+            descripcion: 'Punto a punto 23GHz',
+            precio: 65000,
+            activo: true
+        },
+        {
+            id: 4,
+            categoria: 'Construcción Sites',
+            descripcion: 'Torres y shelters',
+            precio: 120000,
+            activo: true
+        }
+    ]
 };
 
 // Configuración de seguridad
-const JWT_SECRET = process.env.JWT_SECRET || 'tecsitel-jwt-v4-2025';
+const JWT_SECRET = process.env.JWT_SECRET || 'tecsitel-jwt-v4-2025-secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '24h';
 const NODE_ENV = process.env.NODE_ENV || 'production';
-const DATABASE_URL = process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL;
 
 // Configuración fiscal Perú
 const PERU_CONFIG = {
@@ -105,7 +126,7 @@ const PERU_CONFIG = {
     ASIGNACION_FAMILIAR: parseFloat(process.env.PERU_ASIGNACION_FAMILIAR) || 102.50
 };
 
-// Logger
+// Logger TECSITEL
 const logger = {
     info: (...args) => console.info('[TECSITEL-INFO]', new Date().toISOString(), ...args),
     warn: (...args) => console.warn('[TECSITEL-WARN]', new Date().toISOString(), ...args),
@@ -133,24 +154,124 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Conexión a base de datos (opcional)
+// Base de datos (opcional)
 let pool = null;
+const DATABASE_URL = process.env.NETLIFY_DATABASE_URL || process.env.DATABASE_URL;
+
 if (DATABASE_URL) {
     try {
         pool = new Pool({
             connectionString: DATABASE_URL,
             ssl: NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-            max: 20,
+            max: 10,
             idleTimeoutMillis: 30000,
             connectionTimeoutMillis: 2000,
         });
-        logger.info('✅ Pool de base de datos PostgreSQL inicializado');
+        logger.info('✅ Pool de base de datos inicializado');
     } catch (error) {
-        logger.warn('⚠️ Error inicializando base de datos, usando modo simulado:', error.message);
+        logger.warn('⚠️ Base de datos no disponible, usando modo simulado');
     }
 }
 
-// Middleware de autenticación
+// Datos simulados en memoria
+let AppState = {
+    invoices: [
+        {
+            id: 1,
+            number: 'F001-000001',
+            client: 'Claro Perú',
+            ruc: '20100570681',
+            service: 'Instalación FTTH',
+            amount: 85000,
+            currency: 'PEN',
+            status: 'Aprobada',
+            date: '2025-01-10',
+            createdBy: 'admin'
+        },
+        {
+            id: 2,
+            number: 'F001-000002',
+            client: 'Win Empresas',
+            ruc: '20511180066',
+            service: 'Cableado Estructurado',
+            amount: 45000,
+            currency: 'PEN',
+            status: 'Pendiente',
+            date: '2025-01-11',
+            createdBy: 'contable'
+        }
+    ],
+    employees: [
+        {
+            id: 1,
+            dni: '12345678',
+            firstName: 'Carlos',
+            lastName: 'Rodríguez',
+            position: 'Administrador General',
+            salary: 4500,
+            status: 'Activo',
+            hireDate: '2020-03-15',
+            avatar: 'C'
+        },
+        {
+            id: 2,
+            dni: '87654321',
+            firstName: 'Ana',
+            lastName: 'Mendoza',
+            position: 'Asistente Administrativa',
+            salary: 2500,
+            status: 'Activo',
+            hireDate: '2021-07-01',
+            avatar: 'A'
+        },
+        {
+            id: 3,
+            dni: '11223344',
+            firstName: 'Miguel',
+            lastName: 'Torres',
+            position: 'Técnico Principal',
+            salary: 3500,
+            status: 'Activo',
+            hireDate: '2019-11-20',
+            avatar: 'M'
+        }
+    ],
+    timeEntries: [
+        {
+            id: 1,
+            employeeId: 1,
+            type: 'entrada',
+            date: '2025-01-12',
+            time: '08:00',
+            createdBy: 'admin'
+        },
+        {
+            id: 2,
+            employeeId: 1,
+            type: 'salida',
+            date: '2025-01-12',
+            time: '17:30',
+            createdBy: 'admin'
+        },
+        {
+            id: 3,
+            employeeId: 2,
+            type: 'entrada',
+            date: '2025-01-12',
+            time: '08:15',
+            createdBy: 'rrhh'
+        }
+    ],
+    nextId: {
+        invoice: 3,
+        employee: 4,
+        timeEntry: 4
+    }
+};
+
+// ============================================
+// MIDDLEWARE DE AUTENTICACIÓN
+// ============================================
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
@@ -158,8 +279,7 @@ const authenticateToken = (req, res, next) => {
     if (!token) {
         return res.status(401).json({
             error: 'Token de acceso requerido',
-            code: 'NO_TOKEN',
-            empresa: TECSITEL_CONFIG.empresa.razonSocial
+            code: 'NO_TOKEN'
         });
     }
 
@@ -167,8 +287,7 @@ const authenticateToken = (req, res, next) => {
         if (err) {
             return res.status(403).json({
                 error: 'Token inválido o expirado',
-                code: 'INVALID_TOKEN',
-                empresa: TECSITEL_CONFIG.empresa.razonSocial
+                code: 'INVALID_TOKEN'
             });
         }
         req.user = user;
@@ -176,8 +295,20 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+// Verificar permisos
+const hasPermission = (user, requiredPermissions) => {
+    if (!user || !user.permissions) return false;
+    if (user.permissions.includes('all')) return true;
+    
+    if (Array.isArray(requiredPermissions)) {
+        return requiredPermissions.some(perm => user.permissions.includes(perm));
+    }
+    
+    return user.permissions.includes(requiredPermissions);
+};
+
 // ============================================
-// AUTENTICACIÓN SINCRONIZADA
+// RUTAS DE AUTENTICACIÓN
 // ============================================
 app.post('/api/auth/login', async (req, res) => {
     try {
@@ -192,20 +323,18 @@ app.post('/api/auth/login', async (req, res) => {
             });
         }
 
-        // Buscar usuario en configuración
         const user = TECSITEL_CONFIG.usuarios[username.toLowerCase()];
         
         if (!user || !user.activo) {
-            logger.warn(`❌ Usuario no encontrado o inactivo: ${username}`);
+            logger.warn(`❌ Usuario no encontrado: ${username}`);
             return res.status(401).json({
                 error: 'Credenciales inválidas',
                 code: 'INVALID_CREDENTIALS'
             });
         }
 
-        // Verificar contraseña (en producción usar bcrypt)
         if (password !== user.password) {
-            logger.warn(`❌ Contraseña incorrecta para: ${username}`);
+            logger.warn(`❌ Contraseña incorrecta: ${username}`);
             return res.status(401).json({
                 error: 'Credenciales inválidas',
                 code: 'INVALID_CREDENTIALS'
@@ -214,7 +343,6 @@ app.post('/api/auth/login', async (req, res) => {
 
         logger.info(`✅ Login exitoso: ${username} (${user.role})`);
         
-        // Generar token JWT
         const tokenPayload = {
             id: user.id,
             username: user.username,
@@ -254,7 +382,6 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// Verificar token
 app.get('/api/auth/verify', authenticateToken, (req, res) => {
     res.json({
         success: true,
@@ -272,7 +399,7 @@ app.get('/api/config', (req, res) => {
             version: '4.0.0-tecsitel',
             timestamp: new Date().toISOString(),
             empresa: TECSITEL_CONFIG.empresa,
-            modulos: TECSITEL_CONFIG.modulos,
+            servicios: TECSITEL_CONFIG.servicios,
             peru: PERU_CONFIG,
             features: {
                 facturacionElectronica: true,
@@ -287,8 +414,7 @@ app.get('/api/config', (req, res) => {
                 username: key,
                 role: TECSITEL_CONFIG.usuarios[key].role,
                 name: TECSITEL_CONFIG.usuarios[key].name,
-                area: TECSITEL_CONFIG.usuarios[key].area,
-                // No incluir passwords en config pública
+                area: TECSITEL_CONFIG.usuarios[key].area
             }))
         };
         
@@ -302,225 +428,24 @@ app.get('/api/config', (req, res) => {
 });
 
 // ============================================
-// GESTIÓN DE FACTURAS
-// ============================================
-app.get('/api/invoices', authenticateToken, async (req, res) => {
-    try {
-        // Verificar permisos
-        if (!req.user.permissions.includes('all') && 
-            !req.user.permissions.includes('invoices')) {
-            return res.status(403).json({
-                error: 'Sin permisos para ver facturas'
-            });
-        }
-
-        // Datos simulados de facturas
-        const invoices = [
-            {
-                id: 1,
-                number: 'F001-000001',
-                client: 'Claro Perú',
-                ruc: '20100570681',
-                service: 'Instalación FTTH',
-                amount: 85000,
-                currency: 'PEN',
-                status: 'Aprobada',
-                date: '2025-01-10',
-                createdBy: 'admin'
-            },
-            {
-                id: 2,
-                number: 'F001-000002', 
-                client: 'Win Empresas',
-                ruc: '20511180066',
-                service: 'Cableado Estructurado',
-                amount: 45000,
-                currency: 'PEN',
-                status: 'Pendiente',
-                date: '2025-01-11',
-                createdBy: 'contable'
-            }
-        ];
-
-        res.json({
-            success: true,
-            data: invoices,
-            total: invoices.length,
-            empresa: TECSITEL_CONFIG.empresa.razonSocial
-        });
-        
-    } catch (error) {
-        logger.error('❌ Error obteniendo facturas:', error);
-        res.status(500).json({
-            error: 'Error al obtener facturas'
-        });
-    }
-});
-
-app.post('/api/invoices', authenticateToken, async (req, res) => {
-    try {
-        if (!req.user.permissions.includes('all') && 
-            !req.user.permissions.includes('invoices')) {
-            return res.status(403).json({
-                error: 'Sin permisos para crear facturas'
-            });
-        }
-
-        const { client, ruc, service, amount, currency } = req.body;
-        
-        // Validaciones básicas
-        if (!client || !ruc || !service || !amount) {
-            return res.status(400).json({
-                error: 'Datos de factura incompletos'
-            });
-        }
-
-        // Simular creación de factura
-        const newInvoice = {
-            id: Date.now(),
-            number: `F001-${String(Math.floor(Math.random() * 999999)).padStart(6, '0')}`,
-            client,
-            ruc,
-            service,
-            amount: parseFloat(amount),
-            currency: currency || 'PEN',
-            status: 'Pendiente',
-            date: new Date().toISOString().split('T')[0],
-            createdBy: req.user.username
-        };
-
-        logger.info(`📄 Nueva factura creada: ${newInvoice.number} por ${req.user.name}`);
-
-        res.status(201).json({
-            success: true,
-            data: newInvoice,
-            message: 'Factura creada exitosamente'
-        });
-        
-    } catch (error) {
-        logger.error('❌ Error creando factura:', error);
-        res.status(500).json({
-            error: 'Error al crear factura'
-        });
-    }
-});
-
-// ============================================
-// GESTIÓN DE PERSONAL
-// ============================================
-app.get('/api/employees', authenticateToken, async (req, res) => {
-    try {
-        if (!req.user.permissions.includes('all') && 
-            !req.user.permissions.includes('personnel')) {
-            return res.status(403).json({
-                error: 'Sin permisos para ver personal'
-            });
-        }
-
-        const employees = [
-            {
-                id: 1,
-                dni: '12345678',
-                firstName: 'Carlos',
-                lastName: 'Rodríguez',
-                position: 'Administrador General',
-                salary: 4500,
-                status: 'Activo',
-                hireDate: '2020-03-15'
-            },
-            {
-                id: 2,
-                dni: '87654321',
-                firstName: 'Ana',
-                lastName: 'Mendoza',
-                position: 'Asistente Administrativa',
-                salary: 2500,
-                status: 'Activo',
-                hireDate: '2021-07-01'
-            }
-        ];
-
-        res.json({
-            success: true,
-            data: employees,
-            total: employees.length,
-            summary: {
-                total: TECSITEL_CONFIG.empresa.empleadosTotal,
-                administrativos: TECSITEL_CONFIG.empresa.empleadosAdmin,
-                operarios: TECSITEL_CONFIG.empresa.empleadosOperarios
-            }
-        });
-        
-    } catch (error) {
-        logger.error('❌ Error obteniendo empleados:', error);
-        res.status(500).json({
-            error: 'Error al obtener empleados'
-        });
-    }
-});
-
-// ============================================
-// CONTROL DE TIEMPO Y ASISTENCIA
-// ============================================
-app.get('/api/timeentries', authenticateToken, async (req, res) => {
-    try {
-        if (!req.user.permissions.includes('all') && 
-            !req.user.permissions.includes('timeentry') &&
-            !req.user.permissions.includes('personnel')) {
-            return res.status(403).json({
-                error: 'Sin permisos para ver marcaciones'
-            });
-        }
-
-        const timeEntries = [
-            {
-                id: 1,
-                employeeId: 1,
-                type: 'entrada',
-                date: '2025-01-12',
-                time: '08:00',
-                createdBy: req.user.username
-            },
-            {
-                id: 2,
-                employeeId: 1,
-                type: 'salida',
-                date: '2025-01-12',
-                time: '17:30',
-                createdBy: req.user.username
-            }
-        ];
-
-        res.json({
-            success: true,
-            data: timeEntries,
-            total: timeEntries.length,
-            compliance: {
-                sunafilCompliant: true,
-                digitalControl: true,
-                percentage: 100
-            }
-        });
-        
-    } catch (error) {
-        logger.error('❌ Error obteniendo marcaciones:', error);
-        res.status(500).json({
-            error: 'Error al obtener marcaciones'
-        });
-    }
-});
-
-// ============================================
 // DASHBOARD Y MÉTRICAS
 // ============================================
 app.get('/api/dashboard', authenticateToken, async (req, res) => {
     try {
+        // Calcular métricas en tiempo real
+        const totalIncome = AppState.invoices
+            .filter(inv => inv.status === 'Aprobada')
+            .reduce((sum, inv) => sum + (inv.currency === 'USD' ? inv.amount * 3.75 : inv.amount), 0);
+        
+        const pendingInvoices = AppState.invoices.filter(inv => inv.status === 'Pendiente').length;
+        const totalEmployees = AppState.employees.filter(emp => emp.status === 'Activo').length;
+
         const dashboard = {
             metrics: {
-                totalIncome: 130000,
-                pendingInvoices: 1,
-                totalEmployees: TECSITEL_CONFIG.empresa.empleadosTotal,
-                complianceScore: 95
+                totalIncome,
+                pendingInvoices,
+                totalEmployees,
+                complianceScore: 97.5
             },
             empresa: TECSITEL_CONFIG.empresa,
             user: {
@@ -532,13 +457,21 @@ app.get('/api/dashboard', authenticateToken, async (req, res) => {
             recentActivity: [
                 {
                     type: 'invoice',
-                    message: 'Nueva factura F001-000002 creada',
-                    timestamp: new Date().toISOString()
+                    message: `Nueva factura ${AppState.invoices[AppState.invoices.length - 1]?.number || 'F001-000001'} creada`,
+                    timestamp: new Date().toISOString(),
+                    icon: '📄'
                 },
                 {
                     type: 'employee',
                     message: 'Marcación de entrada registrada',
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    icon: '⏰'
+                },
+                {
+                    type: 'compliance',
+                    message: 'Cumplimiento SUNAT verificado',
+                    timestamp: new Date().toISOString(),
+                    icon: '✅'
                 }
             ]
         };
@@ -558,12 +491,315 @@ app.get('/api/dashboard', authenticateToken, async (req, res) => {
 });
 
 // ============================================
+// GESTIÓN DE FACTURAS
+// ============================================
+app.get('/api/invoices', authenticateToken, async (req, res) => {
+    try {
+        if (!hasPermission(req.user, ['invoices', 'all'])) {
+            return res.status(403).json({
+                error: 'Sin permisos para ver facturas'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: AppState.invoices,
+            total: AppState.invoices.length,
+            empresa: TECSITEL_CONFIG.empresa.razonSocial
+        });
+        
+    } catch (error) {
+        logger.error('❌ Error obteniendo facturas:', error);
+        res.status(500).json({
+            error: 'Error al obtener facturas'
+        });
+    }
+});
+
+app.post('/api/invoices', authenticateToken, async (req, res) => {
+    try {
+        if (!hasPermission(req.user, ['invoices', 'all'])) {
+            return res.status(403).json({
+                error: 'Sin permisos para crear facturas'
+            });
+        }
+
+        const { client, ruc, service, amount, currency } = req.body;
+        
+        if (!client || !ruc || !service || !amount) {
+            return res.status(400).json({
+                error: 'Datos de factura incompletos'
+            });
+        }
+
+        // Validar RUC peruano (11 dígitos)
+        if (!/^\d{11}$/.test(ruc)) {
+            return res.status(400).json({
+                error: 'RUC inválido - debe tener 11 dígitos'
+            });
+        }
+
+        const newInvoice = {
+            id: AppState.nextId.invoice++,
+            number: `F001-${String(AppState.nextId.invoice).padStart(6, '0')}`,
+            client,
+            ruc,
+            service,
+            amount: parseFloat(amount),
+            currency: currency || 'PEN',
+            status: 'Pendiente',
+            date: new Date().toISOString().split('T')[0],
+            createdBy: req.user.username
+        };
+
+        AppState.invoices.push(newInvoice);
+
+        logger.info(`📄 Nueva factura creada: ${newInvoice.number} por ${req.user.name}`);
+
+        res.status(201).json({
+            success: true,
+            data: newInvoice,
+            message: 'Factura creada exitosamente'
+        });
+        
+    } catch (error) {
+        logger.error('❌ Error creando factura:', error);
+        res.status(500).json({
+            error: 'Error al crear factura'
+        });
+    }
+});
+
+app.put('/api/invoices/:id/approve', authenticateToken, async (req, res) => {
+    try {
+        if (!hasPermission(req.user, ['invoices', 'all'])) {
+            return res.status(403).json({
+                error: 'Sin permisos para aprobar facturas'
+            });
+        }
+
+        const invoiceId = parseInt(req.params.id);
+        const invoice = AppState.invoices.find(inv => inv.id === invoiceId);
+
+        if (!invoice) {
+            return res.status(404).json({
+                error: 'Factura no encontrada'
+            });
+        }
+
+        invoice.status = 'Aprobada';
+        invoice.approvedBy = req.user.username;
+        invoice.approvedDate = new Date().toISOString().split('T')[0];
+
+        logger.info(`✅ Factura aprobada: ${invoice.number} por ${req.user.name}`);
+
+        res.json({
+            success: true,
+            data: invoice,
+            message: 'Factura aprobada exitosamente'
+        });
+        
+    } catch (error) {
+        logger.error('❌ Error aprobando factura:', error);
+        res.status(500).json({
+            error: 'Error al aprobar factura'
+        });
+    }
+});
+
+// ============================================
+// GESTIÓN DE PERSONAL
+// ============================================
+app.get('/api/employees', authenticateToken, async (req, res) => {
+    try {
+        if (!hasPermission(req.user, ['personnel', 'all'])) {
+            return res.status(403).json({
+                error: 'Sin permisos para ver personal'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: AppState.employees,
+            total: AppState.employees.length,
+            summary: {
+                total: TECSITEL_CONFIG.empresa.empleadosTotal,
+                administrativos: TECSITEL_CONFIG.empresa.empleadosAdmin,
+                operarios: TECSITEL_CONFIG.empresa.empleadosOperarios,
+                activos: AppState.employees.filter(emp => emp.status === 'Activo').length
+            }
+        });
+        
+    } catch (error) {
+        logger.error('❌ Error obteniendo empleados:', error);
+        res.status(500).json({
+            error: 'Error al obtener empleados'
+        });
+    }
+});
+
+app.post('/api/employees', authenticateToken, async (req, res) => {
+    try {
+        if (!hasPermission(req.user, ['personnel', 'all'])) {
+            return res.status(403).json({
+                error: 'Sin permisos para crear empleados'
+            });
+        }
+
+        const { dni, firstName, lastName, position, salary, status } = req.body;
+        
+        if (!dni || !firstName || !lastName || !position || !salary) {
+            return res.status(400).json({
+                error: 'Datos del empleado incompletos'
+            });
+        }
+
+        // Validar DNI peruano (8 dígitos)
+        if (!/^\d{8}$/.test(dni)) {
+            return res.status(400).json({
+                error: 'DNI inválido - debe tener 8 dígitos'
+            });
+        }
+
+        // Verificar DNI único
+        if (AppState.employees.find(emp => emp.dni === dni)) {
+            return res.status(400).json({
+                error: 'Ya existe un empleado con ese DNI'
+            });
+        }
+
+        const newEmployee = {
+            id: AppState.nextId.employee++,
+            dni,
+            firstName,
+            lastName,
+            position,
+            salary: parseFloat(salary),
+            status: status || 'Activo',
+            avatar: firstName.charAt(0).toUpperCase(),
+            hireDate: new Date().toISOString().split('T')[0],
+            createdBy: req.user.username
+        };
+
+        AppState.employees.push(newEmployee);
+
+        logger.info(`👤 Nuevo empleado: ${firstName} ${lastName} creado por ${req.user.name}`);
+
+        res.status(201).json({
+            success: true,
+            data: newEmployee,
+            message: 'Empleado registrado exitosamente'
+        });
+        
+    } catch (error) {
+        logger.error('❌ Error creando empleado:', error);
+        res.status(500).json({
+            error: 'Error al crear empleado'
+        });
+    }
+});
+
+// ============================================
+// CONTROL DE TIEMPO Y ASISTENCIA
+// ============================================
+app.get('/api/timeentries', authenticateToken, async (req, res) => {
+    try {
+        if (!hasPermission(req.user, ['timeentry', 'personnel', 'all'])) {
+            return res.status(403).json({
+                error: 'Sin permisos para ver marcaciones'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: AppState.timeEntries,
+            total: AppState.timeEntries.length,
+            compliance: {
+                sunafilCompliant: true,
+                digitalControl: true,
+                percentage: 100
+            }
+        });
+        
+    } catch (error) {
+        logger.error('❌ Error obteniendo marcaciones:', error);
+        res.status(500).json({
+            error: 'Error al obtener marcaciones'
+        });
+    }
+});
+
+app.post('/api/timeentries', authenticateToken, async (req, res) => {
+    try {
+        if (!hasPermission(req.user, ['timeentry', 'personnel', 'all'])) {
+            return res.status(403).json({
+                error: 'Sin permisos para registrar marcaciones'
+            });
+        }
+
+        const { employeeId, type, date, time } = req.body;
+        
+        if (!employeeId || !type || !date || !time) {
+            return res.status(400).json({
+                error: 'Datos de marcación incompletos'
+            });
+        }
+
+        // Verificar que el empleado existe
+        const employee = AppState.employees.find(emp => emp.id === parseInt(employeeId));
+        if (!employee) {
+            return res.status(404).json({
+                error: 'Empleado no encontrado'
+            });
+        }
+
+        // Verificar que no existe ya una marcación del mismo tipo
+        const existingEntry = AppState.timeEntries.find(entry => 
+            entry.employeeId === parseInt(employeeId) && 
+            entry.date === date && 
+            entry.type === type
+        );
+
+        if (existingEntry) {
+            return res.status(400).json({
+                error: `Ya existe una marcación de ${type} para este empleado en esta fecha`
+            });
+        }
+
+        const newTimeEntry = {
+            id: AppState.nextId.timeEntry++,
+            employeeId: parseInt(employeeId),
+            type,
+            date,
+            time,
+            timestamp: new Date().toISOString(),
+            createdBy: req.user.username
+        };
+
+        AppState.timeEntries.push(newTimeEntry);
+
+        logger.info(`⏰ Marcación registrada: ${employee.firstName} ${employee.lastName} - ${type} por ${req.user.name}`);
+
+        res.status(201).json({
+            success: true,
+            data: newTimeEntry,
+            message: `Marcación de ${type} registrada exitosamente`
+        });
+        
+    } catch (error) {
+        logger.error('❌ Error registrando marcación:', error);
+        res.status(500).json({
+            error: 'Error al registrar marcación'
+        });
+    }
+});
+
+// ============================================
 // CUMPLIMIENTO NORMATIVO
 // ============================================
 app.get('/api/compliance', authenticateToken, async (req, res) => {
     try {
-        if (!req.user.permissions.includes('all') && 
-            !req.user.permissions.includes('compliance')) {
+        if (!hasPermission(req.user, ['compliance', 'all'])) {
             return res.status(403).json({
                 error: 'Sin permisos para ver cumplimiento'
             });
@@ -574,42 +810,50 @@ app.get('/api/compliance', authenticateToken, async (req, res) => {
                 facturacionElectronica: {
                     status: 'Activa',
                     version: '3.0',
-                    compliance: 100
+                    compliance: 100,
+                    ultimaActualizacion: '2025-01-10'
                 },
                 librosElectronicos: {
                     status: 'Al día',
-                    compliance: 100
+                    compliance: 100,
+                    ultimoEnvio: '2025-01-11'
                 },
                 pdt621: {
                     status: 'Próximo vencimiento',
                     days: 10,
-                    compliance: 95
+                    compliance: 95,
+                    fechaVencimiento: '2025-01-22'
                 },
-                overall: 98
+                overall: 98.3
             },
             sunafil: {
                 tregistro: {
                     status: 'Actualizado',
-                    compliance: 100
+                    compliance: 100,
+                    ultimaActualizacion: '2025-01-05'
                 },
                 controlAsistencia: {
                     status: 'Digital implementado',
-                    compliance: 100
+                    compliance: 100,
+                    registros: AppState.timeEntries.length
                 },
                 registroJornadas: {
                     status: 'Completo',
-                    compliance: 100
+                    compliance: 100,
+                    empleadosRegistrados: AppState.employees.filter(emp => emp.status === 'Activo').length
                 },
                 overall: 100
             },
-            general: 97.5
+            general: 99.2,
+            lastUpdate: new Date().toISOString(),
+            nextReview: '2025-02-01'
         };
 
         res.json({
             success: true,
             data: compliance,
             empresa: TECSITEL_CONFIG.empresa.razonSocial,
-            lastUpdate: new Date().toISOString()
+            mensaje: 'Cumplimiento normativo SUNAT y SUNAFIL verificado'
         });
         
     } catch (error) {
@@ -625,33 +869,59 @@ app.get('/api/compliance', authenticateToken, async (req, res) => {
 // ============================================
 app.post('/api/export', authenticateToken, async (req, res) => {
     try {
-        if (!req.user.permissions.includes('all') && 
-            !req.user.permissions.includes('exports')) {
+        if (!hasPermission(req.user, ['exports', 'reports', 'all'])) {
             return res.status(403).json({
-                error: 'Sin permisos para exportar'
+                error: 'Sin permisos para exportar datos'
             });
         }
 
+        const { type } = req.body;
+        const exportType = type || 'complete';
+
         const exportData = {
-            timestamp: new Date().toISOString(),
-            exportedBy: req.user.name,
-            empresa: TECSITEL_CONFIG.empresa,
-            version: '4.0.0-tecsitel',
-            data: {
-                invoices: 'included',
-                employees: 'included',
-                timeEntries: 'included',
-                compliance: 'included'
-            }
+            metadata: {
+                timestamp: new Date().toISOString(),
+                exportedBy: req.user.name,
+                exportType: exportType,
+                empresa: TECSITEL_CONFIG.empresa,
+                version: '4.0.0'
+            },
+            data: {}
         };
 
-        logger.info(`📤 Exportación realizada por ${req.user.name}`);
+        // Incluir datos según permisos del usuario
+        if (hasPermission(req.user, ['invoices', 'all'])) {
+            exportData.data.facturas = AppState.invoices;
+        }
+
+        if (hasPermission(req.user, ['personnel', 'all'])) {
+            exportData.data.empleados = AppState.employees;
+            exportData.data.marcaciones = AppState.timeEntries;
+        }
+
+        if (hasPermission(req.user, ['compliance', 'all'])) {
+            exportData.data.cumplimiento = {
+                sunat: 'Cumpliendo normativas vigentes',
+                sunafil: 'Control digital implementado'
+            };
+        }
+
+        // Estadísticas generales
+        exportData.data.estadisticas = {
+            totalFacturas: AppState.invoices.length,
+            facturasPendientes: AppState.invoices.filter(inv => inv.status === 'Pendiente').length,
+            totalEmpleados: AppState.employees.length,
+            empleadosActivos: AppState.employees.filter(emp => emp.status === 'Activo').length,
+            marcacionesRegistradas: AppState.timeEntries.length
+        };
+
+        logger.info(`📤 Exportación realizada por ${req.user.name} - Tipo: ${exportType}`);
 
         res.json({
             success: true,
             data: exportData,
             message: 'Exportación completada exitosamente',
-            downloadUrl: '/api/download/export-' + Date.now() + '.json'
+            fileName: `TECSITEL_Export_${exportType}_${new Date().toISOString().split('T')[0]}.json`
         });
         
     } catch (error) {
@@ -682,11 +952,30 @@ app.get('/api/health', (req, res) => {
             compliance: true,
             exports: true
         },
-        users: Object.keys(TECSITEL_CONFIG.usuarios).length,
-        uptime: process.uptime()
+        statistics: {
+            totalUsers: Object.keys(TECSITEL_CONFIG.usuarios).length,
+            invoices: AppState.invoices.length,
+            employees: AppState.employees.length,
+            timeEntries: AppState.timeEntries.length,
+            services: TECSITEL_CONFIG.servicios.length
+        },
+        uptime: process.uptime(),
+        memory: process.memoryUsage(),
+        lastActivity: new Date().toISOString()
     };
 
-    res.json(health);
+    // Verificar base de datos si está disponible
+    if (pool) {
+        pool.query('SELECT 1', (err) => {
+            if (err) {
+                health.database = 'error';
+                health.status = 'DEGRADED';
+            }
+        });
+    }
+
+    const statusCode = health.status === 'OK' ? 200 : 503;
+    res.status(statusCode).json(health);
 });
 
 // ============================================
@@ -702,11 +991,14 @@ app.use('/api/*', (req, res) => {
             'POST /api/auth/login',
             'GET /api/auth/verify',
             'GET /api/config',
+            'GET /api/dashboard',
             'GET /api/invoices',
             'POST /api/invoices',
+            'PUT /api/invoices/:id/approve',
             'GET /api/employees',
+            'POST /api/employees',
             'GET /api/timeentries',
-            'GET /api/dashboard',
+            'POST /api/timeentries',
             'GET /api/compliance',
             'POST /api/export',
             'GET /api/health'
@@ -718,21 +1010,25 @@ app.use((error, req, res, next) => {
     logger.error('❌ Error no manejado:', error);
     
     res.status(500).json({
-        error: 'Error interno del servidor',
+        error: 'Error interno del servidor TECSITEL',
         code: 'SERVER_ERROR',
         empresa: TECSITEL_CONFIG.empresa.razonSocial,
-        message: NODE_ENV === 'development' ? error.message : 'Error inesperado'
+        message: NODE_ENV === 'development' ? error.message : 'Error inesperado',
+        timestamp: new Date().toISOString()
     });
 });
 
 // ============================================
-// INICIALIZACIÓN
+// INICIALIZACIÓN Y LOGS
 // ============================================
 logger.info('🚀 Iniciando TECSITEL API v4.0');
 logger.info(`🏢 Empresa: ${TECSITEL_CONFIG.empresa.razonSocial}`);
 logger.info(`📋 RUC: ${TECSITEL_CONFIG.empresa.ruc}`);
 logger.info(`👥 Usuarios configurados: ${Object.keys(TECSITEL_CONFIG.usuarios).length}`);
-logger.info(`📊 Módulos disponibles: ${Object.keys(TECSITEL_CONFIG.modulos).length}`);
+logger.info(`⚡ Servicios disponibles: ${TECSITEL_CONFIG.servicios.length}`);
+logger.info(`📊 Datos iniciales: ${AppState.invoices.length} facturas, ${AppState.employees.length} empleados`);
+logger.info(`🔒 Autenticación: JWT habilitado`);
+logger.info(`💾 Base de datos: ${pool ? 'PostgreSQL conectado' : 'Modo simulado'}`);
 
-// Exportar para Netlify Functions
+// Exportar handler para Netlify Functions
 module.exports.handler = serverless(app);
