@@ -3,20 +3,29 @@
   "version": "4.0.0",
   "description": "TECSITEL PERU E.I.R.L. - Sistema de Gestión Empresarial",
   "main": "index.html",
+  "type": "commonjs",
   "scripts": {
-    "build": "echo TECSITEL v4.0 build completed",
-    "start": "echo TECSITEL v4.0 ready",
+    "build": "npm install --production && echo 'TECSITEL v4.0 - Build completed successfully'",
+    "start": "node -e \"console.log('TECSITEL v4.0 ready for production')\"",
     "dev": "netlify dev",
-    "deploy": "netlify deploy --prod"
+    "deploy": "netlify deploy --prod",
+    "postinstall": "echo 'Dependencies installed for TECSITEL'",
+    "test": "echo 'No tests configured'"
   },
   "keywords": [
     "tecsitel",
-    "gestion-empresarial", 
+    "gestion-empresarial",
     "telecomunicaciones",
-    "peru"
+    "peru",
+    "netlify",
+    "serverless"
   ],
   "author": "TECSITEL PERU E.I.R.L.",
   "license": "Proprietary",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/u202222567/tecsitel-v.3.git"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -25,7 +34,20 @@
     "pg": "^8.11.5",
     "serverless-http": "^3.2.0"
   },
+  "devDependencies": {},
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "browserslist": [
+    "defaults",
+    "not ie 11",
+    "not ie_mob 11"
+  ],
+  "netlify": {
+    "functions": "netlify/functions"
+  },
+  "config": {
+    "unsafe-perm": true
   }
 }
