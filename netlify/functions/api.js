@@ -44,10 +44,13 @@ const authenticateToken = (req, res, next) => {
 // Middleware de roles
 const requireRole = (allowedRoles) => {
     return (req, res, next) => {
-        if (!allowedRoles.includes(req.user.role) && !req.user.role === 'admin') {
+        // El rol 'admin' siempre tiene acceso, o si el rol del usuario está incluido en los permitidos
+        if (req.user.role === 'admin' || allowedRoles.includes(req.user.role)) {
+            next(); // El usuario tiene permiso, continuar.
+        } else {
+            // Si no, denegar acceso.
             return res.status(403).json({ error: 'Permisos insuficientes' });
         }
-        next();
     };
 };
 
