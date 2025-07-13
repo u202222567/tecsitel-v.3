@@ -1,289 +1,4 @@
-function updateDashboardLabels() {
-    const role = AppState.userRole;
-    
-    // Personalizar etiquetas según rol
-    const labels = {
-        'admin': {
-            income: 'Ingresos Totales',
-            invoices: 'Facturas Pendientes', 
-            employees: 'Empleados Activos',
-            compliance: 'Cumplimiento'
-        },
-        'contable': {
-            income: 'Ingresos Totales',
-            invoices: 'Facturas Pendientes',
-            employees: 'Personal Total',
-            compliance: 'Cumplimiento SUNAT'
-        },
-        'rrhh': {
-            income: 'Presupuesto RRHH',
-            invoices: 'Procesos Pendientes',
-            employees: 'Empleados Activos',
-            compliance: 'Cumplimiento SUNAFIL'
-        },
-        'supervisor': {
-            income: 'Horas Trabajadas',
-            invoices: 'Asistencias Hoy',
-            employees: 'Personal a Cargo',
-            compliance: 'Registros Completos'
-        }
-    };
-    
-    const roleLabels = labels[role] || labels['admin'];
-    
-    // Actualizar labels en el DOM
-    const incomeLabelEl = document.querySelector('#totalIncome').parentElement.querySelector('.stat-label');
-    const invoicesLabelEl = document.querySelector('#pendingInvoices').parentElement.querySelector('.stat-label');
-    const employeesLabelEl = document.querySelector('#activeEmployees').parentElement.querySelector('.stat-label');
-    const complianceLabelEl = document.querySelector('#compliance').parentElement.querySelector('.stat-label');
-    
-    if (incomeLabelEl) incomeLabelEl.textContent = roleLabels.income;
-    if (invoicesLabelEl) invoicesLabelEl.textContent = roleLabels.invoices;
-    if (employeesLabelEl) employeesLabelEl.textContent = roleLabels.employees;
-    if (complianceLabelEl) complianceLabelEl.textContent = roleLabels.compliance;
-}// ========================================
-// Función Específica para Editar Estado de Empleado
 // ========================================
-function quickEditEmployeeStatus(dni) {
-    const employee = AppState.employees.find(e => e.dni === dni);
-    if (!employee) {
-        showToast('❌ Empleado no encontrado', 'error');
-        return;
-    }
-    
-    // Crear dropdown temporal para cambio rápido de estado
-    const currentStatus = employee.status;
-    const statusOptions = ['Activo', 'Vacaciones', 'Descanso Médico', 'Cesado'];
-    
-    const selectHtml = statusOptions.map(status => 
-        `<option value="${status}" ${status === currentStatus ? 'selected' : ''}>${status}</option>`
-    ).join('');
-    
-    const dropdownId = `status-dropdown-${dni}`;
-    
-    // Buscar la celda de estado en la tabla
-    const statusCell = document.querySelector(`[data-dni="${dni}"] .status-cell`);
-    if (!statusCell) return;
-    
-    // Reemplazar temporalmente con dropdown
-    const originalContent = statusCell.innerHTML;
-    statusCell.innerHTML = `
-        <select id="${dropdownId}" class="quick-status-select" onchange="saveQuickStatusChange('${dni}', this.value)" onblur="cancelQuickStatusEdit('${dni}', '${originalContent}')">
-            ${selectHtml}
-        </select>
-    `;
-    
-    // Enfocar el dropdown
-    document.getElementById(dropdownId).focus();
-}
-
-function saveQuickStatusChange(dni, newStatus) {
-    const employee = AppState.employees.find(e => e.dni === dni);
-    if (!employee) return;
-    
-    const oldStatus = employee.status;
-    employee.status = newStatus;
-    employee.dateUpdated = new Date().toISOString().split('T')[0];
-    
-    // Re-renderizar tabla
-    renderEmployees();
-    renderEmployeeOptions();
-    updateDashboardStats();
-    
-    showToast(`✅ Estado de ${employee.firstName} ${employee.lastName} cambiado de "${oldStatus}" a "${newStatus}"`, 'success');
-}
-
-function cancelQuickStatusEdit(dni, originalContent) {
-    setTimeout(() => {
-        const statusCell = document.querySelector(`[data-dni="${dni}"] .status-cell`);
-        if (statusCell && statusCell.innerHTML.includes('quick-status-select')) {
-            statusCell.innerHTML = originalContent;
-        }
-    }, 100);
-}// ========================================
-// Dashboard Personalizado por Rol
-// ========================================
-function renderQuickAccessGrid() {
-    const container = document.getElementById('quickAccessGrid');
-    if (!container) return;
-    
-    const quickAccessItems = getQuickAccessItemsByRole(AppState.userRole);
-    
-    container.innerHTML = '';
-    
-    quickAccessItems.forEach(item => {
-        const card = document.createElement('div');
-        card.className = `quick-access-card ${item.color}`;
-        card.onclick = () => {
-            if (item.action === 'tab') {
-                showTab(item.target);
-            } else if (item.action === 'modal') {
-                showModal(item.target);
-            } else if (item.action === 'function') {
-                window[item.target]();
-            }
-        };
-        
-        card.innerHTML = `
-            <span class="quick-access-icon">${item.icon}</span>
-            <div class="quick-access-title">${item.title}</div>
-            <div class="quick-access-desc">${item.description}</div>
-        `;
-        
-        container.appendChild(card);
-    });
-}
-
-function getQuickAccessItemsByRole(role) {
-    const allItems = {
-        'admin': [
-            {
-                icon: '📄',
-                title: 'Nueva Factura',
-                description: 'Crear factura electrónica',
-                action: 'modal',
-                target: 'newInvoice',
-                color: 'primary'
-            },
-            {
-                icon: '👥',
-                title: 'Gestionar Personal',
-                description: 'Ver y editar empleados',
-                action: 'tab',
-                target: 'personnel',
-                color: 'info'
-            },
-            {
-                icon: '⏰',
-                title: 'Control Asistencia',
-                description: 'Marcar tiempo y horarios',
-                action: 'tab',
-                target: 'timetracking',
-                color: 'warning'
-            },
-            {
-                icon: '💰',
-                title: 'Ver Contabilidad',
-                description: 'Balance y finanzas',
-                action: 'tab',
-                target: 'accounting',
-                color: 'success'
-            },
-            {
-                icon: '⚖️',
-                title: 'Cumplimiento',
-                description: 'Normativas SUNAT/SUNAFIL',
-                action: 'tab',
-                target: 'compliance',
-                color: 'info'
-            },
-            {
-                icon: '☁️',
-                title: 'Respaldos',
-                description: 'Exportar y backup',
-                action: 'tab',
-                target: 'sharepoint',
-                color: 'primary'
-            }
-        ],
-        'contable': [
-            {
-                icon: '📄',
-                title: 'Nueva Factura',
-                description: 'Crear factura electrónica',
-                action: 'modal',
-                target: 'newInvoice',
-                color: 'primary'
-            },
-            {
-                icon: '📋',
-                title: 'Ver Facturas',
-                description: 'Gestionar facturas',
-                action: 'tab',
-                target: 'invoices',
-                color: 'warning'
-            },
-            {
-                icon: '💰',
-                title: 'Balance General',
-                description: 'Ver contabilidad',
-                action: 'tab',
-                target: 'accounting',
-                color: 'success'
-            },
-            {
-                icon: '⚖️',
-                title: 'Cumplimiento SUNAT',
-                description: 'Normativas tributarias',
-                action: 'tab',
-                target: 'compliance',
-                color: 'info'
-            }
-        ],
-        'rrhh': [
-            {
-                icon: '👥',
-                title: 'Nuevo Empleado',
-                description: 'Agregar personal',
-                action: 'modal',
-                target: 'newEmployee',
-                color: 'primary'
-            },
-            {
-                icon: '📋',
-                title: 'Gestionar Personal',
-                description: 'Ver lista empleados',
-                action: 'tab',
-                target: 'personnel',
-                color: 'info'
-            },
-            {
-                icon: '⏰',
-                title: 'Control Asistencia',
-                description: 'Marcaje de tiempo',
-                action: 'tab',
-                target: 'timetracking',
-                color: 'warning'
-            },
-            {
-                icon: '⚖️',
-                title: 'Cumplimiento SUNAFIL',
-                description: 'Normativas laborales',
-                action: 'tab',
-                target: 'compliance',
-                color: 'success'
-            }
-        ],
-        'supervisor': [
-            {
-                icon: '⏰',
-                title: 'Marcar Tiempo',
-                description: 'Registrar asistencia',
-                action: 'modal',
-                target: 'timeEntry',
-                color: 'primary'
-            },
-            {
-                icon: '📊',
-                title: 'Ver Asistencia',
-                description: 'Control de horarios',
-                action: 'tab',
-                target: 'timetracking',
-                color: 'warning'
-            },
-            {
-                icon: '👥',
-                title: 'Lista Personal',
-                description: 'Ver empleados activos',
-                action: 'tab',
-                target: 'personnel',
-                color: 'info'
-            }
-        ]
-    };
-    
-    return allItems[role] || [];
-}// ========================================
 // TECSITEL v4.0 - Sistema de Gestión Empresarial
 // ========================================
 
@@ -540,6 +255,35 @@ function buildBottomNavigation() {
 }
 
 // ========================================
+// Gestión de Sidebar Responsivo
+// ========================================
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (window.innerWidth <= 1024) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+        
+        // Prevenir scroll del body cuando el sidebar está abierto
+        if (sidebar.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// ========================================
 // Gestión de Tabs Mejorada
 // ========================================
 function showTab(tabName) {
@@ -547,6 +291,11 @@ function showTab(tabName) {
     if (!hasPermission(tabName)) {
         showToast('❌ No tiene permisos para acceder a esta sección', 'error');
         return;
+    }
+    
+    // Cerrar sidebar en móvil
+    if (window.innerWidth <= 1024) {
+        closeSidebar();
     }
     
     // Ocultar todas las tabs
@@ -632,6 +381,236 @@ function initializeComplianceContent() {
             }, index * 100);
         });
     }
+}
+
+// ========================================
+// Dashboard Personalizado por Rol
+// ========================================
+function renderQuickAccessGrid() {
+    const container = document.getElementById('quickAccessGrid');
+    if (!container) return;
+    
+    const quickAccessItems = getQuickAccessItemsByRole(AppState.userRole);
+    
+    container.innerHTML = '';
+    
+    quickAccessItems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = `quick-access-card ${item.color}`;
+        card.onclick = () => {
+            if (item.action === 'tab') {
+                showTab(item.target);
+            } else if (item.action === 'modal') {
+                showModal(item.target);
+            } else if (item.action === 'function') {
+                window[item.target]();
+            }
+        };
+        
+        card.innerHTML = `
+            <span class="quick-access-icon">${item.icon}</span>
+            <div class="quick-access-title">${item.title}</div>
+            <div class="quick-access-desc">${item.description}</div>
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
+function getQuickAccessItemsByRole(role) {
+    const allItems = {
+        'admin': [
+            {
+                icon: '📄',
+                title: 'Nueva Factura',
+                description: 'Crear factura electrónica',
+                action: 'modal',
+                target: 'newInvoice',
+                color: 'primary'
+            },
+            {
+                icon: '👥',
+                title: 'Gestionar Personal',
+                description: 'Ver y editar empleados',
+                action: 'tab',
+                target: 'personnel',
+                color: 'info'
+            },
+            {
+                icon: '⏰',
+                title: 'Control Asistencia',
+                description: 'Marcar tiempo y horarios',
+                action: 'tab',
+                target: 'timetracking',
+                color: 'warning'
+            },
+            {
+                icon: '💰',
+                title: 'Ver Contabilidad',
+                description: 'Balance y finanzas',
+                action: 'tab',
+                target: 'accounting',
+                color: 'success'
+            },
+            {
+                icon: '⚖️',
+                title: 'Cumplimiento',
+                description: 'Normativas SUNAT/SUNAFIL',
+                action: 'tab',
+                target: 'compliance',
+                color: 'info'
+            },
+            {
+                icon: '☁️',
+                title: 'Respaldos',
+                description: 'Exportar y backup',
+                action: 'tab',
+                target: 'sharepoint',
+                color: 'primary'
+            }
+        ],
+        'contabilidad': [
+            {
+                icon: '📄',
+                title: 'Nueva Factura',
+                description: 'Crear factura electrónica',
+                action: 'modal',
+                target: 'newInvoice',
+                color: 'primary'
+            },
+            {
+                icon: '📋',
+                title: 'Ver Facturas',
+                description: 'Gestionar facturas',
+                action: 'tab',
+                target: 'invoices',
+                color: 'warning'
+            },
+            {
+                icon: '💰',
+                title: 'Balance General',
+                description: 'Ver contabilidad',
+                action: 'tab',
+                target: 'accounting',
+                color: 'success'
+            },
+            {
+                icon: '⚖️',
+                title: 'Cumplimiento SUNAT',
+                description: 'Normativas tributarias',
+                action: 'tab',
+                target: 'compliance',
+                color: 'info'
+            }
+        ],
+        'rrhh': [
+            {
+                icon: '👥',
+                title: 'Nuevo Empleado',
+                description: 'Agregar personal',
+                action: 'modal',
+                target: 'newEmployee',
+                color: 'primary'
+            },
+            {
+                icon: '📋',
+                title: 'Gestionar Personal',
+                description: 'Ver lista empleados',
+                action: 'tab',
+                target: 'personnel',
+                color: 'info'
+            },
+            {
+                icon: '⏰',
+                title: 'Control Asistencia',
+                description: 'Marcaje de tiempo',
+                action: 'tab',
+                target: 'timetracking',
+                color: 'warning'
+            },
+            {
+                icon: '⚖️',
+                title: 'Cumplimiento SUNAFIL',
+                description: 'Normativas laborales',
+                action: 'tab',
+                target: 'compliance',
+                color: 'success'
+            }
+        ],
+        'supervisor': [
+            {
+                icon: '⏰',
+                title: 'Marcar Tiempo',
+                description: 'Registrar asistencia',
+                action: 'modal',
+                target: 'timeEntry',
+                color: 'primary'
+            },
+            {
+                icon: '📊',
+                title: 'Ver Asistencia',
+                description: 'Control de horarios',
+                action: 'tab',
+                target: 'timetracking',
+                color: 'warning'
+            },
+            {
+                icon: '👥',
+                title: 'Lista Personal',
+                description: 'Ver empleados activos',
+                action: 'tab',
+                target: 'personnel',
+                color: 'info'
+            }
+        ]
+    };
+    
+    return allItems[role] || [];
+}
+
+function updateDashboardLabels() {
+    const role = AppState.userRole;
+    
+    // Personalizar etiquetas según rol
+    const labels = {
+        'admin': {
+            income: 'Ingresos Totales',
+            invoices: 'Facturas Pendientes', 
+            employees: 'Empleados Activos',
+            compliance: 'Cumplimiento'
+        },
+        'contabilidad': {
+            income: 'Ingresos Totales',
+            invoices: 'Facturas Pendientes',
+            employees: 'Personal Total',
+            compliance: 'Cumplimiento SUNAT'
+        },
+        'rrhh': {
+            income: 'Presupuesto RRHH',
+            invoices: 'Procesos Pendientes',
+            employees: 'Empleados Activos',
+            compliance: 'Cumplimiento SUNAFIL'
+        },
+        'supervisor': {
+            income: 'Horas Trabajadas',
+            invoices: 'Asistencias Hoy',
+            employees: 'Personal a Cargo',
+            compliance: 'Registros Completos'
+        }
+    };
+    
+    const roleLabels = labels[role] || labels['admin'];
+    
+    // Actualizar labels en el DOM
+    const incomeLabelEl = document.querySelector('#totalIncome').parentElement.querySelector('.stat-label');
+    const invoicesLabelEl = document.querySelector('#pendingInvoices').parentElement.querySelector('.stat-label');
+    const employeesLabelEl = document.querySelector('#activeEmployees').parentElement.querySelector('.stat-label');
+    const complianceLabelEl = document.querySelector('#compliance').parentElement.querySelector('.stat-label');
+    
+    if (incomeLabelEl) incomeLabelEl.textContent = roleLabels.income;
+    if (invoicesLabelEl) invoicesLabelEl.textContent = roleLabels.invoices;
+    if (employeesLabelEl) employeesLabelEl.textContent = roleLabels.employees;
+    if (complianceLabelEl) complianceLabelEl.textContent = roleLabels.compliance;
 }
 
 // ========================================
@@ -990,6 +969,69 @@ function saveEmployee(event) {
 }
 
 // ========================================
+// Función Específica para Editar Estado de Empleado
+// ========================================
+function quickEditEmployeeStatus(dni) {
+    const employee = AppState.employees.find(e => e.dni === dni);
+    if (!employee) {
+        showToast('❌ Empleado no encontrado', 'error');
+        return;
+    }
+    
+    // Crear dropdown temporal para cambio rápido de estado
+    const currentStatus = employee.status;
+    const statusOptions = ['Activo', 'Vacaciones', 'Descanso Médico', 'Cesado'];
+    
+    const selectHtml = statusOptions.map(status => 
+        `<option value="${status}" ${status === currentStatus ? 'selected' : ''}>${status}</option>`
+    ).join('');
+    
+    const dropdownId = `status-dropdown-${dni}`;
+    
+    // Buscar la celda de estado en la tabla
+    const statusCell = document.querySelector(`[data-dni="${dni}"] .status-cell`);
+    if (!statusCell) return;
+    
+    // Guardar contenido original
+    const originalContent = statusCell.innerHTML;
+    
+    // Reemplazar temporalmente con dropdown
+    statusCell.innerHTML = `
+        <select id="${dropdownId}" class="quick-status-select" onchange="saveQuickStatusChange('${dni}', this.value)" onblur="cancelQuickStatusEdit('${dni}', \`${originalContent.replace(/`/g, '\\`')}\`)">
+            ${selectHtml}
+        </select>
+    `;
+    
+    // Enfocar el dropdown
+    document.getElementById(dropdownId).focus();
+}
+
+function saveQuickStatusChange(dni, newStatus) {
+    const employee = AppState.employees.find(e => e.dni === dni);
+    if (!employee) return;
+    
+    const oldStatus = employee.status;
+    employee.status = newStatus;
+    employee.dateUpdated = new Date().toISOString().split('T')[0];
+    
+    // Re-renderizar tabla
+    renderEmployees();
+    renderEmployeeOptions();
+    updateDashboardStats();
+    
+    showToast(`✅ Estado de ${employee.firstName} ${employee.lastName} cambiado de "${oldStatus}" a "${newStatus}"`, 'success');
+}
+
+function cancelQuickStatusEdit(dni, originalContent) {
+    setTimeout(() => {
+        const statusCell = document.querySelector(`[data-dni="${dni}"] .status-cell`);
+        if (statusCell && statusCell.innerHTML.includes('quick-status-select')) {
+            statusCell.innerHTML = originalContent;
+        }
+    }, 100);
+}
+
+// ========================================
 // Gestión de Edición de Empleados FUNCIONAL
 // ========================================
 function editEmployee(dni) {
@@ -1242,34 +1284,6 @@ function deleteTimeEntry(entryId) {
 }
 
 // ========================================
-// Funcionalidad de Marcaje Rápido para Supervisor
-// ========================================
-function quickTimeEntry(type) {
-    if (AppState.userRole !== 'supervisor') {
-        showToast('❌ Solo supervisores pueden usar el marcaje rápido', 'error');
-        return;
-    }
-    
-    const now = new Date();
-    const currentTime = now.toTimeString().slice(0, 5);
-    const currentDate = now.toISOString().split('T')[0];
-    
-    // Este sería un diálogo más simple para supervisores
-    showModal('timeEntry');
-    
-    // Pre-llenar con fecha y hora actual
-    const form = document.getElementById('timeEntryForm');
-    form.date.value = currentDate;
-    
-    if (type === 'entry') {
-        form.entryTime.value = currentTime;
-        form.exitTime.value = '';
-    } else if (type === 'exit') {
-        form.exitTime.value = currentTime;
-    }
-}
-
-// ========================================
 // Dashboard y Estadísticas Personalizadas
 // ========================================
 function updateDashboardStats() {
@@ -1303,7 +1317,7 @@ function calculateStatsByRole(role) {
     
     // Personalizar según rol
     switch(role) {
-        case 'contable':
+        case 'contabilidad':
             return {
                 ...baseStats,
                 activeEmployees: 'N/A' // Contabilidad no ve empleados
@@ -1334,7 +1348,7 @@ function updateStatusMessagesByRole(role, stats) {
     const complianceStatusEl = document.getElementById('complianceStatus');
     
     switch(role) {
-        case 'contable':
+        case 'contabilidad':
             if (incomeStatusEl) incomeStatusEl.textContent = '💰 Gestión financiera activa';
             if (invoiceStatusEl) invoiceStatusEl.textContent = stats.pendingInvoices > 0 ? '⚠️ Facturas por procesar' : '✅ Facturación al día';
             if (employeeStatusEl) employeeStatusEl.textContent = '👥 Fuera de alcance';
@@ -1464,22 +1478,6 @@ function getToastIcon(type) {
         default: return 'ℹ️';
     }
 }
-
-// Añadir animación de salida para toasts
-const style = document.createElement('style');
-style.textContent = `
-    @keyframes toastSlideOut {
-        from {
-            opacity: 1;
-            transform: translateX(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateX(100%);
-        }
-    }
-`;
-document.head.appendChild(style);
 
 // ========================================
 // Funciones de Exportación Mejoradas
@@ -1642,9 +1640,6 @@ function updateLoadingStatus(message, isError = false) {
 }
 
 // ========================================
-// Inicialización de la Aplicación
-// ========================================
-// ========================================
 // Inicialización de la Aplicación Mejorada
 // ========================================
 function initializeApp() {
@@ -1723,6 +1718,11 @@ function setupEventListeners() {
     // Responsive navigation
     window.addEventListener('resize', () => {
         buildBottomNavigation();
+        
+        // Cerrar sidebar en desktop
+        if (window.innerWidth > 1024) {
+            closeSidebar();
+        }
     });
     
     // Prevenir envío de formularios sin validación
@@ -1731,11 +1731,12 @@ function setupEventListeners() {
             const submitBtn = form.querySelector('button[type="submit"]');
             if (submitBtn) {
                 submitBtn.disabled = true;
+                const originalText = submitBtn.textContent;
                 submitBtn.textContent = 'Procesando...';
                 
                 setTimeout(() => {
                     submitBtn.disabled = false;
-                    submitBtn.textContent = submitBtn.dataset.originalText || 'Guardar';
+                    submitBtn.textContent = originalText;
                 }, 2000);
             }
         });
@@ -1768,6 +1769,67 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar animación de loading desde el inicio
     setupLoadingAnimation();
     
+    // Mostrar el menú toggle en móvil
+    const menuToggle = document.getElementById('menuToggle');
+    if (menuToggle && window.innerWidth <= 1024) {
+        menuToggle.style.display = 'block';
+    }
+    
     console.log('🚀 Tecsitel v4.0 iniciado correctamente');
     console.log('👨‍💼 Roles disponibles:', Object.keys(USER_ROLES));
 });
+
+// Añadir animación de salida para toasts
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes toastSlideOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+            opacity: 0.6;
+        }
+        25% {
+            transform: translateY(-10px) rotate(90deg);
+            opacity: 1;
+        }
+        50% {
+            transform: translateY(-20px) rotate(180deg);
+            opacity: 0.8;
+        }
+        75% {
+            transform: translateY(-10px) rotate(270deg);
+            opacity: 1;
+        }
+    }
+
+    @keyframes fadeInOut {
+        0%, 100% {
+            opacity: 0.3;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+`;
+document.head.appendChild(style);
