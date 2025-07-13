@@ -1,906 +1,1368 @@
-const serverless = require('serverless-http');
-const express = require('express');
-const cors = require('cors');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { Pool } = require('pg');
-
-const app = express();
+// ========================================
+// TECSITEL v4.0 - Sistema de Gestión Empresarial
+// Frontend corregido para conectar con la API
+// ========================================
 
 // ========================================
-// Configuración mejorada para Neon
+// Configuración Global y Estado
 // ========================================
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
-    max: 5, // Límite de conexiones para Neon
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 10000,
-    statement_timeout: 30000,
-    query_timeout: 30000,
-});
+const CONFIG = {
+    API_BASE_URL: '/.netlify/functions/api',
+    IGV_RATE: 0.18,
+    LOADING_DURATION: 3000,
+    SESSION_TIMEOUT: 30 * 60 * 1000, // 30 minutos
+    VERSION: '4.0',
+    COMPANY: {
+        name: 'TECSITEL PERU E.I.R.L.',
+        ruc: '20605908285'
+    }
+};
 
-// Manejar errores de conexión del pool
-pool.on('error', (err, client) => {
-    console.error('Error inesperado en cliente de DB:', err);
-});
-
-// ========================================
-// Middleware
-// ========================================
-app.use(cors({
-    origin: process.env.CORS_ORIGIN || '*',
-    credentials: true
-}));
-app.use(express.json({ limit: '10mb' }));
-
-// Logging middleware
-app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
-    next();
-});
+// Estado de la aplicación
+const AppState = { 
+    user: null,
+    userRole: null,
+    isAuthenticated: false,
+    token: null,
+    invoices: [],
+    employees: [],
+    timeEntries: [],
+    stats: {},
+    sessionStart: null,
+    permissions: {}
+};
 
 // ========================================
-// Middleware de autenticación mejorado
+// Cliente API mejorado
 // ========================================
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+class APIClient {
+    static async request(endpoint, options = {}) {
+        const url = `${CONFIG.API_BASE_URL}${endpoint}`;
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                ...(AppState.token && { 'Authorization': `Bearer ${AppState.token}` })
+            },
+            ...options
+        };
 
-    if (!token) {
-        return res.status(401).json({ 
-            success: false,
-            error: 'Token de acceso requerido' 
+        if (config.body && typeof config.body === 'object') {
+            config.body = JSON.stringify(config.body);
+        }
+
+        try {
+            console.log(`🔗 API Request: ${options.method || 'GET'} ${url}`);
+            
+            const response = await fetch(url, config);
+            const data = await response.json();
+
+            console.log(`📊 API Response: ${response.status}`, data);
+
+            if (!response.ok) {
+                throw new Error(data.error || `HTTP ${response.status}: ${data.message || 'Error desconocido'}`);
+            }
+
+            return data;
+        } catch (error) {
+            console.error('❌ Error en API:', error);
+            
+            // Si hay problemas de autenticación, cerrar sesión
+            if (error.message.includes('401') || error.message.includes('403') || error.message.includes('Token')) {
+                logout();
+            }
+            
+            throw error;
+        }
+    }
+
+    static async get(endpoint) {
+        return this.request(endpoint, { method: 'GET' });
+    }
+
+    static async post(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'POST',
+            body: data
         });
     }
 
-    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-        if (err) {
-            console.error('Error verificando token:', err);
-            return res.status(403).json({ 
-                success: false,
-                error: 'Token inválido o expirado' 
-            });
-        }
-        req.user = user;
-        next();
-    });
+    static async put(endpoint, data) {
+        return this.request(endpoint, {
+            method: 'PUT',
+            body: data
+        });
+    }
+
+    static async delete(endpoint) {
+        return this.request(endpoint, { method: 'DELETE' });
+    }
+}
+
+// ========================================
+// Sistema de Roles y Permisos
+// ========================================
+const USER_ROLES = {
+    'admin': {
+        name: 'Administrador General',
+        permissions: ['all'],
+        description: 'Acceso completo al sistema'
+    },
+    'contabilidad': {
+        name: 'Contabilidad',
+        permissions: ['dashboard', 'invoices', 'accounting', 'compliance', 'sharepoint'],
+        description: 'Gestión financiera y contable'
+    },
+    'rrhh': {
+        name: 'Recursos Humanos',
+        permissions: ['dashboard', 'personnel', 'timetracking', 'compliance', 'sharepoint'],
+        description: 'Gestión de personal y nóminas'
+    },
+    'supervisor': {
+        name: 'Supervisor',
+        permissions: ['dashboard', 'timetracking'],
+        description: 'Control de asistencia'
+    }
 };
 
-// Middleware de roles mejorado
-const requireRole = (allowedRoles) => {
-    return (req, res, next) => {
-        if (req.user.role === 'admin' || allowedRoles.includes(req.user.role)) {
-            next();
-        } else {
-            return res.status(403).json({ 
-                success: false,
-                error: 'Permisos insuficientes' 
-            });
-        }
-    };
+const NAVIGATION_MENU = {
+    dashboard: { icon: '📊', text: 'Dashboard', description: 'Panel principal' },
+    invoices: { icon: '📄', text: 'Facturas', description: 'Gestión de facturación' },
+    accounting: { icon: '💰', text: 'Contabilidad', description: 'Balance y finanzas' },
+    personnel: { icon: '👥', text: 'Personal', description: 'Gestión de empleados' },
+    timetracking: { icon: '⏰', text: 'Asistencia', description: 'Control de horarios' },
+    compliance: { icon: '⚖️', text: 'Cumplimiento', description: 'Normativas y regulaciones' },
+    sharepoint: { icon: '☁️', text: 'Respaldos', description: 'Backup y seguridad' }
 };
 
 // ========================================
-// Test de conexión a DB mejorado
+// Sistema de Autenticación
 // ========================================
-app.get('/test-db', async (req, res) => {
-    let client;
+async function handleLogin(event) {
+    event.preventDefault();
+    const form = event.target;
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    
     try {
-        console.log('Iniciando prueba de conexión a Neon...');
-        console.log('Database URL exists:', !!process.env.DATABASE_URL);
-        console.log('Database URL preview:', process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 30) + '...' : 'NO URL');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Validando...';
         
-        client = await pool.connect();
-        console.log('✅ Cliente conectado exitosamente');
+        console.log(`🔐 Intentando login con usuario: ${username}`);
         
-        // Test básico
-        const timeResult = await client.query('SELECT NOW() as current_time, version() as pg_version');
-        console.log('✅ Query de prueba ejecutada');
+        const response = await APIClient.post('/auth/login', { username, password });
+
+        if (response.success) {
+            console.log('✅ Login exitoso');
+            
+            AppState.isAuthenticated = true;
+            AppState.token = response.token;
+            AppState.user = response.user;
+            AppState.userRole = response.user.role;
+            AppState.sessionStart = Date.now();
+            AppState.permissions = getUserPermissions(response.user.role);
+            
+            localStorage.setItem('tecsitel_token', response.token);
+            localStorage.setItem('tecsitel_user', JSON.stringify(response.user));
+            
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'flex';
+            
+            setTimeout(() => {
+                setupLoadingAnimation();
+                initializeApp();
+            }, 100);
+        }
+    } catch (error) {
+        console.error('❌ Error en login:', error);
+        showToast(`❌ Error de login: ${error.message}`, 'error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Iniciar Sesión';
+        document.getElementById('password').value = '';
+    }
+}
+
+function getUserPermissions(role) {
+    const roleConfig = USER_ROLES[role];
+    if (!roleConfig) return {};
+    
+    const permissions = {};
+    
+    if (roleConfig.permissions.includes('all')) {
+        Object.keys(NAVIGATION_MENU).forEach(key => {
+            permissions[key] = true;
+        });
+    } else {
+        roleConfig.permissions.forEach(permission => {
+            permissions[permission] = true;
+        });
+    }
+    
+    return permissions;
+}
+
+function hasPermission(section) {
+    return AppState.permissions[section] === true;
+}
+
+function logout() {
+    console.log('👋 Cerrando sesión...');
+    
+    AppState.isAuthenticated = false;
+    AppState.user = null;
+    AppState.userRole = null;
+    AppState.token = null;
+    AppState.sessionStart = null;
+    AppState.permissions = {};
+    
+    localStorage.removeItem('tecsitel_token');
+    localStorage.removeItem('tecsitel_user');
+    
+    document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    
+    document.getElementById('loginForm').reset();
+    
+    showToast('👋 Sesión cerrada correctamente', 'info');
+}
+
+async function checkExistingSession() {
+    const token = localStorage.getItem('tecsitel_token');
+    if (!token) return false;
+
+    try {
+        AppState.token = token;
+        const response = await APIClient.get('/auth/verify');
         
-        // Test de tablas
-        const tablesResult = await client.query(`
-            SELECT table_name 
-            FROM information_schema.tables 
-            WHERE table_schema = 'public' 
-            AND table_name IN ('users', 'employees', 'invoices', 'time_entries')
-            ORDER BY table_name
-        `);
+        if (response.success) {
+            console.log('✅ Sesión válida encontrada');
+            
+            AppState.isAuthenticated = true;
+            AppState.user = response.user;
+            AppState.userRole = response.user.role;
+            AppState.sessionStart = Date.now();
+            AppState.permissions = getUserPermissions(response.user.role);
+            
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'flex';
+            
+            setTimeout(() => {
+                setupLoadingAnimation();
+                initializeApp();
+            }, 100);
+            
+            return true;
+        }
+    } catch (error) {
+        console.error('❌ Sesión inválida:', error);
+        logout();
+    }
+    return false;
+}
+
+// ========================================
+// Carga de Datos desde la API
+// ========================================
+async function loadAllInitialData() {
+    const promises = [];
+    
+    if (hasPermission('personnel') || hasPermission('all')) {
+        promises.push(loadEmployees());
+    }
+    if (hasPermission('invoices') || hasPermission('all')) {
+        promises.push(loadInvoices());
+    }
+    if (hasPermission('timetracking') || hasPermission('all')) {
+        promises.push(loadTimeEntries());
+    }
+    if (hasPermission('dashboard') || hasPermission('all')) {
+        promises.push(loadDashboardStats());
+    }
+
+    try {
+        await Promise.all(promises);
+        console.log('✅ Todos los datos iniciales cargados');
+    } catch (error) {
+        console.error('❌ Error cargando datos iniciales:', error);
+    }
+}
+
+async function loadEmployees() {
+    try {
+        const response = await APIClient.get('/employees');
+        if (response.success) {
+            AppState.employees = response.employees.map(emp => ({
+                dni: emp.dni,
+                firstName: emp.first_name,
+                lastName: emp.last_name,
+                avatar: `${emp.first_name[0]}${emp.last_name[0]}`.toUpperCase(),
+                status: emp.status,
+                notes: emp.notes || '',
+                dateCreated: emp.created_at?.split('T')[0] || ''
+            }));
+            renderEmployees();
+            renderEmployeeOptions();
+        }
+    } catch (error) {
+        showToast(`❌ Error cargando empleados: ${error.message}`, 'error');
+    }
+}
+
+async function loadInvoices() {
+    try {
+        const response = await APIClient.get('/invoices');
+        if (response.success) {
+            AppState.invoices = response.invoices.map(inv => ({
+                id: inv.id,
+                invoice_number: inv.invoice_number,
+                clientRuc: inv.client_ruc,
+                clientName: inv.client_name,
+                amount: parseFloat(inv.amount),
+                status: inv.status,
+                date: inv.invoice_date,
+                currency: inv.currency,
+                description: inv.description,
+                isExport: inv.is_export
+            }));
+            renderInvoices();
+        }
+    } catch (error) {
+        showToast(`❌ Error cargando facturas: ${error.message}`, 'error');
+    }
+}
+
+async function loadTimeEntries() {
+    try {
+        const response = await APIClient.get('/time-entries');
+        if (response.success) {
+            AppState.timeEntries = response.timeEntries.map(entry => ({
+                id: entry.id,
+                dni: entry.employee_dni,
+                name: `${entry.first_name} ${entry.last_name}`,
+                date: entry.entry_date,
+                entryTime: entry.entry_time || '',
+                exitTime: entry.exit_time || '',
+                notes: entry.notes || ''
+            }));
+            renderTimeEntries();
+        }
+    } catch (error) {
+        showToast(`❌ Error cargando registros de tiempo: ${error.message}`, 'error');
+    }
+}
+
+async function loadDashboardStats() {
+    try {
+        const response = await APIClient.get('/dashboard/stats');
+        if (response.success) {
+            AppState.stats = response.stats;
+            updateDashboardDisplay();
+        }
+    } catch (error) {
+        showToast(`❌ Error cargando estadísticas: ${error.message}`, 'error');
+    }
+}
+
+// ========================================
+// Gestión de Empleados
+// ========================================
+async function saveEmployee(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    const employeeData = {
+        dni: form.dni.value,
+        first_name: sanitizeInput(form.firstName.value),
+        last_name: sanitizeInput(form.lastName.value),
+        status: form.status.value,
+        notes: sanitizeInput(form.notes.value || '')
+    };
+    
+    if (!validateDNI(employeeData.dni)) {
+        showError('dniError', 'DNI debe tener exactamente 8 dígitos');
+        form.dni.classList.add('error');
+        form.dni.focus();
+        return;
+    }
+    
+    try {
+        const response = await APIClient.post('/employees', employeeData);
         
-        // Test de usuarios
-        const usersResult = await client.query('SELECT COUNT(*) as user_count FROM users');
+        if (response.success) {
+            await loadEmployees();
+            await loadDashboardStats();
+            closeModal('newEmployee');
+            form.reset();
+            showToast(`✅ Empleado ${employeeData.first_name} ${employeeData.last_name} agregado correctamente`, 'success');
+        }
+    } catch (error) {
+        showToast(`❌ Error guardando empleado: ${error.message}`, 'error');
         
-        res.json({ 
-            success: true, 
-            message: '🎉 Conexión a Neon exitosa!',
-            data: {
-                current_time: timeResult.rows[0].current_time,
-                postgres_version: timeResult.rows[0].pg_version.split(' ')[0],
-                tables_found: tablesResult.rows.map(row => row.table_name),
-                user_count: parseInt(usersResult.rows[0].user_count),
-                pool_stats: {
-                    total_connections: pool.totalCount,
-                    idle_connections: pool.idleCount,
-                    waiting_count: pool.waitingCount
-                }
+        if (error.message.includes('ya existe')) {
+            showError('dniError', 'Este DNI ya está registrado');
+            form.dni.classList.add('error');
+        }
+    }
+}
+
+async function deleteEmployee(dni) {
+    if (!confirm('¿Está seguro de que desea eliminar este empleado?')) {
+        return;
+    }
+    
+    try {
+        const response = await APIClient.delete(`/employees/${dni}`);
+        
+        if (response.success) {
+            await loadEmployees();
+            await loadDashboardStats();
+            showToast('🗑️ Empleado eliminado correctamente', 'info');
+        }
+    } catch (error) {
+        showToast(`❌ Error eliminando empleado: ${error.message}`, 'error');
+    }
+}
+
+function editEmployee(dni) {
+    const employee = AppState.employees.find(emp => emp.dni === dni);
+    if (!employee) return;
+    
+    const form = document.getElementById('editEmployeeForm');
+    if (!form) return;
+    
+    form.originalDni.value = dni;
+    form.dni.value = dni;
+    form.firstName.value = employee.firstName;
+    form.lastName.value = employee.lastName;
+    form.status.value = employee.status;
+    form.notes.value = employee.notes || '';
+    
+    showModal('editEmployee');
+}
+
+async function updateEmployee(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    const dni = form.originalDni.value;
+    const employeeData = {
+        first_name: sanitizeInput(form.firstName.value),
+        last_name: sanitizeInput(form.lastName.value),
+        status: form.status.value,
+        notes: sanitizeInput(form.notes.value || '')
+    };
+    
+    try {
+        const response = await APIClient.put(`/employees/${dni}`, employeeData);
+        
+        if (response.success) {
+            await loadEmployees();
+            await loadDashboardStats();
+            closeModal('editEmployee');
+            showToast(`✅ Empleado ${employeeData.first_name} ${employeeData.last_name} actualizado correctamente`, 'success');
+        }
+    } catch (error) {
+        showToast(`❌ Error actualizando empleado: ${error.message}`, 'error');
+    }
+}
+
+// ========================================
+// Gestión de Facturas
+// ========================================
+async function saveInvoice(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    const invoiceData = {
+        client_ruc: form.clientRuc.value,
+        client_name: sanitizeInput(form.clientName.value),
+        description: sanitizeInput(form.description.value),
+        currency: form.currency.value,
+        amount: parseFloat(form.amount.value),
+        is_export: form.isExportInvoice.checked
+    };
+    
+    if (!validateRUC(invoiceData.client_ruc)) {
+        showError('rucError', 'RUC debe tener exactamente 11 dígitos');
+        form.clientRuc.classList.add('error');
+        form.clientRuc.focus();
+        return;
+    }
+    
+    try {
+        const response = await APIClient.post('/invoices', invoiceData);
+        
+        if (response.success) {
+            await loadInvoices();
+            await loadDashboardStats();
+            closeModal('newInvoice');
+            form.reset();
+            showToast(`✅ Factura ${response.invoice.invoice_number} creada correctamente`, 'success');
+        }
+    } catch (error) {
+        showToast(`❌ Error guardando factura: ${error.message}`, 'error');
+    }
+}
+
+async function deleteInvoice(invoiceId) {
+    if (!confirm('¿Está seguro de que desea eliminar esta factura?')) {
+        return;
+    }
+    
+    try {
+        const response = await APIClient.delete(`/invoices/${invoiceId}`);
+        
+        if (response.success) {
+            await loadInvoices();
+            await loadDashboardStats();
+            showToast('🗑️ Factura eliminada correctamente', 'info');
+        }
+    } catch (error) {
+        showToast(`❌ Error eliminando factura: ${error.message}`, 'error');
+    }
+}
+
+// ========================================
+// Gestión de Registro de Tiempo
+// ========================================
+async function saveTimeEntry(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    const timeData = {
+        employee_dni: form.employeeDni.value,
+        entry_date: form.date.value,
+        entry_time: form.entryTime.value || null,
+        exit_time: form.exitTime.value || null,
+        notes: sanitizeInput(form.notes.value || '')
+    };
+    
+    if (!timeData.employee_dni || !timeData.entry_date) {
+        showToast('❌ Empleado y fecha son requeridos', 'error');
+        return;
+    }
+    
+    if (!timeData.entry_time && !timeData.exit_time) {
+        showToast('❌ Debe ingresar al menos la hora de entrada o salida', 'error');
+        return;
+    }
+    
+    try {
+        const response = await APIClient.post('/time-entries', timeData);
+        
+        if (response.success) {
+            await loadTimeEntries();
+            closeModal('timeEntry');
+            form.reset();
+            showToast('✅ Marcaje registrado correctamente', 'success');
+        }
+    } catch (error) {
+        showToast(`❌ Error guardando marcaje: ${error.message}`, 'error');
+    }
+}
+
+async function deleteTimeEntry(entryId) {
+    if (!confirm('¿Está seguro de que desea eliminar este registro?')) {
+        return;
+    }
+    
+    try {
+        const response = await APIClient.delete(`/time-entries/${entryId}`);
+        
+        if (response.success) {
+            await loadTimeEntries();
+            showToast('🗑️ Registro eliminado correctamente', 'info');
+        }
+    } catch (error) {
+        showToast(`❌ Error eliminando registro: ${error.message}`, 'error');
+    }
+}
+
+// ========================================
+// Renderizado de UI
+// ========================================
+function renderEmployees() {
+    const tbody = document.querySelector('#employeesTable tbody');
+    if (!tbody) return;
+    
+    if (AppState.employees.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center" style="padding: 2rem; color: #6b7280;">No hay empleados registrados</td></tr>`;
+        return;
+    }
+    
+    tbody.innerHTML = AppState.employees.map(e => `
+        <tr data-dni="${e.dni}">
+            <td><strong>${e.dni}</strong></td>
+            <td>${e.firstName} ${e.lastName}</td>
+            <td><span class="status-badge ${getStatusClass(e.status)}">${e.status}</span></td>
+            <td>
+                <button class="btn btn-secondary btn-sm" onclick="editEmployee('${e.dni}')" title="Editar">✏️</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${e.dni}')" title="Eliminar">🗑️</button>
+            </td>
+        </tr>`).join('');
+}
+
+function renderInvoices() {
+    const tbody = document.querySelector('#invoicesTable tbody');
+    if (!tbody) return;
+    
+    if (AppState.invoices.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center" style="padding: 2rem; color: #6b7280;">No hay facturas registradas</td></tr>`;
+        return;
+    }
+    
+    tbody.innerHTML = AppState.invoices.map(i => `
+        <tr>
+            <td><strong>${i.invoice_number}</strong></td>
+            <td>${i.clientName}</td>
+            <td><strong>${formatCurrency(i.amount, i.currency)}</strong></td>
+            <td><span class="status-badge ${getStatusClass(i.status)}">${i.status}</span></td>
+            <td>${formatDate(i.date)}</td>
+            <td>
+                <button class="btn btn-danger btn-sm" onclick="deleteInvoice('${i.id}')" title="Eliminar">🗑️</button>
+            </td>
+        </tr>`).join('');
+}
+
+function renderTimeEntries() {
+    const tbody = document.querySelector('#timeEntriesTable tbody');
+    if (!tbody) return;
+    
+    if (AppState.timeEntries.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="text-center" style="padding: 2rem; color: #6b7280;">No hay registros de asistencia</td></tr>`;
+        return;
+    }
+    
+    tbody.innerHTML = AppState.timeEntries.map(e => `
+        <tr>
+            <td>${e.name}</td>
+            <td>${formatDate(e.date)}</td>
+            <td>${formatTime(e.entryTime)}</td>
+            <td>${formatTime(e.exitTime)}</td>
+            <td>${calculateHours(e.entryTime, e.exitTime).toFixed(1)}h</td>
+            <td>
+                <button class="btn btn-danger btn-sm" onclick="deleteTimeEntry('${e.id}')" title="Eliminar">🗑️</button>
+            </td>
+        </tr>`).join('');
+}
+
+function renderEmployeeOptions() {
+    const select = document.getElementById('employeeSelect');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">Seleccionar empleado...</option>' + 
+        AppState.employees
+            .filter(emp => emp.status === 'Activo')
+            .map(emp => `<option value="${emp.dni}">${emp.firstName} ${emp.lastName}</option>`)
+            .join('');
+}
+
+// ========================================
+// Dashboard y Estadísticas
+// ========================================
+function updateDashboardDisplay() {
+    const stats = calculateStatsByRole(AppState.userRole, AppState.stats);
+    
+    const totalIncomeEl = document.getElementById('totalIncome');
+    const pendingInvoicesEl = document.getElementById('pendingInvoices');
+    const activeEmployeesEl = document.getElementById('activeEmployees');
+    const complianceEl = document.getElementById('compliance');
+    
+    if (totalIncomeEl) totalIncomeEl.textContent = typeof stats.totalIncome === 'number' ? formatCurrency(stats.totalIncome) : stats.totalIncome;
+    if (pendingInvoicesEl) pendingInvoicesEl.textContent = stats.pendingInvoices;
+    if (activeEmployeesEl) activeEmployeesEl.textContent = stats.activeEmployees;
+    if (complianceEl) complianceEl.textContent = stats.compliance + '%';
+    
+    updateStatusMessagesByRole(AppState.userRole, stats);
+}
+
+function calculateStatsByRole(role, apiStats) {
+    const baseStats = {
+        totalIncome: apiStats.totalIncome || 0,
+        pendingInvoices: apiStats.pendingInvoices || 0,
+        activeEmployees: apiStats.activeEmployees || 0,
+        compliance: apiStats.compliance || 100
+    };
+    
+    switch(role) {
+        case 'contabilidad':
+            return { ...baseStats, activeEmployees: 'N/A' };
+        case 'supervisor':
+            return {
+                totalIncome: 'N/A',
+                pendingInvoices: 'N/A',
+                activeEmployees: baseStats.activeEmployees,
+                compliance: 'N/A'
+            };
+        case 'rrhh':
+            return {
+                totalIncome: 'N/A',
+                pendingInvoices: 'N/A',
+                activeEmployees: baseStats.activeEmployees,
+                compliance: baseStats.compliance
+            };
+        default:
+            return baseStats;
+    }
+}
+
+function updateStatusMessagesByRole(role, stats) {
+    const incomeStatus = document.getElementById('incomeStatus');
+    const invoiceStatus = document.getElementById('invoiceStatus');
+    const employeeStatus = document.getElementById('employeeStatus');
+    const complianceStatus = document.getElementById('complianceStatus');
+    
+    if (incomeStatus) incomeStatus.textContent = role === 'admin' || role === 'contabilidad' ? '✅ Sistema conectado' : '🔒 Sin acceso';
+    if (invoiceStatus) invoiceStatus.textContent = stats.pendingInvoices > 0 ? '⚠️ Por gestionar' : '✅ Al día';
+    if (employeeStatus) employeeStatus.textContent = role === 'supervisor' || role === 'admin' || role === 'rrhh' ? '✅ Base de datos activa' : '🔒 Sin acceso';
+    if (complianceStatus) complianceStatus.textContent = role === 'admin' || role === 'rrhh' || role === 'contabilidad' ? '✅ Sistema activo' : '🔒 Sin acceso';
+}
+
+// ========================================
+// Inicialización de la Aplicación
+// ========================================
+async function initializeApp() {
+    updateLoadingStatus('🔐 Configurando sistema de roles...', false);
+    buildNavigationMenu();
+    buildBottomNavigation();
+    updateUserInterface();
+    
+    updateLoadingStatus('🗄️ Cargando datos iniciales...', false);
+    await loadAllInitialData();
+    
+    updateLoadingStatus('🎨 Finalizando configuración...', false);
+    
+    setTimeout(() => {
+        updateLoadingStatus('🚀 ¡Sistema listo!', false);
+        
+        setTimeout(() => {
+            document.getElementById('loadingScreen').style.display = 'none';
+            const appContainer = document.getElementById('appContainer');
+            appContainer.style.display = 'flex';
+            
+            setTimeout(() => {
+                appContainer.classList.add('loaded');
+                showTab('dashboard');
+                setupEventListeners();
+                
+                setTimeout(() => {
+                    showToast(`🎉 ¡Bienvenido ${AppState.user.name}!`, 'success');
+                }, 500);
+            }, 100);
+        }, 1500);
+    }, 500);
+}
+
+function updateUserInterface() {
+    if (!AppState.user) return;
+    
+    const { name, role } = AppState.user;
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+    
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const userAvatar = document.getElementById('userAvatar');
+    const userAvatarSidebar = document.getElementById('userAvatarSidebar');
+    const userNameSidebar = document.getElementById('userNameSidebar');
+    const userRoleSidebar = document.getElementById('userRoleSidebar');
+    
+    if (userNameDisplay) userNameDisplay.textContent = name;
+    if (userAvatar) userAvatar.textContent = initials;
+    if (userAvatarSidebar) userAvatarSidebar.textContent = initials;
+    if (userNameSidebar) userNameSidebar.textContent = name;
+    if (userRoleSidebar) userRoleSidebar.textContent = USER_ROLES[role]?.name || role;
+}
+
+function setupEventListeners() {
+    window.addEventListener('resize', buildBottomNavigation);
+    
+    document.addEventListener('click', e => {
+        if (e.target.classList.contains('modal')) closeModal(e.target.id);
+    });
+    
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            const openModal = document.querySelector('.modal.show');
+            if (openModal) closeModal(openModal.id);
+        }
+    });
+    
+    // Test de conectividad periódico
+    setInterval(async () => {
+        try {
+            await APIClient.get('/health');
+        } catch (error) {
+            showToast('⚠️ Problemas de conectividad', 'warning');
+        }
+    }, 5 * 60 * 1000);
+}
+
+// ========================================
+// Construcción de Menús
+// ========================================
+function buildNavigationMenu() {
+    const navMenu = document.getElementById('navMenu');
+    if (!navMenu) return;
+    
+    navMenu.innerHTML = '';
+    
+    Object.keys(NAVIGATION_MENU).forEach(key => {
+        if (hasPermission(key)) {
+            const menuItem = NAVIGATION_MENU[key];
+            const navItem = document.createElement('button');
+            navItem.className = 'nav-item';
+            navItem.setAttribute('data-tab', key);
+            navItem.innerHTML = `
+                <span class="nav-icon">${menuItem.icon}</span>
+                <span class="nav-text">${menuItem.text}</span>
+            `;
+            navItem.addEventListener('click', () => showTab(key));
+            navMenu.appendChild(navItem);
+        }
+    });
+}
+
+function buildBottomNavigation() {
+    const bottomNav = document.getElementById('bottomNav');
+    if (!bottomNav) return;
+    
+    const isMobile = window.innerWidth <= 768;
+    
+    if (isMobile) {
+        bottomNav.innerHTML = '';
+        let itemCount = 0;
+        const maxItems = 4;
+        
+        Object.keys(NAVIGATION_MENU).forEach(key => {
+            if (hasPermission(key) && itemCount < maxItems) {
+                const menuItem = NAVIGATION_MENU[key];
+                const navItem = document.createElement('a');
+                navItem.href = '#';
+                navItem.className = 'bottom-nav-item';
+                navItem.setAttribute('data-tab', key);
+                navItem.innerHTML = `
+                    <span class="bottom-nav-icon">${menuItem.icon}</span>
+                    ${menuItem.text}
+                `;
+                navItem.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    showTab(key);
+                });
+                bottomNav.appendChild(navItem);
+                itemCount++;
             }
         });
-    } catch (error) {
-        console.error('❌ Error en test de conexión:', error);
         
-        let errorDetails = {
-            message: error.message,
-            code: error.code,
-            detail: error.detail
-        };
-        
-        // Errores específicos de Neon/PostgreSQL
-        if (error.code === 'ENOTFOUND') {
-            errorDetails.suggestion = 'Verificar que DATABASE_URL esté configurada correctamente';
-        } else if (error.code === '28000') {
-            errorDetails.suggestion = 'Credenciales de autenticación incorrectas';
-        } else if (error.code === '3D000') {
-            errorDetails.suggestion = 'Base de datos no existe';
-        }
-        
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error al conectar con Neon',
-            error: errorDetails
-        });
-    } finally {
-        if (client) {
-            client.release();
-        }
+        bottomNav.style.display = 'flex';
+    } else {
+        bottomNav.style.display = 'none';
     }
-});
+}
 
 // ========================================
-// Función auxiliar para ejecutar queries con manejo de errores
+// Gestión de Navegación
 // ========================================
-async function executeQuery(queryText, params = []) {
-    let client;
-    try {
-        client = await pool.connect();
-        const result = await client.query(queryText, params);
-        return result;
-    } catch (error) {
-        console.error('Error ejecutando query:', error);
-        throw error;
-    } finally {
-        if (client) {
-            client.release();
+function showTab(tabName) {
+    if (!hasPermission(tabName)) {
+        showToast('❌ No tiene permisos para acceder a esta sección', 'error');
+        return;
+    }
+    
+    if (window.innerWidth <= 1024) {
+        closeSidebar();
+    }
+    
+    document.querySelectorAll('.tab-content').forEach(tab => {
+        tab.classList.remove('active');
+    });
+    
+    const selectedTab = document.getElementById(tabName);
+    if (selectedTab) {
+        selectedTab.classList.add('active');
+        
+        const menuItem = NAVIGATION_MENU[tabName];
+        if (menuItem) {
+            const pageTitle = document.getElementById('pageTitle');
+            if (pageTitle) pageTitle.textContent = menuItem.text;
+        }
+        
+        updateActiveNavItem(tabName);
+        loadTabContent(tabName);
+    }
+}
+
+function updateActiveNavItem(activeTab) {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-tab') === activeTab) {
+            item.classList.add('active');
+        }
+    });
+    
+    document.querySelectorAll('.bottom-nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-tab') === activeTab) {
+            item.classList.add('active');
+        }
+    });
+}
+
+async function loadTabContent(tabName) {
+    switch(tabName) {
+        case 'dashboard':
+            await loadDashboardStats();
+            renderQuickAccessGrid();
+            break;
+        case 'invoices':
+            await loadInvoices();
+            break;
+        case 'personnel':
+            await loadEmployees();
+            break;
+        case 'timetracking':
+            await loadTimeEntries();
+            await loadEmployees();
+            break;
+    }
+}
+
+function renderQuickAccessGrid() {
+    const container = document.getElementById('quickAccessGrid');
+    if (!container) return;
+    
+    const quickAccessItems = getQuickAccessItemsByRole(AppState.userRole);
+    
+    container.innerHTML = '';
+    
+    quickAccessItems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = `quick-access-card ${item.color}`;
+        card.onclick = () => {
+            if (item.action === 'tab') {
+                showTab(item.target);
+            } else if (item.action === 'modal') {
+                showModal(item.target);
+            } else if (item.action === 'function') {
+                window[item.target]();
+            }
+        };
+        
+        card.innerHTML = `
+            <span class="quick-access-icon">${item.icon}</span>
+            <div class="quick-access-title">${item.title}</div>
+            <div class="quick-access-desc">${item.description}</div>
+        `;
+        
+        container.appendChild(card);
+    });
+}
+
+function getQuickAccessItemsByRole(role) {
+    const baseItems = [
+        { icon: '📄', title: 'Nueva Factura', description: 'Crear factura electrónica', action: 'modal', target: 'newInvoice', color: 'primary' },
+        { icon: '👥', title: 'Nuevo Empleado', description: 'Agregar empleado', action: 'modal', target: 'newEmployee', color: 'info' },
+        { icon: '⏰', title: 'Marcar Tiempo', description: 'Registrar asistencia', action: 'modal', target: 'timeEntry', color: 'warning' },
+        { icon: '💰', title: 'Contabilidad', description: 'Ver balance', action: 'tab', target: 'accounting', color: 'success' },
+        { icon: '⚖️', title: 'Cumplimiento', description: 'Normativas', action: 'tab', target: 'compliance', color: 'info' },
+        { icon: '☁️', title: 'Respaldos', description: 'Exportar datos', action: 'tab', target: 'sharepoint', color: 'primary' }
+    ];
+    
+    return baseItems.filter(item => {
+        if (role === 'admin') return true;
+        if (role === 'contabilidad') return ['newInvoice', 'accounting', 'compliance', 'sharepoint'].includes(item.target.replace('new', '').toLowerCase());
+        if (role === 'rrhh') return ['newEmployee', 'timeEntry', 'compliance', 'sharepoint'].includes(item.target.replace('new', '').toLowerCase());
+        if (role === 'supervisor') return ['timeEntry'].includes(item.target);
+        return false;
+    });
+}
+
+// ========================================
+// Gestión de Sidebar
+// ========================================
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    if (window.innerWidth <= 1024) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+}
+
+// ========================================
+// Sistema de Modales
+// ========================================
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('show');
+        modal.style.display = 'flex';
+        
+        const firstInput = modal.querySelector('input, select, textarea');
+        if (firstInput) {
+            setTimeout(() => firstInput.focus(), 100);
+        }
+        
+        if (modalId === 'timeEntry') {
+            const dateInput = modal.querySelector('input[name="date"]');
+            if (dateInput && !dateInput.value) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
+        }
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('show');
+        modal.style.display = 'none';
+        
+        const form = modal.querySelector('form');
+        if (form) {
+            form.reset();
+            form.querySelectorAll('.form-error').forEach(error => error.textContent = '');
+            form.querySelectorAll('.error').forEach(input => input.classList.remove('error'));
         }
     }
 }
 
 // ========================================
-// Rutas de Autenticación
+// Sistema de Notificaciones
 // ========================================
-app.post('/auth/login', async (req, res) => {
-    try {
-        const { username, password } = req.body;
-
-        if (!username || !password) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'Usuario y contraseña requeridos' 
-            });
+function showToast(message, type = 'info', duration = 4000) {
+    const container = document.getElementById('toastContainer');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    
+    const icon = getToastIcon(type);
+    
+    toast.innerHTML = `
+        <div style="font-size: 20px;">${icon}</div>
+        <div class="toast-content">${message}</div>
+        <button onclick="this.parentElement.remove()" style="background: none; border: none; color: inherit; cursor: pointer; padding: 4px; opacity: 0.7;">&times;</button>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.style.animation = 'toastSlideOut 0.3s ease forwards';
+            setTimeout(() => toast.remove(), 300);
         }
+    }, duration);
+}
 
-        console.log(`Intento de login para usuario: ${username}`);
-
-        // Buscar usuario en la base de datos
-        const userQuery = 'SELECT * FROM users WHERE username = $1 AND is_active = true';
-        const userResult = await executeQuery(userQuery, [username]);
-
-        if (userResult.rows.length === 0) {
-            console.log(`Usuario no encontrado: ${username}`);
-            return res.status(401).json({ 
-                success: false,
-                error: 'Usuario no encontrado o inactivo' 
-            });
-        }
-
-        const user = userResult.rows[0];
-
-        // Verificar contraseña
-        const validPassword = await bcrypt.compare(password, user.password_hash);
-        if (!validPassword) {
-            console.log(`Contraseña incorrecta para usuario: ${username}`);
-            return res.status(401).json({ 
-                success: false,
-                error: 'Contraseña incorrecta' 
-            });
-        }
-
-        // Generar token JWT
-        const token = jwt.sign(
-            { 
-                userId: user.id, 
-                username: user.username, 
-                role: user.role,
-                name: user.full_name 
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN || '8h' }
-        );
-
-        // Actualizar último login
-        await executeQuery(
-            'UPDATE users SET last_login = NOW() WHERE id = $1',
-            [user.id]
-        );
-
-        console.log(`✅ Login exitoso para usuario: ${username}`);
-
-        res.json({
-            success: true,
-            token,
-            user: {
-                id: user.id,
-                username: user.username,
-                role: user.role,
-                name: user.full_name,
-                permissions: user.permissions
-            }
-        });
-
-    } catch (error) {
-        console.error('Error en login:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
+function getToastIcon(type) {
+    switch(type) {
+        case 'success': return '✅';
+        case 'error': return '❌';
+        case 'warning': return '⚠️';
+        case 'info': 
+        default: return 'ℹ️';
     }
-});
-
-// Logout
-app.post('/auth/logout', authenticateToken, async (req, res) => {
-    try {
-        res.json({ 
-            success: true, 
-            message: 'Sesión cerrada correctamente' 
-        });
-    } catch (error) {
-        console.error('Error en logout:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
-
-// Verificar token
-app.get('/auth/verify', authenticateToken, async (req, res) => {
-    try {
-        // Obtener datos frescos del usuario
-        const userQuery = 'SELECT id, username, role, full_name, permissions FROM users WHERE id = $1 AND is_active = true';
-        const userResult = await executeQuery(userQuery, [req.user.userId]);
-        
-        if (userResult.rows.length === 0) {
-            return res.status(401).json({ 
-                success: false,
-                error: 'Usuario no válido' 
-            });
-        }
-
-        const user = userResult.rows[0];
-        
-        res.json({ 
-            success: true, 
-            user: {
-                id: user.id,
-                username: user.username,
-                role: user.role,
-                name: user.full_name,
-                permissions: user.permissions
-            }
-        });
-    } catch (error) {
-        console.error('Error verificando token:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
+}
 
 // ========================================
-// Rutas de Empleados
+// Funciones de Utilidad
 // ========================================
-app.get('/employees', authenticateToken, requireRole(['admin', 'rrhh', 'supervisor']), async (req, res) => {
-    try {
-        const query = `
-            SELECT dni, first_name, last_name, status, notes, created_at, updated_at
-            FROM employees 
-            WHERE deleted_at IS NULL
-            ORDER BY created_at DESC
-        `;
-        const result = await executeQuery(query);
-        
-        res.json({ 
-            success: true, 
-            employees: result.rows 
-        });
-    } catch (error) {
-        console.error('Error obteniendo empleados:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
+function formatCurrency(amount, currency = 'PEN') {
+    const symbol = currency === 'USD' ? '
+         : 'S/';
+    return `${symbol} ${parseFloat(amount).toFixed(2)}`;
+}
+
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-PE');
+}
+
+function formatTime(timeString) {
+    if (!timeString) return 'N/A';
+    return timeString.substring(0, 5);
+}
+
+function calculateHours(entryTime, exitTime) {
+    if (!entryTime || !exitTime) return 0;
+    
+    const [entryHour, entryMin] = entryTime.split(':').map(Number);
+    const [exitHour, exitMin] = exitTime.split(':').map(Number);
+    
+    const entryMinutes = entryHour * 60 + entryMin;
+    const exitMinutes = exitHour * 60 + exitMin;
+    
+    let diffMinutes = exitMinutes - entryMinutes;
+    
+    if (diffMinutes < 0) {
+        diffMinutes += 24 * 60;
     }
-});
+    
+    return diffMinutes / 60;
+}
 
-app.post('/employees', authenticateToken, requireRole(['admin', 'rrhh']), async (req, res) => {
-    try {
-        const { dni, first_name, last_name, status, notes } = req.body;
-
-        if (!dni || !first_name || !last_name || !status) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'DNI, nombre, apellido y estado son requeridos' 
-            });
-        }
-
-        // Verificar formato de DNI
-        if (!/^[0-9]{8}$/.test(dni)) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'DNI debe tener 8 dígitos' 
-            });
-        }
-
-        // Verificar si el empleado ya existe
-        const existingEmployee = await executeQuery(
-            'SELECT dni FROM employees WHERE dni = $1 AND deleted_at IS NULL', 
-            [dni]
-        );
-        
-        if (existingEmployee.rows.length > 0) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'El empleado ya existe' 
-            });
-        }
-
-        // Insertar empleado
-        const insertQuery = `
-            INSERT INTO employees (dni, first_name, last_name, status, notes, created_by)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING dni, first_name, last_name, status, notes, created_at
-        `;
-        
-        const result = await executeQuery(insertQuery, [
-            dni, first_name, last_name, status, notes || '', req.user.userId
-        ]);
-
-        res.status(201).json({ 
-            success: true, 
-            employee: result.rows[0],
-            message: 'Empleado creado correctamente' 
-        });
-
-    } catch (error) {
-        console.error('Error creando empleado:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
+function getStatusClass(status) {
+    switch(status.toLowerCase()) {
+        case 'pagado':
+        case 'activo':
+            return 'active';
+        case 'pendiente':
+            return 'pending';
+        case 'vencido':
+        case 'cesado':
+            return 'danger';
+        default:
+            return 'inactive';
     }
-});
+}
 
-app.put('/employees/:dni', authenticateToken, requireRole(['admin', 'rrhh']), async (req, res) => {
-    try {
-        const { dni } = req.params;
-        const { first_name, last_name, status, notes } = req.body;
+function validateDNI(dni) {
+    return /^[0-9]{8}$/.test(dni);
+}
 
-        const updateQuery = `
-            UPDATE employees 
-            SET first_name = $1, last_name = $2, status = $3, notes = $4, 
-                updated_at = NOW(), updated_by = $5
-            WHERE dni = $6 AND deleted_at IS NULL
-            RETURNING dni, first_name, last_name, status, notes, updated_at
-        `;
-        
-        const result = await executeQuery(updateQuery, [
-            first_name, last_name, status, notes || '', req.user.userId, dni
-        ]);
+function validateRUC(ruc) {
+    return /^[0-9]{11}$/.test(ruc);
+}
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({ 
-                success: false,
-                error: 'Empleado no encontrado' 
-            });
-        }
+function sanitizeInput(input) {
+    return input.trim().replace(/[<>]/g, '');
+}
 
-        res.json({ 
-            success: true, 
-            employee: result.rows[0],
-            message: 'Empleado actualizado correctamente' 
-        });
-
-    } catch (error) {
-        console.error('Error actualizando empleado:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
-
-app.delete('/employees/:dni', authenticateToken, requireRole(['admin', 'rrhh']), async (req, res) => {
-    try {
-        const { dni } = req.params;
-
-        const deleteQuery = `
-            UPDATE employees 
-            SET deleted_at = NOW(), deleted_by = $1
-            WHERE dni = $2 AND deleted_at IS NULL
-            RETURNING dni, first_name, last_name
-        `;
-        
-        const result = await executeQuery(deleteQuery, [req.user.userId, dni]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ 
-                success: false,
-                error: 'Empleado no encontrado' 
-            });
-        }
-
-        res.json({ 
-            success: true, 
-            message: 'Empleado eliminado correctamente' 
-        });
-
-    } catch (error) {
-        console.error('Error eliminando empleado:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
+function showError(elementId, message) {
+    const errorEl = document.getElementById(elementId);
+    if (errorEl) errorEl.textContent = message;
+}
 
 // ========================================
-// Rutas de Registro de Tiempo
+// Animaciones de Carga
 // ========================================
-app.get('/time-entries', authenticateToken, requireRole(['admin', 'rrhh', 'supervisor']), async (req, res) => {
-    try {
-        const { date, employee_dni } = req.query;
+function setupLoadingAnimation() {
+    const particles = document.getElementById('loadingParticles');
+    if (!particles) return;
+    
+    particles.innerHTML = '';
+    
+    for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        const size = Math.random() * 4 + 2;
+        const duration = Math.random() * 3 + 2;
+        const delay = Math.random() * 2;
+        const left = Math.random() * 100;
+        const top = Math.random() * 100;
         
-        let query = `
-            SELECT te.id, te.employee_dni, te.entry_date, te.entry_time, te.exit_time, 
-                   te.notes, te.created_at,
-                   e.first_name, e.last_name
-            FROM time_entries te
-            JOIN employees e ON te.employee_dni = e.dni
-            WHERE te.deleted_at IS NULL
+        particle.style.cssText = `
+            position: absolute;
+            width: ${size}px;
+            height: ${size}px;
+            background: rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2});
+            border-radius: 50%;
+            left: ${left}%;
+            top: ${top}%;
+            animation: float ${duration}s ease-in-out infinite;
+            animation-delay: ${delay}s;
+            pointer-events: none;
         `;
-        
-        const queryParams = [];
-        let paramCount = 1;
-
-        if (date) {
-            query += ` AND te.entry_date = $${paramCount}`;
-            queryParams.push(date);
-            paramCount++;
-        }
-
-        if (employee_dni) {
-            query += ` AND te.employee_dni = $${paramCount}`;
-            queryParams.push(employee_dni);
-            paramCount++;
-        }
-
-        query += ' ORDER BY te.entry_date DESC, te.entry_time DESC LIMIT 100';
-
-        const result = await executeQuery(query, queryParams);
-        
-        res.json({ 
-            success: true, 
-            timeEntries: result.rows 
-        });
-
-    } catch (error) {
-        console.error('Error obteniendo registros de tiempo:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
+        particles.appendChild(particle);
     }
-});
+}
 
-app.post('/time-entries', authenticateToken, requireRole(['admin', 'rrhh', 'supervisor']), async (req, res) => {
-    try {
-        const { employee_dni, entry_date, entry_time, exit_time, notes } = req.body;
-
-        if (!employee_dni || !entry_date) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'DNI del empleado y fecha son requeridos' 
-            });
-        }
-
-        // Verificar que el empleado existe
-        const employeeCheck = await executeQuery(
-            'SELECT dni FROM employees WHERE dni = $1 AND deleted_at IS NULL', 
-            [employee_dni]
-        );
+function updateLoadingStatus(message, isError = false) {
+    const statusEl = document.getElementById('loadingStatus');
+    if (statusEl) {
+        statusEl.style.opacity = '0';
         
-        if (employeeCheck.rows.length === 0) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'Empleado no encontrado' 
-            });
-        }
-
-        // Verificar si ya existe un registro para esta fecha
-        const existingEntry = await executeQuery(
-            'SELECT id FROM time_entries WHERE employee_dni = $1 AND entry_date = $2 AND deleted_at IS NULL',
-            [employee_dni, entry_date]
-        );
-
-        if (existingEntry.rows.length > 0) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'Ya existe un registro para este empleado en esta fecha' 
-            });
-        }
-
-        // Insertar registro
-        const insertQuery = `
-            INSERT INTO time_entries (employee_dni, entry_date, entry_time, exit_time, notes, created_by)
-            VALUES ($1, $2, $3, $4, $5, $6)
-            RETURNING id, employee_dni, entry_date, entry_time, exit_time, notes, created_at
-        `;
-        
-        const result = await executeQuery(insertQuery, [
-            employee_dni, entry_date, entry_time, exit_time, notes || '', req.user.userId
-        ]);
-
-        res.status(201).json({ 
-            success: true, 
-            timeEntry: result.rows[0],
-            message: 'Registro de tiempo creado correctamente' 
-        });
-
-    } catch (error) {
-        console.error('Error creando registro de tiempo:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
+        setTimeout(() => {
+            statusEl.textContent = message;
+            statusEl.className = `loading-status ${isError ? 'error' : ''}`;
+            statusEl.style.opacity = '1';
+        }, 200);
     }
-});
-
-app.put('/time-entries/:id', authenticateToken, requireRole(['admin', 'rrhh', 'supervisor']), async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { entry_time, exit_time, notes } = req.body;
-
-        const updateQuery = `
-            UPDATE time_entries 
-            SET entry_time = $1, exit_time = $2, notes = $3, 
-                updated_at = NOW(), updated_by = $4
-            WHERE id = $5 AND deleted_at IS NULL
-            RETURNING id, employee_dni, entry_date, entry_time, exit_time, notes, updated_at
-        `;
-        
-        const result = await executeQuery(updateQuery, [
-            entry_time, exit_time, notes || '', req.user.userId, id
-        ]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ 
-                success: false,
-                error: 'Registro no encontrado' 
-            });
-        }
-
-        res.json({ 
-            success: true, 
-            timeEntry: result.rows[0],
-            message: 'Registro actualizado correctamente' 
-        });
-
-    } catch (error) {
-        console.error('Error actualizando registro de tiempo:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
-
-app.delete('/time-entries/:id', authenticateToken, requireRole(['admin', 'rrhh', 'supervisor']), async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const deleteQuery = `
-            UPDATE time_entries 
-            SET deleted_at = NOW(), deleted_by = $1
-            WHERE id = $2 AND deleted_at IS NULL
-            RETURNING id
-        `;
-        
-        const result = await executeQuery(deleteQuery, [req.user.userId, id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ 
-                success: false,
-                error: 'Registro no encontrado' 
-            });
-        }
-
-        res.json({ 
-            success: true, 
-            message: 'Registro eliminado correctamente' 
-        });
-
-    } catch (error) {
-        console.error('Error eliminando registro:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
+}
 
 // ========================================
-// Rutas de Facturas
+// Funciones de Exportación
 // ========================================
-app.get('/invoices', authenticateToken, requireRole(['admin', 'contabilidad']), async (req, res) => {
-    try {
-        const query = `
-            SELECT id, invoice_number, client_ruc, client_name, description, 
-                   currency, amount, status, is_export, invoice_date, created_at
-            FROM invoices 
-            WHERE deleted_at IS NULL
-            ORDER BY created_at DESC
-            LIMIT 100
-        `;
-        const result = await executeQuery(query);
-        
-        res.json({ 
-            success: true, 
-            invoices: result.rows 
-        });
-    } catch (error) {
-        console.error('Error obteniendo facturas:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
+function downloadFullBackup() {
+    showToast('📥 Generando respaldo completo...', 'info');
+    
+    const csvData = generateBackupCSV();
+    downloadCSV(csvData, `tecsitel_respaldo_${new Date().toISOString().split('T')[0]}.csv`);
+    
+    showToast('✅ Respaldo descargado exitosamente', 'success');
+}
 
-app.post('/invoices', authenticateToken, requireRole(['admin', 'contabilidad']), async (req, res) => {
-    try {
-        const { client_ruc, client_name, description, currency, amount, is_export } = req.body;
+function downloadInvoicesCSV() {
+    showToast('📊 Exportando facturas...', 'info');
+    
+    const csvData = generateInvoicesCSV();
+    downloadCSV(csvData, `tecsitel_facturas_${new Date().toISOString().split('T')[0]}.csv`);
+    
+    showToast('✅ Facturas exportadas exitosamente', 'success');
+}
 
-        if (!client_ruc || !client_name || !description || !currency || !amount) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'Todos los campos son requeridos' 
-            });
-        }
-
-        // Verificar formato de RUC
-        if (!/^[0-9]{11}$/.test(client_ruc)) {
-            return res.status(400).json({ 
-                success: false,
-                error: 'RUC debe tener 11 dígitos' 
-            });
-        }
-
-        // Generar número de factura
-        const lastInvoice = await executeQuery(
-            'SELECT invoice_number FROM invoices ORDER BY created_at DESC LIMIT 1'
-        );
-        
-        let nextNumber = 1;
-        if (lastInvoice.rows.length > 0) {
-            const lastNumber = parseInt(lastInvoice.rows[0].invoice_number.split('-')[1]);
-            nextNumber = lastNumber + 1;
-        }
-        
-        const invoice_number = `F001-${nextNumber.toString().padStart(4, '0')}`;
-
-        // Insertar factura
-        const insertQuery = `
-            INSERT INTO invoices (invoice_number, client_ruc, client_name, description, 
-                                currency, amount, status, is_export, invoice_date, created_by)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-            RETURNING id, invoice_number, client_ruc, client_name, description, 
-                     currency, amount, status, is_export, invoice_date, created_at
-        `;
-        
-        const result = await executeQuery(insertQuery, [
-            invoice_number, client_ruc, client_name, description, currency, 
-            amount, 'Pendiente', is_export || false, new Date().toISOString().split('T')[0], 
-            req.user.userId
-        ]);
-
-        res.status(201).json({ 
-            success: true, 
-            invoice: result.rows[0],
-            message: 'Factura creada correctamente' 
-        });
-
-    } catch (error) {
-        console.error('Error creando factura:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
-
-app.delete('/invoices/:id', authenticateToken, requireRole(['admin', 'contabilidad']), async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const deleteQuery = `
-            UPDATE invoices 
-            SET deleted_at = NOW(), deleted_by = $1
-            WHERE id = $2 AND deleted_at IS NULL
-            RETURNING id, invoice_number
-        `;
-        
-        const result = await executeQuery(deleteQuery, [req.user.userId, id]);
-
-        if (result.rows.length === 0) {
-            return res.status(404).json({ 
-                success: false,
-                error: 'Factura no encontrada' 
-            });
-        }
-
-        res.json({ 
-            success: true, 
-            message: 'Factura eliminada correctamente' 
-        });
-
-    } catch (error) {
-        console.error('Error eliminando factura:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
-
-// ========================================
-// Rutas de Estadísticas y Reportes
-// ========================================
-app.get('/dashboard/stats', authenticateToken, async (req, res) => {
-    try {
-        const stats = {};
-
-        // Total de ingresos
-        const incomeQuery = `
-            SELECT COALESCE(SUM(
-                CASE 
-                    WHEN currency = 'USD' THEN amount * 3.8 
-                    ELSE amount 
-                END
-            ), 0) as total_income
-            FROM invoices 
-            WHERE deleted_at IS NULL AND status != 'Anulado'
-        `;
-        const incomeResult = await executeQuery(incomeQuery);
-        stats.totalIncome = parseFloat(incomeResult.rows[0].total_income);
-
-        // Facturas pendientes
-        const pendingQuery = `
-            SELECT COUNT(*) as pending_count
-            FROM invoices 
-            WHERE status = 'Pendiente' AND deleted_at IS NULL
-        `;
-        const pendingResult = await executeQuery(pendingQuery);
-        stats.pendingInvoices = parseInt(pendingResult.rows[0].pending_count);
-
-        // Empleados activos
-        const employeesQuery = `
-            SELECT COUNT(*) as active_count
-            FROM employees 
-            WHERE status = 'Activo' AND deleted_at IS NULL
-        `;
-        const employeesResult = await executeQuery(employeesQuery);
-        stats.activeEmployees = parseInt(employeesResult.rows[0].active_count);
-
-        // Compliance (siempre 100% por ahora)
-        stats.compliance = 100;
-
-        res.json({ 
-            success: true, 
-            stats 
-        });
-
-    } catch (error) {
-        console.error('Error obteniendo estadísticas:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
-    }
-});
-
-// ========================================
-// Rutas de Sistema
-// ========================================
-app.get('/health', (req, res) => {
-    res.json({ 
-        success: true, 
-        message: 'Tecsitel API v4.0 funcionando correctamente',
-        timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV || 'development'
+function generateBackupCSV() {
+    let csv = `RESPALDO COMPLETO TECSITEL - ${new Date().toLocaleDateString()}\n\n`;
+    
+    csv += `SISTEMA,VERSIÓN,EMPRESA,RUC,FECHA_RESPALDO\n`;
+    csv += `"Tecsitel","${CONFIG.VERSION}","${CONFIG.COMPANY.name}","${CONFIG.COMPANY.ruc}","${new Date().toISOString()}"\n\n`;
+    
+    csv += `SECCIÓN: FACTURAS\n`;
+    csv += `ID,Número,RUC_Cliente,Nombre_Cliente,Descripción,Moneda,Monto,Estado,Exportación,Fecha\n`;
+    AppState.invoices.forEach(invoice => {
+        csv += `"${invoice.id}","${invoice.invoice_number}","${invoice.clientRuc}","${invoice.clientName}","${invoice.description}","${invoice.currency}","${invoice.amount}","${invoice.status}","${invoice.isExport}","${invoice.date}"\n`;
     });
-});
+    csv += '\n';
+    
+    csv += `SECCIÓN: EMPLEADOS\n`;
+    csv += `DNI,Nombres,Apellidos,Estado,Notas,Fecha_Creación\n`;
+    AppState.employees.forEach(employee => {
+        csv += `"${employee.dni}","${employee.firstName}","${employee.lastName}","${employee.status}","${employee.notes || ''}","${employee.dateCreated || ''}"\n`;
+    });
+    csv += '\n';
+    
+    csv += `SECCIÓN: ASISTENCIA\n`;
+    csv += `ID,DNI,Nombre_Completo,Fecha,Hora_Entrada,Hora_Salida,Horas_Trabajadas,Notas\n`;
+    AppState.timeEntries.forEach(entry => {
+        const hours = calculateHours(entry.entryTime, entry.exitTime);
+        csv += `"${entry.id}","${entry.dni}","${entry.name}","${entry.date}","${entry.entryTime}","${entry.exitTime}","${hours.toFixed(2)}","${entry.notes || ''}"\n`;
+    });
+    
+    return csv;
+}
 
-app.get('/system/info', authenticateToken, requireRole(['admin']), async (req, res) => {
+function generateInvoicesCSV() {
+    let csv = `FACTURAS TECSITEL - ${new Date().toLocaleDateString()}\n\n`;
+    csv += `Número,RUC_Cliente,Nombre_Cliente,Descripción,Moneda,Monto,Estado,Exportación,Fecha\n`;
+    
+    AppState.invoices.forEach(invoice => {
+        csv += `"${invoice.invoice_number}","${invoice.clientRuc}","${invoice.clientName}","${invoice.description}","${invoice.currency}","${invoice.amount}","${invoice.status}","${invoice.isExport ? 'Sí' : 'No'}","${invoice.date}"\n`;
+    });
+    
+    return csv;
+}
+
+function downloadCSV(csvContent, filename) {
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', filename);
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// ========================================
+// Inicialización cuando el DOM esté listo
+// ========================================
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🚀 Tecsitel v4.0 con API PostgreSQL/Neon iniciado');
+    
+    // Test de conexión inicial
     try {
-        // Obtener info de la base de datos
-        const dbInfo = await executeQuery('SELECT version() as version');
-        
-        res.json({
-            success: true,
-            system: {
-                name: 'Tecsitel',
-                version: '4.0',
-                environment: process.env.NODE_ENV || 'development',
-                database: 'PostgreSQL (Neon)',
-                database_version: dbInfo.rows[0].version.split(' ')[0],
-                deployment: 'Netlify Functions',
-                pool_stats: {
-                    total_connections: pool.totalCount,
-                    idle_connections: pool.idleCount,
-                    waiting_count: pool.waitingCount
-                }
-            }
-        });
+        const healthCheck = await fetch(`${CONFIG.API_BASE_URL}/health`);
+        const healthData = await healthCheck.json();
+        console.log('✅ API Health Check:', healthData);
     } catch (error) {
-        console.error('Error obteniendo info del sistema:', error);
-        res.status(500).json({ 
-            success: false,
-            error: 'Error interno del servidor' 
-        });
+        console.error('❌ API no disponible:', error);
+        showToast('⚠️ Problemas de conectividad con la API', 'warning');
     }
+    
+    // Verificar si hay una sesión existente
+    const hasExistingSession = await checkExistingSession();
+    
+    if (!hasExistingSession) {
+        // Mostrar pantalla de login
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('appContainer').style.display = 'none';
+        document.getElementById('loadingScreen').style.display = 'none';
+    }
+    
+    // Configurar navegación inicial
+    buildBottomNavigation();
+    
+    // Mostrar el menú toggle en móvil
+    const menuToggle = document.getElementById('menuToggle');
+    if (menuToggle && window.innerWidth <= 1024) {
+        menuToggle.style.display = 'block';
+    }
+    
+    console.log('👨‍💼 Roles disponibles:', Object.keys(USER_ROLES));
 });
 
-// ========================================
-// Manejo de errores global
-// ========================================
-app.use((error, req, res, next) => {
-    console.error('Error no manejado:', error);
-    res.status(500).json({ 
-        success: false,
-        error: 'Error interno del servidor',
-        message: process.env.NODE_ENV === 'development' ? error.message : 'Ha ocurrido un error inesperado'
-    });
-});
+// Añadir estilos para animaciones
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes toastSlideOut {
+        from {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        to {
+            opacity: 0;
+            transform: translateX(100%);
+        }
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px) rotate(0deg);
+            opacity: 0.6;
+        }
+        25% {
+            transform: translateY(-10px) rotate(90deg);
+            opacity: 1;
+        }
+        50% {
+            transform: translateY(-20px) rotate(180deg);
+            opacity: 0.8;
+        }
+        75% {
+            transform: translateY(-10px) rotate(270deg);
+            opacity: 1;
+        }
+    }
 
-// Ruta 404
-app.use('*', (req, res) => {
-    res.status(404).json({ 
-        success: false,
-        error: 'Ruta no encontrada',
-        path: req.originalUrl 
-    });
-});
-
-// ========================================
-// Graceful shutdown
-// ========================================
-process.on('SIGTERM', async () => {
-    console.log('Cerrando pool de conexiones...');
-    await pool.end();
-    process.exit(0);
-});
-
-// ========================================
-// Exportar handler para Netlify
-// ========================================
-module.exports.handler = serverless(app);
+    @keyframes fadeInOut {
+        0%, 100% {
+            opacity: 0.3;
+        }
+        50% {
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+        margin: 0 0.125rem;
+    }
+    
+    .text-center {
+        text-align: center;
+    }
+`;
+document.head.appendChild(style);
