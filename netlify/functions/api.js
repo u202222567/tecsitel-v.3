@@ -54,6 +54,29 @@ const requireRole = (allowedRoles) => {
     };
 };
 
+app.get('/test-db', async (req, res) => {
+    try {
+        console.log('Iniciando prueba de conexión a la base de datos...');
+        const client = await pool.connect();
+        console.log('Cliente conectado, ejecutando query...');
+        const timeResult = await client.query('SELECT NOW()');
+        client.release();
+        console.log('Conexión exitosa.');
+        res.json({ 
+            success: true, 
+            message: '¡Conexión a la base de datos exitosa!',
+            db_time: timeResult.rows[0].now
+        });
+    } catch (error) {
+        console.error('Error en /test-db:', error);
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error al conectar con la base de datos.',
+            error: error.message 
+        });
+    }
+});
+
 // ========================================
 // Rutas de Autenticación
 // ========================================
