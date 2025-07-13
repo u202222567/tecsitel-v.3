@@ -1,43 +1,22 @@
 {
   "name": "tecsitel-sistema-gestion",
   "version": "4.0.0",
-  "description": "TECSITEL PERU E.I.R.L. - Sistema de Gestión Empresarial Completo con Facturación Electrónica y Cumplimiento Normativo",
+  "description": "TECSITEL PERU E.I.R.L. - Sistema de Gestión Empresarial",
   "main": "index.html",
-  "type": "module",
   "scripts": {
-    "build": "node -e \"console.log('TECSITEL v4.0 - Build completed successfully'); process.exit(0)\"",
-    "start": "node -e \"console.log('TECSITEL v4.0 - Production ready'); process.exit(0)\"",
+    "build": "echo TECSITEL v4.0 build completed",
+    "start": "echo TECSITEL v4.0 ready",
     "dev": "netlify dev",
-    "deploy": "netlify deploy",
-    "deploy:prod": "netlify deploy --prod",
-    "test": "node -e \"console.log('TECSITEL v4.0 - Tests not configured'); process.exit(0)\"",
-    "postinstall": "node -e \"console.log('TECSITEL v4.0 - Dependencies installed'); process.exit(0)\""
+    "deploy": "netlify deploy --prod"
   },
   "keywords": [
     "tecsitel",
-    "sistema-gestion",
-    "facturacion-electronica",
-    "contabilidad",
+    "gestion-empresarial", 
     "telecomunicaciones",
-    "peru",
-    "sunat",
-    "sunafil",
-    "netlify"
+    "peru"
   ],
-  "author": {
-    "name": "TECSITEL PERU E.I.R.L.",
-    "email": "contacto@tecsitel.pe",
-    "url": "https://tecsitel.netlify.app"
-  },
+  "author": "TECSITEL PERU E.I.R.L.",
   "license": "Proprietary",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/u202222567/tecsitel-v.3.git"
-  },
-  "bugs": {
-    "url": "https://github.com/u202222567/tecsitel-v.3/issues"
-  },
-  "homepage": "https://tecsitel.netlify.app",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -46,65 +25,7 @@
     "pg": "^8.11.5",
     "serverless-http": "^3.2.0"
   },
-  "devDependencies": {
-    "netlify-cli": "^17.0.0"
-  },
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  },
-  "netlify": {
-    "functions": "netlify/functions",
-    "publish": ".",
-    "command": "npm run build"
-  },
-  "config": {
-    "tecsitel": {
-      "version": "4.0.0",
-      "empresa": "TECSITEL PERU E.I.R.L.",
-      "ruc": "20605908285",
-      "sistema": "Gestión Empresarial Integrado"
-    }
-  },
-  "features": {
-    "facturacion": {
-      "electronica": true,
-      "sunat_3_0": true,
-      "igv_automatico": true
-    },
-    "contabilidad": {
-      "balance_general": true,
-      "estado_financiero": true,
-      "calculos_automaticos": true
-    },
-    "personal": {
-      "gestion_empleados": true,
-      "control_asistencia": true,
-      "marcaje_digital": true
-    },
-    "cumplimiento": {
-      "sunat": true,
-      "sunafil": true,
-      "monitoreo_automatico": true
-    },
-    "exportacion": {
-      "json": true,
-      "csv": true,
-      "reportes_personalizados": true
-    }
-  },
-  "usuarios": {
-    "demo": {
-      "admin": "Administrador completo",
-      "contable": "Facturas y contabilidad", 
-      "supervisor": "Solo marcaje de tiempo",
-      "rrhh": "Personal y cumplimiento"
-    }
-  },
-  "normativas_peru": {
-    "sunat": "2025",
-    "sunafil": "2025",
-    "igv_rate": "0.18",
-    "uit": "5150"
+    "node": ">=18.0.0"
   }
 }
