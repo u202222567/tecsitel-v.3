@@ -1,486 +1,13 @@
-{
-                icon: '💰',
-                title: 'Balance General',
-                description: 'Ver contabilidad',
-                action: 'tab',
-                target: 'accounting',
-                color: 'success'
-            },
-            {
-                icon: '⚖️',
-                title: 'Cumplimiento SUNAT',
-                description: 'Normativas tributarias',
-                action: 'tab',
-                target: 'compliance',
-                color: 'info'
-            }
-        ],
-        'rrhh': [
-            {
-                icon: '👥',
-                title: 'Nuevo Empleado',
-                description: 'Agregar personal',
-                action: 'modal',
-                target: 'newEmployee',
-                color: 'primary'
-            },
-            {
-                icon: '📋',
-                title: 'Gestionar Personal',
-                description: 'Ver lista empleados',
-                action: 'tab',
-                target: 'personnel',
-                color: 'info'
-            },
-            {
-                icon: '⏰',
-                title: 'Control Asistencia',
-                description: 'Marcaje de tiempo',
-                action: 'tab',
-                target: 'timetracking',
-                color: 'warning'
-            },
-            {
-                icon: '⚖️',
-                title: 'Cumplimiento SUNAFIL',
-                description: 'Normativas laborales',
-                action: 'tab',
-                target: 'compliance',
-                color: 'success'
-            }
-        ],
-        'supervisor': [
-            {
-                icon: '⏰',
-                title: 'Marcar Tiempo',
-                description: 'Registrar asistencia',
-                action: 'modal',
-                target: 'timeEntry',
-                color: 'primary'
-            },
-            {
-                icon: '📊',
-                title: 'Ver Asistencia',
-                description: 'Control de horarios',
-                action: 'tab',
-                target: 'timetracking',
-                color: 'warning'
-            },
-            {
-                icon: '👥',
-                title: 'Lista Personal',
-                description: 'Ver empleados activos',
-                action: 'tab',
-                target: 'personnel',
-                color: 'info'
-            }
-        ]
-    };
-    
-    return allItems[role] || [];
-}
-
-function updateDashboardLabels() {
-    const role = AppState.userRole;
-    
-    const labels = {
-        'admin': {
-            income: 'Ingresos Totales',
-            invoices: 'Facturas Pendientes', 
-            employees: 'Empleados Activos',
-            compliance: 'Cumplimiento'
-        },
-        'contabilidad': {
-            income: 'Ingresos Totales',
-            invoices: 'Facturas Pendientes',
-            employees: 'Personal Total',
-            compliance: 'Cumplimiento SUNAT'
-        },
-        'rrhh': {
-            income: 'Presupuesto RRHH',
-            invoices: 'Procesos Pendientes',
-            employees: 'Empleados Activos',
-            compliance: 'Cumplimiento SUNAFIL'
-        },
-        'supervisor': {
-            income: 'Horas Trabajadas',
-            invoices: 'Asistencias Hoy',
-            employees: 'Personal a Cargo',
-            compliance: 'Registros Completos'
-        }
-    };
-    
-    const roleLabels = labels[role] || labels['admin'];
-    
-    const incomeLabelEl = document.querySelector('#totalIncome').parentElement.querySelector('.stat-label');
-    const invoicesLabelEl = document.querySelector('#pendingInvoices').parentElement.querySelector('.stat-label');
-    const employeesLabelEl = document.querySelector('#activeEmployees').parentElement.querySelector('.stat-label');
-    const complianceLabelEl = document.querySelector('#compliance').parentElement.querySelector('.stat-label');
-    
-    if (incomeLabelEl) incomeLabelEl.textContent = roleLabels.income;
-    if (invoicesLabelEl) invoicesLabelEl.textContent = roleLabels.invoices;
-    if (employeesLabelEl) employeesLabelEl.textContent = roleLabels.employees;
-    if (complianceLabelEl) complianceLabelEl.textContent = roleLabels.compliance;
-}
-
-function updateStatusMessagesByRole(role, stats) {
-    const incomeStatusEl = document.getElementById('incomeStatus');
-    const invoiceStatusEl = document.getElementById('invoiceStatus');
-    const employeeStatusEl = document.getElementById('employeeStatus');
-    const complianceStatusEl = document.getElementById('complianceStatus');
-    
-    switch(role) {
-        case 'contabilidad':
-            if (incomeStatusEl) incomeStatusEl.textContent = '💰 Gestión financiera activa';
-            if (invoiceStatusEl) invoiceStatusEl.textContent = stats.pendingInvoices > 0 ? '⚠️ Facturas por procesar' : '✅ Facturación al día';
-            if (employeeStatusEl) employeeStatusEl.textContent = '👥 Fuera de alcance';
-            if (complianceStatusEl) complianceStatusEl.textContent = '📋 SUNAT al día';
-            break;
-            
-        case 'rrhh':
-            if (incomeStatusEl) incomeStatusEl.textContent = '💼 Gestión de personal';
-            if (invoiceStatusEl) invoiceStatusEl.textContent = '📋 Fuera de alcance';
-            if (employeeStatusEl) employeeStatusEl.textContent = `👥 ${stats.activeEmployees} empleados activos`;
-            if (complianceStatusEl) complianceStatusEl.textContent = '⚖️ SUNAFIL cumpliendo';
-            break;
-            
-        case 'supervisor':
-            if (incomeStatusEl) incomeStatusEl.textContent = '⏰ Control de asistencia';
-            if (invoiceStatusEl) invoiceStatusEl.textContent = '📊 Enfoque en horarios';
-            if (employeeStatusEl) employeeStatusEl.textContent = `👥 ${stats.activeEmployees} para supervisar`;
-            if (complianceStatusEl) complianceStatusEl.textContent = '📝 Registros actualizados';
-            break;
-            
-        default: // admin
-            if (incomeStatusEl) incomeStatusEl.textContent = '✅ Conectado al sistema';
-            if (invoiceStatusEl) invoiceStatusEl.textContent = stats.pendingInvoices > 0 ? '⚠️ Por gestionar' : '✅ Al día';
-            if (employeeStatusEl) employeeStatusEl.textContent = '✅ Base de datos';
-            if (complianceStatusEl) complianceStatusEl.textContent = '✅ Sistema activo';
-            break;
-    }
-}
-
-function initializeComplianceContent() {
-    const complianceTab = document.getElementById('compliance');
-    if (complianceTab) {
-        console.log('✅ Tab de Cumplimiento cargado');
-        
-        const complianceCards = complianceTab.querySelectorAll('.compliance-card');
-        complianceCards.forEach((card, index) => {
-            setTimeout(() => {
-                card.style.animation = 'fadeInUp 0.5s ease forwards';
-            }, index * 100);
-        });
-    }
-}
-
 // ========================================
-// Funciones de renderizado UI
-// ========================================
-function renderEmployees() {
-    const tbody = document.querySelector('#employeesTable tbody');
-    if (!tbody) return;
-    
-    tbody.innerHTML = '';
-    
-    if (AppState.employees.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="4" style="text-align: center; padding: 40px; color: var(--gray-500);">
-                    👥 No hay empleados registrados
-                </td>
-            </tr>
-        `;
-        return;
-    }
-    
-    AppState.employees.forEach(employee => {
-        const row = document.createElement('tr');
-        row.setAttribute('data-dni', employee.dni);
-        row.innerHTML = `
-            <td><strong>${employee.dni}</strong></td>
-            <td>
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div class="user-avatar" style="width: 32px; height: 32px; font-size: 12px;">
-                        ${employee.avatar}
-                    </div>
-                    <div>
-                        <div><strong>${employee.firstName} ${employee.lastName}</strong></div>
-                        ${employee.notes ? `<div style="font-size: 12px; color: var(--gray-500);">${employee.notes}</div>` : ''}
-                    </div>
-                </div>
-            </td>
-            <td class="status-cell">
-                <span class="status-badge ${getStatusClass(employee.status)}" onclick="quickEditEmployeeStatus('${employee.dni}')" style="cursor: pointer;" title="Click para cambiar estado">
-                    ${employee.status}
-                </span>
-            </td>
-            <td>
-                <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 12px;" onclick="editEmployee('${employee.dni}')" title="Editar empleado">
-                    ✏️ Editar
-                </button>
-                <button class="btn btn-danger" style="padding: 8px 12px; font-size: 12px; margin-left: 8px;" onclick="deleteEmployee('${employee.dni}')" title="Eliminar empleado">
-                    🗑️ Eliminar
-                </button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-function renderEmployeeOptions() {
-    const select = document.getElementById('employeeSelect');
-    if (!select) return;
-    
-    select.innerHTML = '<option value="">Seleccionar empleado...</option>';
-    
-    AppState.employees
-        .filter(emp => emp.status === 'Activo')
-        .forEach(emp => {
-            const option = document.createElement('option');
-            option.value = emp.dni;
-            option.textContent = `${emp.firstName} ${emp.lastName} (${emp.dni})`;
-            select.appendChild(option);
-        });
-}
-
-function renderInvoices() {
-    const tbody = document.querySelector('#invoicesTable tbody');
-    if (!tbody) return;
-    
-    tbody.innerHTML = '';
-    
-    if (AppState.invoices.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align: center; padding: 40px; color: var(--gray-500);">
-                    📄 No hay facturas registradas
-                </td>
-            </tr>
-        `;
-        return;
-    }
-    
-    AppState.invoices.forEach(invoice => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><strong>${invoice.invoice_number}</strong></td>
-            <td>
-                <div>${invoice.clientName}</div>
-                <div style="font-size: 12px; color: var(--gray-500);">RUC: ${invoice.clientRuc}</div>
-            </td>
-            <td><strong>${formatCurrency(invoice.amount, invoice.currency)}</strong></td>
-            <td><span class="status-badge ${getStatusClass(invoice.status)}">${invoice.status}</span></td>
-            <td>${formatDate(invoice.date)}</td>
-            <td>
-                <button class="btn btn-danger" style="padding: 8px 12px; font-size: 12px;" onclick="deleteInvoice(${invoice.id})">
-                    🗑️ Eliminar
-                </button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-function renderTimeEntries() {
-    const tbody = document.querySelector('#timeEntriesTable tbody');
-    if (!tbody) return;
-    
-    tbody.innerHTML = '';
-    
-    if (AppState.timeEntries.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align: center; padding: 40px; color: var(--gray-500);">
-                    ⏰ No hay registros de asistencia
-                </td>
-            </tr>
-        `;
-        return;
-    }
-    
-    AppState.timeEntries.forEach(entry => {
-        const hours = calculateHours(entry.entryTime, entry.exitTime);
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>
-                <div><strong>${entry.name}</strong></div>
-                <div style="font-size: 12px; color: var(--gray-500);">DNI: ${entry.dni}</div>
-            </td>
-            <td>${formatDate(entry.date)}</td>
-            <td><strong>${formatTime(entry.entryTime)}</strong></td>
-            <td><strong>${formatTime(entry.exitTime)}</strong></td>
-            <td>
-                <span class="status-badge ${hours >= 8 ? 'active' : 'warning'}">
-                    ${hours.toFixed(1)}h
-                </span>
-            </td>
-            <td>
-                <button class="btn btn-secondary" style="padding: 8px 12px; font-size: 12px;" onclick="editTimeEntry(${entry.id})">
-                    ✏️ Editar
-                </button>
-                <button class="btn btn-danger" style="padding: 8px 12px; font-size: 12px; margin-left: 8px;" onclick="deleteTimeEntry(${entry.id})">
-                    🗑️ Eliminar
-                </button>
-            </td>
-        `;
-        tbody.appendChild(row);
-    });
-}
-
-// ========================================
-// Funciones de edición rápida de empleados
-// ========================================
-async function quickEditEmployeeStatus(dni) {
-    const employee = AppState.employees.find(e => e.dni === dni);
-    if (!employee) {
-        showToast('❌ Empleado no encontrado', 'error');
-        return;
-    }
-    
-    const currentStatus = employee.status;
-    const statusOptions = ['Activo', 'Vacaciones', 'Descanso Médico', 'Cesado'];
-    
-    const selectHtml = statusOptions.map(status => 
-        `<option value="${status}" ${status === currentStatus ? 'selected' : ''}>${status}</option>`
-    ).join('');
-    
-    const dropdownId = `status-dropdown-${dni}`;
-    const statusCell = document.querySelector(`[data-dni="${dni}"] .status-cell`);
-    if (!statusCell) return;
-    
-    const originalContent = statusCell.innerHTML;
-    
-    statusCell.innerHTML = `
-        <select id="${dropdownId}" class="quick-status-select" onchange="saveQuickStatusChange('${dni}', this.value)" onblur="cancelQuickStatusEdit('${dni}', \`${originalContent.replace(/`/g, '\\`')}\`)">
-            ${selectHtml}
-        </select>
-    `;
-    
-    document.getElementById(dropdownId).focus();
-}
-
-async function saveQuickStatusChange(dni, newStatus) {
-    const employee = AppState.employees.find(e => e.dni === dni);
-    if (!employee) return;
-    
-    const oldStatus = employee.status;
-    
-    try {
-        await updateEmployee({
-            preventDefault: () => {},
-            target: {
-                originalDni: { value: dni },
-                firstName: { value: employee.firstName },
-                lastName: { value: employee.lastName },
-                status: { value: newStatus },
-                notes: { value: employee.notes }
-            }
-        });
-        
-        showToast(`✅ Estado de ${employee.firstName} ${employee.lastName} cambiado de "${oldStatus}" a "${newStatus}"`, 'success');
-    } catch (error) {
-        console.error('Error cambiando estado:', error);
-        showToast(`❌ Error cambiando estado: ${error.message}`, 'error');
-        // Recargar empleados para revertir cambios visuales
-        await loadEmployees();
-    }
-}
-
-function cancelQuickStatusEdit(dni, originalContent) {
-    setTimeout(() => {
-        const statusCell = document.querySelector(`[data-dni="${dni}"] .status-cell`);
-        if (statusCell && statusCell.innerHTML.includes('quick-status-select')) {
-            statusCell.innerHTML = originalContent;
-        }
-    }, 100);
-}
-
-function editEmployee(dni) {
-    const employee = AppState.employees.find(e => e.dni === dni);
-    if (!employee) {
-        showToast('❌ Empleado no encontrado', 'error');
-        return;
-    }
-    
-    document.getElementById('originalDni').value = employee.dni;
-    document.getElementById('editDni').value = employee.dni;
-    document.getElementById('editFirstName').value = employee.firstName;
-    document.getElementById('editLastName').value = employee.lastName;
-    document.getElementById('editStatus').value = employee.status;
-    document.getElementById('editNotes').value = employee.notes || '';
-    
-    showModal('editEmployee');
-}
-
-function editTimeEntry(entryId) {
-    const entry = AppState.timeEntries.find(e => e.id === entryId);
-    if (!entry) return;
-    
-    const form = document.getElementById('timeEntryForm');
-    if (!form) return;
-    
-    form.employeeDni.value = entry.dni;
-    form.date.value = entry.date;
-    form.entryTime.value = entry.entryTime || '';
-    form.exitTime.value = entry.exitTime || '';
-    form.notes.value = entry.notes || '';
-    
-    form.dataset.editingId = entryId;
-    
-    showModal('timeEntry');
-}
-
-async function deleteTimeEntry(entryId) {
-    if (!confirm('¿Está seguro de que desea eliminar este registro de asistencia?')) {
-        return;
-    }
-    
-    try {
-        const response = await APIClient.delete(`/time-entries/${entryId}`);
-        
-        if (response.success) {
-            await loadTimeEntries();
-            showToast('🗑️ Registro eliminado correctamente', 'info');
-        }
-    } catch (error) {
-        console.error('Error eliminando registro:', error);
-        showToast(`❌ Error eliminando registro: ${error.message}`, 'error');
-    }
-}
-
-// ========================================
-// Utilidades
-// ========================================
-function sanitizeInput(input) {
-    if (typeof input !== 'string') return input;
-    const div = document.createElement('div');
-    div.textContent = input;
-    return div.innerHTML;
-}
-
-function validateRUC(ruc) {
-    return /^[0-9]{11}$/.test(ruc);
-}
-
-function validateDNI(dni) {
-    return /^[0-9]{8}$/.test(dni);
-}
-
-function validateTime(time) {
-    return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(time);
-}
-
-function formatCurrency(amount, currency = 'PEN') {
-    const symbol = currency === 'USD' ? '// ========================================
 // TECSITEL v4.0 - Sistema de Gestión Empresarial
-// Versión integrada con API PostgreSQL/Neon
 // ========================================
 
 // ========================================
 // Configuración Global y Estado
 // ========================================
 const CONFIG = {
+    // AJUSTE CLAVE: Apuntamos directamente a la función de Netlify.
+    // Esto es más robusto que usar la redirección /api/*.
     API_BASE_URL: '/.netlify/functions/api',
     IGV_RATE: 0.18,
     LOADING_DURATION: 3000,
@@ -529,200 +56,101 @@ class APIClient {
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || `HTTP ${response.status}`);
+                // Si el backend devuelve un error, lo lanzamos para que sea capturado por el catch
+                throw new Error(data.error || `Error HTTP ${response.status}`);
             }
 
             return data;
         } catch (error) {
-            console.error('Error en API:', error);
-            if (error.message.includes('401') || error.message.includes('403')) {
+            console.error('Error en la llamada API:', error);
+            // Si el token es inválido o no autorizado, cerramos sesión
+            if (error.message.includes('Token inválido') || error.message.includes('401') || error.message.includes('403')) {
                 logout();
             }
-            throw error;
+            throw error; // Relanzamos el error para que la función que llamó sepa que algo falló
         }
     }
 
-    static async get(endpoint) {
-        return this.request(endpoint, { method: 'GET' });
-    }
-
-    static async post(endpoint, data) {
-        return this.request(endpoint, {
-            method: 'POST',
-            body: data
-        });
-    }
-
-    static async put(endpoint, data) {
-        return this.request(endpoint, {
-            method: 'PUT',
-            body: data
-        });
-    }
-
-    static async delete(endpoint) {
-        return this.request(endpoint, { method: 'DELETE' });
-    }
+    static async get(endpoint) { return this.request(endpoint, { method: 'GET' }); }
+    static async post(endpoint, data) { return this.request(endpoint, { method: 'POST', body: data }); }
+    static async put(endpoint, data) { return this.request(endpoint, { method: 'PUT', body: data }); }
+    static async delete(endpoint) { return this.request(endpoint, { method: 'DELETE' }); }
 }
 
 // ========================================
 // Sistema de Roles y Permisos
 // ========================================
 const USER_ROLES = {
-    'admin': {
-        name: 'Administrador General',
-        permissions: ['all'],
-        description: 'Acceso completo al sistema'
-    },
-    'contabilidad': {
-        name: 'Contabilidad',
-        permissions: ['dashboard', 'invoices', 'accounting', 'compliance', 'sharepoint'],
-        description: 'Gestión financiera y contable'
-    },
-    'rrhh': {
-        name: 'Recursos Humanos',
-        permissions: ['dashboard', 'personnel', 'timetracking', 'compliance', 'sharepoint'],
-        description: 'Gestión de personal y nóminas'
-    },
-    'supervisor': {
-        name: 'Supervisor',
-        permissions: ['dashboard', 'timetracking'],
-        description: 'Control de asistencia'
-    }
+    'admin': { name: 'Administrador General', permissions: ['all'], description: 'Acceso completo al sistema' },
+    'contabilidad': { name: 'Contabilidad', permissions: ['dashboard', 'invoices', 'accounting', 'compliance', 'sharepoint'], description: 'Gestión financiera y contable' },
+    'rrhh': { name: 'Recursos Humanos', permissions: ['dashboard', 'personnel', 'timetracking', 'compliance', 'sharepoint'], description: 'Gestión de personal' },
+    'supervisor': { name: 'Supervisor', permissions: ['dashboard', 'timetracking'], description: 'Control de asistencia' }
 };
 
 const NAVIGATION_MENU = {
-    dashboard: {
-        icon: '📊',
-        text: 'Dashboard',
-        description: 'Panel principal'
-    },
-    invoices: {
-        icon: '📄',
-        text: 'Facturas',
-        description: 'Gestión de facturación'
-    },
-    accounting: {
-        icon: '💰',
-        text: 'Contabilidad',
-        description: 'Balance y finanzas'
-    },
-    personnel: {
-        icon: '👥',
-        text: 'Personal',
-        description: 'Gestión de empleados'
-    },
-    timetracking: {
-        icon: '⏰',
-        text: 'Asistencia',
-        description: 'Control de horarios'
-    },
-    compliance: {
-        icon: '⚖️',
-        text: 'Cumplimiento',
-        description: 'Normativas y regulaciones'
-    },
-    sharepoint: {
-        icon: '☁️',
-        text: 'Respaldos',
-        description: 'Backup y seguridad'
-    }
+    dashboard: { icon: '📊', text: 'Dashboard', description: 'Panel principal' },
+    invoices: { icon: '📄', text: 'Facturas', description: 'Gestión de facturación' },
+    accounting: { icon: '💰', text: 'Contabilidad', description: 'Balance y finanzas' },
+    personnel: { icon: '👥', text: 'Personal', description: 'Gestión de empleados' },
+    timetracking: { icon: '⏰', text: 'Asistencia', description: 'Control de horarios' },
+    compliance: { icon: '⚖️', text: 'Cumplimiento', description: 'Normativas y regulaciones' },
+    sharepoint: { icon: '☁️', text: 'Respaldos', description: 'Backup y seguridad' }
 };
 
 // ========================================
-// Sistema de Autenticación con API
+// Sistema de Autenticación
 // ========================================
 async function handleLogin(event) {
     event.preventDefault();
     const form = event.target;
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    const submitBtn = form.querySelector('button[type="submit"]');
     
     try {
-        // Mostrar loading
-        const submitBtn = form.querySelector('button[type="submit"]');
-        const originalText = submitBtn.textContent;
         submitBtn.disabled = true;
         submitBtn.textContent = 'Validando...';
         
-        // Llamar a la API de login
-        const response = await APIClient.post('/auth/login', {
-            username,
-            password
-        });
+        const response = await APIClient.post('/auth/login', { username, password });
 
         if (response.success) {
             AppState.isAuthenticated = true;
             AppState.token = response.token;
             AppState.user = response.user;
             AppState.userRole = response.user.role;
-AppState.sessionStart = Date.now();
-AppState.permissions = response.user.permissions || getUserPermissions(response.user.role);
+            AppState.sessionStart = Date.now();
+            AppState.permissions = response.user.permissions || getUserPermissions(response.user.role);
             
-            // Guardar token en localStorage
             localStorage.setItem('tecsitel_token', response.token);
             localStorage.setItem('tecsitel_user', JSON.stringify(response.user));
             
-            // Ocultar pantalla de login
             document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'flex';
             
-            // Mostrar pantalla de loading
-            const loadingScreen = document.getElementById('loadingScreen');
-            loadingScreen.style.display = 'flex';
-            
-            // Inicializar app
             setTimeout(() => {
                 setupLoadingAnimation();
                 initializeApp();
             }, 100);
-            
         }
     } catch (error) {
         showToast(`❌ Error de login: ${error.message}`, 'error');
-        
-        // Restaurar botón
-        const submitBtn = form.querySelector('button[type="submit"]');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Iniciar Sesión';
-        
-        // Limpiar contraseña
         document.getElementById('password').value = '';
     }
 }
 
 function getUserPermissions(role) {
     const roleConfig = USER_ROLES[role];
-    if (!roleConfig) return {};
-    
-    const permissions = {};
-    
-    if (roleConfig.permissions.includes('all')) {
-        Object.keys(NAVIGATION_MENU).forEach(key => {
-            permissions[key] = true;
-        });
-    } else {
-        roleConfig.permissions.forEach(permission => {
-            permissions[permission] = true;
-        });
-    }
-    
-    return permissions;
+    return roleConfig ? roleConfig.permissions : [];
 }
 
 function hasPermission(section) {
-    return AppState.permissions[section] === true;
+    if(AppState.permissions.includes('all')) return true;
+    return AppState.permissions.includes(section);
 }
 
-async function logout() {
-    try {
-        if (AppState.token) {
-            await APIClient.post('/auth/logout');
-        }
-    } catch (error) {
-        console.error('Error en logout:', error);
-    }
-    
-    // Limpiar estado local
+function logout() {
     AppState.isAuthenticated = false;
     AppState.user = null;
     AppState.userRole = null;
@@ -730,96 +158,406 @@ async function logout() {
     AppState.sessionStart = null;
     AppState.permissions = {};
     
-    // Limpiar localStorage
     localStorage.removeItem('tecsitel_token');
     localStorage.removeItem('tecsitel_user');
     
-    // Mostrar login
     document.getElementById('appContainer').style.display = 'none';
     document.getElementById('loginScreen').style.display = 'flex';
     
-    // Limpiar formulario
-    document.getElementById('username').value = '';
-    document.getElementById('password').value = '';
+    document.getElementById('loginForm').reset();
     
     showToast('👋 Sesión cerrada correctamente', 'info');
 }
 
-// Verificar sesión existente al cargar
 async function checkExistingSession() {
     const token = localStorage.getItem('tecsitel_token');
-    const userData = localStorage.getItem('tecsitel_user');
-    
-    if (token && userData) {
-        try {
-            AppState.token = token;
-            const response = await APIClient.get('/auth/verify');
+    if (!token) return false;
+
+    try {
+        AppState.token = token;
+        const response = await APIClient.get('/auth/verify');
+        
+        if (response.success) {
+            AppState.isAuthenticated = true;
+            AppState.user = response.user;
+            AppState.userRole = response.user.role;
+            AppState.sessionStart = Date.now();
+            AppState.permissions = response.user.permissions || getUserPermissions(response.user.role);
             
-            if (response.success) {
-                AppState.isAuthenticated = true;
-                AppState.user = JSON.parse(userData);
-                AppState.userRole = AppState.user.role;
-                AppState.sessionStart = Date.now();
-                AppState.permissions = getUserPermissions(AppState.user.role);
-                
-                // Inicializar app directamente
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('loadingScreen').style.display = 'flex';
-                
-                setTimeout(() => {
-                    setupLoadingAnimation();
-                    initializeApp();
-                }, 100);
-                
-                return true;
-            }
-        } catch (error) {
-            console.error('Sesión inválida:', error);
-            localStorage.removeItem('tecsitel_token');
-            localStorage.removeItem('tecsitel_user');
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('loadingScreen').style.display = 'flex';
+            
+            setTimeout(() => {
+                setupLoadingAnimation();
+                initializeApp();
+            }, 100);
+            
+            return true;
         }
+    } catch (error) {
+        console.error('Sesión inválida:', error);
+        logout(); // Limpia todo si el token no es válido
     }
-    
     return false;
 }
 
 // ========================================
-// Gestión de Empleados con API
+// Carga de Datos desde la API
 // ========================================
+async function loadAllInitialData() {
+    const dataPromises = [];
+    if(hasPermission('personnel')) dataPromises.push(loadEmployees());
+    if(hasPermission('invoices')) dataPromises.push(loadInvoices());
+    if(hasPermission('timetracking')) dataPromises.push(loadTimeEntries());
+    if(hasPermission('dashboard')) dataPromises.push(loadDashboardStats());
+
+    await Promise.all(dataPromises);
+}
+
 async function loadEmployees() {
     try {
         const response = await APIClient.get('/employees');
-        if (response.success) {
-            AppState.employees = response.employees.map(emp => ({
-                dni: emp.dni,
-                firstName: emp.first_name,
-                lastName: emp.last_name,
-                avatar: `${emp.first_name[0]}${emp.last_name[0]}`.toUpperCase(),
-                status: emp.status,
-                notes: emp.notes || '',
-                dateCreated: emp.created_at?.split('T')[0] || ''
-            }));
-            renderEmployees();
-            renderEmployeeOptions();
-        }
+        AppState.employees = response.employees.map(emp => ({
+            dni: emp.dni,
+            firstName: emp.first_name,
+            lastName: emp.last_name,
+            avatar: `${emp.first_name[0]}${emp.last_name[0]}`.toUpperCase(),
+            status: emp.status,
+            notes: emp.notes || '',
+            dateCreated: emp.created_at?.split('T')[0] || ''
+        }));
+        renderEmployees();
+        renderEmployeeOptions();
     } catch (error) {
-        console.error('Error cargando empleados:', error);
         showToast(`❌ Error cargando empleados: ${error.message}`, 'error');
     }
 }
 
+async function loadInvoices() {
+    try {
+        const response = await APIClient.get('/invoices');
+        AppState.invoices = response.invoices.map(inv => ({
+            id: inv.id,
+            invoice_number: inv.invoice_number,
+            clientRuc: inv.client_ruc,
+            clientName: inv.client_name,
+            amount: parseFloat(inv.amount),
+            status: inv.status,
+            date: inv.invoice_date,
+            currency: inv.currency,
+            description: inv.description,
+            isExport: inv.is_export
+        }));
+        renderInvoices();
+    } catch (error) {
+        showToast(`❌ Error cargando facturas: ${error.message}`, 'error');
+    }
+}
+
+async function loadTimeEntries() {
+    try {
+        const response = await APIClient.get('/time-entries');
+        AppState.timeEntries = response.timeEntries.map(entry => ({
+            id: entry.id,
+            dni: entry.employee_dni,
+            name: `${entry.first_name} ${entry.last_name}`,
+            date: entry.entry_date,
+            entryTime: entry.entry_time || '',
+            exitTime: entry.exit_time || '',
+            notes: entry.notes || ''
+        }));
+        renderTimeEntries();
+    } catch (error) {
+        showToast(`❌ Error cargando registros de tiempo: ${error.message}`, 'error');
+    }
+}
+
+async function loadDashboardStats() {
+    try {
+        const response = await APIClient.get('/dashboard/stats');
+        AppState.stats = response.stats;
+        updateDashboardDisplay();
+    } catch (error) {
+        showToast(`❌ Error cargando estadísticas: ${error.message}`, 'error');
+    }
+}
+
+// ========================================
+// Renderizado de UI
+// ========================================
+function renderEmployees() {
+    const tbody = document.querySelector('#employeesTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = AppState.employees.length === 0 
+        ? `<tr><td colspan="4" class="text-center p-5">No hay empleados registrados</td></tr>`
+        : AppState.employees.map(e => `
+            <tr data-dni="${e.dni}">
+                <td><strong>${e.dni}</strong></td>
+                <td>${e.firstName} ${e.lastName}</td>
+                <td><span class="status-badge ${getStatusClass(e.status)}">${e.status}</span></td>
+                <td>
+                    <button class="btn btn-secondary btn-sm" onclick="editEmployee('${e.dni}')">✏️</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteEmployee('${e.dni}')">🗑️</button>
+                </td>
+            </tr>`).join('');
+}
+
+function renderInvoices() {
+    const tbody = document.querySelector('#invoicesTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = AppState.invoices.length === 0 
+        ? `<tr><td colspan="6" class="text-center p-5">No hay facturas registradas</td></tr>`
+        : AppState.invoices.map(i => `
+            <tr>
+                <td><strong>${i.invoice_number}</strong></td>
+                <td>${i.clientName}</td>
+                <td><strong>${formatCurrency(i.amount, i.currency)}</strong></td>
+                <td><span class="status-badge ${getStatusClass(i.status)}">${i.status}</span></td>
+                <td>${formatDate(i.date)}</td>
+                <td><button class="btn btn-danger btn-sm" onclick="deleteInvoice(${i.id})">🗑️</button></td>
+            </tr>`).join('');
+}
+
+function renderTimeEntries() {
+    const tbody = document.querySelector('#timeEntriesTable tbody');
+    if (!tbody) return;
+    tbody.innerHTML = AppState.timeEntries.length === 0 
+        ? `<tr><td colspan="6" class="text-center p-5">No hay registros de asistencia</td></tr>`
+        : AppState.timeEntries.map(e => `
+            <tr>
+                <td>${e.name}</td>
+                <td>${formatDate(e.date)}</td>
+                <td>${formatTime(e.entryTime)}</td>
+                <td>${formatTime(e.exitTime)}</td>
+                <td>${calculateHours(e.entryTime, e.exitTime).toFixed(1)}h</td>
+                <td><button class="btn btn-danger btn-sm" onclick="deleteTimeEntry(${e.id})">🗑️</button></td>
+            </tr>`).join('');
+}
+
+function renderEmployeeOptions() {
+    const select = document.getElementById('employeeSelect');
+    if (!select) return;
+    select.innerHTML = '<option value="">Seleccionar empleado...</option>' + 
+        AppState.employees
+            .filter(emp => emp.status === 'Activo')
+            .map(emp => `<option value="${emp.dni}">${emp.firstName} ${emp.lastName}</option>`)
+            .join('');
+}
+
+// ========================================
+// Inicialización de la Aplicación
+// ========================================
+async function initializeApp() {
+    updateLoadingStatus('Configurando sistema de roles...');
+    buildNavigationMenu();
+    buildBottomNavigation();
+    updateUserInterface();
+    
+    updateLoadingStatus('Cargando datos iniciales...');
+    await loadAllInitialData();
+    
+    updateLoadingStatus('¡Sistema listo!');
+    
+    setTimeout(() => {
+        document.getElementById('loadingScreen').style.display = 'none';
+        const appContainer = document.getElementById('appContainer');
+        appContainer.style.display = 'flex';
+        setTimeout(() => appContainer.classList.add('loaded'), 50);
+        
+        showTab('dashboard');
+        setupEventListeners();
+        showToast(`🎉 ¡Bienvenido ${AppState.user.name}!`, 'success');
+    }, 1000);
+}
+
+function updateUserInterface() {
+    if (!AppState.user) return;
+    const { name, role } = AppState.user;
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+    
+    document.getElementById('userNameDisplay').textContent = name;
+    document.getElementById('userAvatar').textContent = initials;
+    document.getElementById('userAvatarSidebar').textContent = initials;
+    document.getElementById('userNameSidebar').textContent = name;
+    document.getElementById('userRoleSidebar').textContent = USER_ROLES[role]?.name || role;
+}
+
+function setupEventListeners() {
+    window.addEventListener('resize', buildBottomNavigation);
+    document.addEventListener('click', e => {
+        if (e.target.classList.contains('modal')) closeModal(e.target.id);
+    });
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape') {
+            const openModal = document.querySelector('.modal.show');
+            if (openModal) closeModal(openModal.id);
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 Tecsitel v4.0 Iniciado');
+    const hasSession = await checkExistingSession();
+    if (!hasSession) {
+        document.getElementById('loginScreen').style.display = 'flex';
+    }
+});
+
+// ========================================
+// Lógica de UI (Modales, Toasts, etc.)
+// ========================================
+function showModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.add('show'), 10);
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            const form = modal.querySelector('form');
+            if (form) form.reset();
+        }, 300);
+    }
+}
+
+function showToast(message, type = 'info', duration = 4000) {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<div>${message}</div><button onclick="this.parentElement.remove()">&times;</button>`;
+    container.appendChild(toast);
+    setTimeout(() => toast.remove(), duration);
+}
+
+function updateLoadingStatus(message) {
+    const statusEl = document.getElementById('loadingStatus');
+    if (statusEl) statusEl.textContent = message;
+}
+
+function setupLoadingAnimation() { /* Animaciones pueden ir aquí */ }
+
+function buildNavigationMenu() {
+    const navMenu = document.getElementById('navMenu');
+    navMenu.innerHTML = Object.keys(NAVIGATION_MENU).map(key => {
+        if (hasPermission(key)) {
+            const item = NAVIGATION_MENU[key];
+            return `<button class="nav-item" data-tab="${key}" onclick="showTab('${key}')">
+                        <span class="nav-icon">${item.icon}</span>
+                        <span class="nav-text">${item.text}</span>
+                    </button>`;
+        }
+        return '';
+    }).join('');
+}
+
+function buildBottomNavigation() {
+    const bottomNav = document.getElementById('bottomNav');
+    if (window.innerWidth > 768) {
+        bottomNav.style.display = 'none';
+        return;
+    }
+    bottomNav.style.display = 'flex';
+    bottomNav.innerHTML = Object.keys(NAVIGATION_MENU).slice(0, 4).map(key => {
+         if (hasPermission(key)) {
+            const item = NAVIGATION_MENU[key];
+            return `<a href="#" class="bottom-nav-item" onclick="event.preventDefault(); showTab('${key}')">
+                        <span class="bottom-nav-icon">${item.icon}</span> ${item.text}
+                    </a>`;
+        }
+        return '';
+    }).join('');
+}
+
+function showTab(tabName) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.getElementById(tabName)?.classList.add('active');
+    
+    document.querySelectorAll('.nav-item, .bottom-nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll(`[data-tab="${tabName}"]`).forEach(i => i.classList.add('active'));
+
+    document.getElementById('pageTitle').textContent = NAVIGATION_MENU[tabName]?.text || 'Dashboard';
+    if(window.innerWidth <= 1024) closeSidebar();
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('active');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+}
+function closeSidebar() {
+    document.getElementById('sidebar').classList.remove('active');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+}
+
+// ========================================
+// Funciones de Ayuda y Formato
+// ========================================
+function formatCurrency(amount, currency = 'PEN') {
+    return new Intl.NumberFormat('es-PE', { style: 'currency', currency }).format(amount);
+}
+function formatDate(dateString) {
+    if(!dateString) return 'N/A';
+    return new Date(dateString).toLocaleDateString('es-PE', { timeZone: 'UTC' });
+}
+function formatTime(timeString) { return timeString ? timeString.substring(0, 5) : 'N/A'; }
+function calculateHours(entry, exit) {
+    if (!entry || !exit) return 0;
+    const start = new Date(`1970-01-01T${entry}Z`);
+    const end = new Date(`1970-01-01T${exit}Z`);
+    return (end - start) / (1000 * 60 * 60);
+}
+function getStatusClass(status) {
+    const s = status.toLowerCase();
+    if (s === 'pagado' || s === 'activo') return 'active';
+    if (s === 'pendiente') return 'pending';
+    if (s === 'vencido' || s === 'cesado') return 'danger';
+    return 'inactive';
+}
+function updateDashboardDisplay() {
+    if (!hasPermission('dashboard')) return;
+    const { totalIncome, pendingInvoices, activeEmployees, compliance } = AppState.stats;
+    document.getElementById('totalIncome').textContent = formatCurrency(totalIncome);
+    document.getElementById('pendingInvoices').textContent = pendingInvoices;
+    document.getElementById('activeEmployees').textContent = activeEmployees;
+    document.getElementById('compliance').textContent = `${compliance}%`;
+}
+
+// Lógica de formularios (simplificada para brevedad)
 async function saveEmployee(event) {
     event.preventDefault();
-    const form = event.target;
-    
-    const employeeData = {
-        dni: form.dni.value,
-        first_name: sanitizeInput(form.firstName.value),
-        last_name: sanitizeInput(form.lastName.value),
-        status: form.status.value,
-        notes: sanitizeInput(form.notes.value || '')
+    const form = new FormData(event.target);
+    const data = {
+        dni: form.get('dni'),
+        first_name: form.get('firstName'),
+        last_name: form.get('lastName'),
+        status: form.get('status'),
+        notes: form.get('notes'),
     };
-    
+    try {
+        await APIClient.post('/employees', data);
+        showToast('✅ Empleado guardado', 'success');
+        closeModal('newEmployee');
+        loadEmployees();
+    } catch(e) {
+        showToast(`❌ ${e.message}`, 'error');
+    }
+}
+async function deleteEmployee(dni) {
+    if (!confirm('¿Seguro?')) return;
+    try {
+        await APIClient.delete(`/employees/${dni}`);
+        showToast('🗑️ Empleado eliminado', 'info');
+        loadEmployees();
+    } catch(e) {
+        showToast(`❌ ${e.message}`, 'error');
+    }
+}
+
     // Validación de DNI
     if (!validateDNI(employeeData.dni)) {
         const dniError = document.getElementById('dniError');
