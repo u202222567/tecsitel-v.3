@@ -1,309 +1,444 @@
-# 🏢 Tecsitel v.3 - Sistema de Gestión Empresarial Integral
+# 🏢 Tecsitel v4.0 - Sistema de Gestión Empresarial
 
-[![Version](https://img.shields.io/badge/version-3.0.1-blue.svg)](https://github.com/tu-usuario/tecsitel-v3)
+[![Version](https://img.shields.io/badge/version-4.0.0-blue.svg)](https://github.com/usuario/tecsitel-v4)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![SUNAT](https://img.shields.io/badge/SUNAT-Compliant-success.svg)](https://www.sunat.gob.pe)
-[![PCGE](https://img.shields.io/badge/PCGE-2024-orange.svg)](https://www.gob.pe/institucion/sunat/normas-legales/1002072-340-2019-ef-15)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![PostgreSQL](https://img.shields.io/badge/postgresql-%3E%3D15.0-blue.svg)](https://postgresql.org/)
+[![Netlify](https://img.shields.io/badge/deploy-netlify-blue.svg)](https://netlify.com/)
 
-**Sistema de gestión empresarial completo para empresas peruanas** que cumple con todas las normativas vigentes de SUNAT, SUNAFIL y MINTRA. Incluye facturación electrónica, contabilidad con Plan Contable General Empresarial (PCGE), gestión de recursos humanos y exportación de libros electrónicos.
+Sistema integral de gestión empresarial con facturación electrónica, control de personal, contabilidad y cumplimiento normativo para empresas peruanas.
 
 ## 🚀 Características Principales
 
-### 📊 **Dashboard Integral**
-- Métricas financieras en tiempo real
-- Indicadores de cumplimiento normativo
-- Actividad reciente de la empresa
-- Alertas y notificaciones importantes
+### ✨ **Nuevo en v4.0**
+- 🔐 **Sistema de roles y permisos** - Acceso diferenciado por tipo de usuario
+- ⏰ **Control de asistencia digital** - Marcaje de horarios con cumplimiento SUNAFIL
+- 🎨 **Interfaz completamente renovada** - Diseño moderno y responsive
+- 📱 **Optimización móvil** - Experiencia nativa en dispositivos móviles
+- 🔒 **Seguridad mejorada** - Autenticación JWT y encriptación avanzada
 
-### 💰 **Contabilidad Avanzada**
-- **Plan Contable General Empresarial (PCGE)** completo
-- Asientos contables con validación automática
-- Balance de comprobación
-- Estado de resultados
-- **Exportación PLE** para SUNAT
-- Reportes financieros personalizables
+### 🏆 **Funcionalidades Core**
+- 📄 **Facturación Electrónica** - Compatible con SUNAT
+- 👥 **Gestión de Personal** - CRUD completo de empleados
+- 💰 **Contabilidad** - Balance general y reportes financieros
+- ⚖️ **Cumplimiento Normativo** - SUNAT, SUNAFIL, MINTRA
+- 📊 **Dashboard Inteligente** - Estadísticas y métricas en tiempo real
+- ☁️ **Respaldos Automáticos** - Exportación y backup de datos
 
-### 📄 **Facturación Electrónica**
-- Facturación según normativa SUNAT 3.0
-- Generación automática de XML
-- Validación de RUC en tiempo real
-- Soporte para exportaciones (exentas de IGV)
-- Múltiples monedas (PEN, USD, EUR)
+## 🛠️ Stack Tecnológico
 
-### 👥 **Gestión de Recursos Humanos**
-- Registro completo de empleados
-- **Cálculo automático de planilla** según normativa
-- Generación de boletas de pago
-- Control de asistencia digital
-- **Exportación PLAME** para SUNAT
-- **T-Registro** para SUNAFIL
-- Cálculo de CTS, vacaciones y beneficios
+### **Frontend**
+- HTML5, CSS3, JavaScript ES6+
+- Diseño responsivo moderno
+- PWA ready
 
-### ⚖️ **Cumplimiento Normativo**
-- **SUNAT**: Libros electrónicos PLE
-- **SUNAFIL**: Control de asistencia y T-Registro
-- **MINTRA**: PLAME y contratos
-- Validaciones automáticas
-- Alertas de vencimientos
+### **Backend**
+- Node.js + Express.js
+- Netlify Functions (Serverless)
+- JWT Authentication
+- bcryptjs para cifrado
 
-### 🔐 **Administración y Seguridad**
-- Sistema de roles y permisos
-- Auditoría completa de transacciones
-- Respaldos automáticos programables
-- Configuración de empresa
-- Gestión de usuarios
+### **Base de Datos**
+- PostgreSQL 15
+- Neon (Cloud PostgreSQL)
+- Migraciones automáticas
+- Índices optimizados
 
-### 📤 **Exportación Avanzada**
-- **CSV** con múltiples secciones
-- **JSON** estructurado
-- **TXT** formato SUNAT (PLE)
-- **PLAME** mensual
-- Respaldos completos automáticos
+### **Deployment**
+- Netlify (Frontend + Functions)
+- CDN global
+- SSL automático
+- Environment variables
 
-## 🛠️ Tecnologías Utilizadas
+## 🎭 Roles de Usuario
 
-- **Frontend**: HTML5, CSS3, JavaScript ES6+
-- **Backend**: Node.js, Express, Netlify Functions
-- **Base de datos**: PostgreSQL
-- **Autenticación**: JWT + bcrypt
-- **Arquitectura**: Serverless (Netlify)
-- **Estándares**: PCGE 2024, Normativas SUNAT 2024
+| Rol | Permisos | Descripción |
+|-----|----------|-------------|
+| **👑 Administrador General** | Acceso completo | Control total del sistema |
+| **💰 Contabilidad** | Facturas, Contabilidad, Cumplimiento | Gestión financiera |
+| **👥 Recursos Humanos** | Personal, Asistencia, Cumplimiento | Gestión de RRHH |
+| **⏰ Supervisor** | Dashboard, Asistencia | Control de horarios |
 
-## 📋 Requisitos del Sistema
+## 📋 Prerrequisitos
 
-- **Node.js** >= 18.0.0
-- **npm** >= 8.0.0
-- Navegador web moderno (Chrome, Firefox, Safari, Edge)
-- Conexión a internet para validaciones SUNAT
+- Node.js >= 18.0.0
+- npm >= 8.0.0
+- Cuenta en [Neon](https://neon.tech/) (PostgreSQL)
+- Cuenta en [Netlify](https://netlify.com/)
+- Git
 
-## 🚀 Instalación y Configuración
+## 🚀 Instalación Rápida
 
-### 1. Clonar el Repositorio
+### 1️⃣ **Clonar el Repositorio**
+
 ```bash
-git clone https://github.com/tu-usuario/tecsitel-v3.git
-cd tecsitel-v3
+git clone https://github.com/usuario/tecsitel-v4.git
+cd tecsitel-v4
 ```
 
-### 2. Instalar Dependencias
+### 2️⃣ **Instalar Dependencias**
+
 ```bash
 npm install
 ```
 
-### 3. Configurar Variables de Entorno
-Crear archivo `.env` en la raíz del proyecto:
+### 3️⃣ **Configurar Base de Datos en Neon**
+
+1. Ve a [Neon.tech](https://neon.tech/) y crea una cuenta
+2. Crea un nuevo proyecto llamado `tecsitel-v4`
+3. Copia la URL de conexión
+4. Ejecuta el script SQL de esquema:
+
+```bash
+# Copia el contenido de database_schema.sql
+# Pégalo en el SQL Editor de Neon y ejecuta
+```
+
+### 4️⃣ **Configurar Variables de Entorno**
+
+```bash
+# Copia el archivo de ejemplo
+cp .env.example .env
+
+# Edita .env con tus valores reales
+nano .env
+```
+
+**Variables OBLIGATORIAS:**
 ```env
-# Base de datos
-DATABASE_URL=postgresql://usuario:password@localhost:5432/tecsitel
-
-# JWT
-JWT_SECRET=tu_clave_secreta_super_segura
-
-# SUNAT (opcional para validaciones)
-SUNAT_USER=tu_usuario_sunat
-SUNAT_PASSWORD=tu_password_sunat
+DATABASE_URL=postgres://user:pass@host/db?sslmode=require
+JWT_SECRET=tu_clave_jwt_super_secreta_de_64_caracteres
+NODE_ENV=production
 ```
 
-### 4. Inicializar Base de Datos
-```bash
-# Si usas PostgreSQL local
-createdb tecsitel
-```
+### 5️⃣ **Desplegar en Netlify**
 
-### 5. Ejecutar en Desarrollo
-```bash
-npm run dev
-```
+#### **Opción A: Deploy desde Git (Recomendado)**
 
-La aplicación estará disponible en `http://localhost:8888`
+1. Sube tu código a GitHub
+2. Ve a [Netlify](https://netlify.com/)
+3. Click "New site from Git"
+4. Conecta tu repositorio
+5. Configuración de build:
+   - **Build command:** `npm run build`
+   - **Publish directory:** `.`
+6. Configura variables de entorno en Netlify
 
-## 🔐 Credenciales de Acceso
+#### **Opción B: Deploy manual**
 
-### Por Defecto:
-- **Usuario**: `admin`
-- **Contraseña**: `admin123`
-
-### Demo:
-- **Usuario**: `demo`
-- **Contraseña**: `demo`
-
-## 📁 Estructura del Proyecto
-
-```
-tecsitel-v3/
-├── index.html                 # Aplicación principal
-├── modules/
-│   └── advanced-modules.js    # Módulos avanzados (contabilidad, RRHH)
-├── netlify/
-│   └── functions/
-│       └── api.js            # API backend
-├── package.json              # Configuración del proyecto
-├── README.md                 # Este archivo
-└── .env.example             # Variables de entorno ejemplo
-```
-
-## 🎯 Uso del Sistema
-
-### 1. **Configuración Inicial**
-1. Acceder con credenciales de administrador
-2. Ir a **Administración** → **Configuración Empresa**
-3. Completar datos de la empresa (RUC, razón social, etc.)
-4. Configurar parámetros fiscales
-
-### 2. **Gestión de Empleados**
-1. **Personal** → **Nuevo Empleado**
-2. Completar datos personales y laborales
-3. Configurar sistema de pensiones (AFP/ONP)
-4. Asignar cargo y sueldo básico
-
-### 3. **Facturación**
-1. **Facturas** → **Nueva Factura**
-2. Ingresar datos del cliente (RUC se valida automáticamente)
-3. Especificar monto y moneda
-4. Marcar si es exportación (exenta de IGV)
-
-### 4. **Contabilidad**
-1. **Contabilidad Pro** → **Nuevo Asiento**
-2. Seleccionar cuentas del PCGE
-3. Ingresar movimientos (Debe = Haber)
-4. Generar reportes y exportar PLE
-
-### 5. **Planilla**
-1. **Planilla** → **Calcular Planilla**
-2. Revisar cálculos automáticos
-3. Generar boletas de pago
-4. Exportar PLAME para SUNAT
-
-## 📊 Reportes y Exportaciones
-
-### Contables:
-- **Balance de Comprobación**: CSV detallado
-- **Estado de Resultados**: TXT formateado
-- **Libros PLE**: TXT formato SUNAT
-
-### Laborales:
-- **PLAME**: Archivos TXT para SUNAT
-- **T-Registro**: Excel para SUNAFIL
-- **Boletas**: TXT individuales por empleado
-
-### Respaldos:
-- **CSV Completo**: Todas las secciones
-- **JSON Estructurado**: Datos completos
-- **Respaldo Avanzado**: JSON con auditoría
-
-## ⚖️ Cumplimiento Normativo
-
-### SUNAT (Superintendencia Nacional de Aduanas y de Administración Tributaria)
-- ✅ Facturación Electrónica 3.0
-- ✅ Plan Contable General Empresarial (PCGE)
-- ✅ Programa de Libros Electrónicos (PLE)
-- ✅ PLAME (Planilla Mensual de Pagos)
-- ✅ Validación de RUC
-
-### SUNAFIL (Superintendencia Nacional de Fiscalización Laboral)
-- ✅ T-Registro actualizado
-- ✅ Control de asistencia digital
-- ✅ Registro de empleados
-
-### MINTRA (Ministerio de Trabajo y Promoción del Empleo)
-- ✅ PLAME presentado
-- ✅ Contratos registrados
-- ✅ Beneficios sociales calculados
-
-## 🔧 Configuración Avanzada
-
-### Roles de Usuario:
-- **Administrador**: Acceso completo
-- **Contador**: Contabilidad y facturas
-- **RRHH**: Gestión de personal y planilla
-- **Usuario**: Solo lectura y facturas básicas
-
-### Parámetros 2024:
-- **UIT**: S/ 5,150
-- **RMV**: S/ 1,025
-- **Asignación Familiar**: S/ 102.50
-- **EsSalud**: 9%
-- **ONP**: 13%
-
-## 🚀 Despliegue en Producción
-
-### Netlify (Recomendado):
 ```bash
 # Instalar Netlify CLI
 npm install -g netlify-cli
 
-# Desplegar
+# Login en Netlify
+netlify login
+
+# Deploy
+netlify init
 netlify deploy --prod
 ```
 
-### Vercel:
-```bash
-# Instalar Vercel CLI
-npm install -g vercel
+### 6️⃣ **Configurar Variables de Entorno en Netlify**
 
-# Desplegar
-vercel --prod
+Ve a: **Site settings > Environment variables**
+
+Agrega estas variables (marca como "Secret" las sensibles):
+
+```
+DATABASE_URL=postgres://...
+JWT_SECRET=tu_clave_secreta
+NODE_ENV=production
+CORS_ORIGIN=https://tu-sitio.netlify.app
 ```
 
-### Servidor Propio:
-1. Configurar servidor web (nginx/apache)
-2. Configurar base de datos PostgreSQL
-3. Configurar variables de entorno
-4. Subir archivos al servidor
+## 🔧 Configuración Avanzada
 
-## 📝 Licencia
+### **Estructura del Proyecto**
 
-Este proyecto está bajo la Licencia MIT. Ver [LICENSE](LICENSE) para más detalles.
+```
+tecsitel-v4/
+├── 📁 netlify/
+│   └── 📁 functions/
+│       └── 📄 api.js              # Backend API
+├── 📄 index.html                  # Frontend principal
+├── 📄 styles.css                  # Estilos CSS
+├── 📄 script.js                   # JavaScript frontend
+├── 📄 netlify.toml                # Configuración Netlify
+├── 📄 package.json                # Dependencias
+├── 📄 database_schema.sql         # Esquema de BD
+├── 📄 .env.example                # Variables de entorno
+└── 📄 README.md                   # Esta documentación
+```
+
+### **Configuración de Seguridad**
+
+El sistema incluye múltiples capas de seguridad:
+
+- 🔐 **Autenticación JWT** con tokens seguros
+- 🛡️ **Cifrado bcryptjs** para contraseñas
+- 🚫 **Rate limiting** anti-ataques
+- 🔒 **CORS** configurado
+- 🛠️ **Headers de seguridad** (CSP, HSTS, etc.)
+- 📝 **Validación de inputs** y sanitización
+- 🏷️ **RLS** (Row Level Security) en PostgreSQL
+
+## 🎯 Uso del Sistema
+
+### **Acceso de Demo**
+
+Usuarios predefinidos para pruebas:
+
+| Usuario | Contraseña | Rol |
+|---------|------------|-----|
+| `admin` | `admin123` | Administrador General |
+| `contabilidad` | `conta123` | Contabilidad |
+| `rrhh` | `rrhh123` | Recursos Humanos |
+| `supervisor` | `super123` | Supervisor |
+
+### **Funcionalidades por Rol**
+
+#### **👑 Administrador General**
+- Acceso completo a todas las funciones
+- Gestión de usuarios y permisos
+- Configuración del sistema
+- Reportes ejecutivos
+
+#### **💰 Contabilidad**
+- Gestión de facturas
+- Balance general
+- Reportes financieros
+- Cumplimiento tributario
+
+#### **👥 Recursos Humanos**
+- Gestión de empleados
+- Control de asistencia
+- Reportes de personal
+- Cumplimiento laboral
+
+#### **⏰ Supervisor**
+- Marcaje de horarios
+- Visualización de asistencia
+- Dashboard básico
+
+## 📊 API Endpoints
+
+### **Autenticación**
+- `POST /api/auth/login` - Iniciar sesión
+- `POST /api/auth/logout` - Cerrar sesión
+- `GET /api/auth/verify` - Verificar token
+
+### **Empleados**
+- `GET /api/employees` - Listar empleados
+- `POST /api/employees` - Crear empleado
+- `PUT /api/employees/:dni` - Actualizar empleado
+- `DELETE /api/employees/:dni` - Eliminar empleado
+
+### **Registro de Tiempo**
+- `GET /api/time-entries` - Listar registros
+- `POST /api/time-entries` - Crear registro
+- `PUT /api/time-entries/:id` - Actualizar registro
+
+### **Facturas**
+- `GET /api/invoices` - Listar facturas
+- `POST /api/invoices` - Crear factura
+
+### **Dashboard**
+- `GET /api/dashboard/stats` - Estadísticas
+
+## 🔄 Scripts Disponibles
+
+```bash
+# Desarrollo local
+npm run dev
+
+# Verificar variables de entorno
+npm run env:check
+
+# Linting y formato
+npm run lint
+npm run format
+
+# Testing
+npm run test
+npm run test:watch
+
+# Deploy
+npm run deploy
+npm run preview
+
+# Ver logs
+npm run logs
+```
+
+## 🛡️ Seguridad y Cumplimiento
+
+### **Normativas Peruanas**
+- ✅ **SUNAT** - Facturación electrónica
+- ✅ **SUNAFIL** - Control de asistencia
+- ✅ **MINTRA** - Derechos laborales
+- ✅ **Ley de Protección de Datos**
+
+### **Buenas Prácticas**
+- Contraseñas hasheadas con bcrypt
+- Tokens JWT con expiración
+- Validación de inputs
+- Logs de auditoría
+- Backups automáticos
+
+## 📈 Monitoreo y Métricas
+
+### **Métricas Incluidas**
+- 💰 Ingresos totales
+- 📋 Facturas pendientes
+- 👥 Empleados activos
+- ⚖️ Nivel de cumplimiento
+- ⏰ Horas trabajadas
+- 📊 Estadísticas de uso
+
+### **Logs y Debugging**
+- Logs estructurados en JSON
+- Error tracking integrado
+- Performance monitoring
+- Uptime monitoring via Netlify
+
+## 🚨 Troubleshooting
+
+### **Problemas Comunes**
+
+#### ❌ **Error de conexión a base de datos**
+```bash
+# Verificar URL de conexión
+echo $DATABASE_URL
+
+# Verificar conectividad
+psql $DATABASE_URL -c "SELECT 1;"
+```
+
+#### ❌ **Token JWT inválido**
+```bash
+# Verificar JWT_SECRET
+echo $JWT_SECRET | wc -c  # Debe ser > 32 caracteres
+```
+
+#### ❌ **Error en deploy de Netlify**
+```bash
+# Verificar variables de entorno
+netlify env:list
+
+# Ver logs de función
+netlify functions:log api
+```
+
+#### ❌ **Usuarios no pueden hacer login**
+- Verificar que los usuarios estén en la base de datos
+- Verificar que las contraseñas estén hasheadas correctamente
+- Verificar configuración de CORS
+
+### **Verificación del Sistema**
+
+```bash
+# Health check de la API
+curl https://tu-sitio.netlify.app/.netlify/functions/api/health
+
+# Verificar base de datos
+npm run db:check
+
+# Verificar variables de entorno
+npm run env:check
+```
+
+## 🔄 Actualizaciones y Mantenimiento
+
+### **Backup de Datos**
+```sql
+-- Backup manual desde Neon
+pg_dump $DATABASE_URL > backup_$(date +%Y%m%d).sql
+```
+
+### **Migraciones**
+```bash
+# Aplicar nuevas migraciones
+npm run db:migrate
+
+# Rollback si es necesario
+npm run db:rollback
+```
+
+### **Actualización de Dependencias**
+```bash
+# Verificar dependencias desactualizadas
+npm outdated
+
+# Actualizar (con cuidado)
+npm update
+
+# Verificar vulnerabilidades
+npm audit
+```
 
 ## 🤝 Contribuir
 
 1. Fork el proyecto
-2. Crear rama feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
-5. Abrir Pull Request
+2. Crea una rama para tu feature (`git checkout -b feature/amazing-feature`)
+3. Commit tus cambios (`git commit -m 'Add amazing feature'`)
+4. Push a la rama (`git push origin feature/amazing-feature`)
+5. Abre un Pull Request
+
+## 📝 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
 
 ## 📞 Soporte
 
-- **Email**: soporte@tecsitel.com
-- **Website**: https://tecsitel.com
-- **Issues**: [GitHub Issues](https://github.com/tu-usuario/tecsitel-v3/issues)
+- 📧 **Email:** admin@tecsitel.com
+- 🌐 **Website:** https://tecsitel.com
+- 📱 **WhatsApp:** +51-1-234-5678
+- 💬 **Discord:** [Servidor de la comunidad](https://discord.gg/tecsitel)
 
-## 🏆 Características Destacadas
+## 🎉 Agradecimientos
 
-### ✨ Innovaciones v.3:
-- **Contabilidad completa con PCGE 2024**
-- **Cálculo automático de planilla**
-- **Exportación PLE automática**
-- **Auditoría completa de transacciones**
-- **Sistema de roles avanzado**
-- **Respaldos automáticos**
-
-### 🎯 Próximas Versiones:
-- Integración directa con SUNAT
-- Firma digital para documentos
-- App móvil para control de asistencia
-- Reportes con gráficos interactivos
-- Integración con bancos
-
-## 📈 Roadmap
-
-### v3.1 (Q2 2024):
-- [ ] Integración API SUNAT
-- [ ] Firma digital
-- [ ] Reportes gráficos
-
-### v3.2 (Q3 2024):
-- [ ] App móvil
-- [ ] Integración bancaria
-- [ ] Módulo de inventarios
-
-### v4.0 (Q4 2024):
-- [ ] Inteligencia artificial
-- [ ] Análisis predictivo
-- [ ] Dashboard ejecutivo
+- Equipo de desarrollo Tecsitel
+- Comunidad de desarrolladores peruanos
+- Contribuidores del proyecto
+- Beta testers y usuarios
 
 ---
 
-**Desarrollado con ❤️ para empresas peruanas**
+**Desarrollado con ❤️ en Perú para empresas peruanas**
 
-*Tecsitel v.3 - Gestión empresarial moderna que cumple con todas las normativas*
+**Tecsitel Peru E.I.R.L. © 2025 - Todos los derechos reservados**
+
+---
+
+## 📚 Documentación Adicional
+
+- [🔧 Guía de Configuración Avanzada](docs/advanced-setup.md)
+- [🎨 Guía de Personalización](docs/customization.md)
+- [🔌 Documentación de API](docs/api-reference.md)
+- [🧪 Guía de Testing](docs/testing.md)
+- [🚀 Guía de Deploy](docs/deployment.md)
+- [🔐 Guía de Seguridad](docs/security.md)
+
+## 🗺️ Roadmap
+
+### **v4.1 (Q1 2025)**
+- [ ] Integración directa con SUNAT
+- [ ] Notificaciones push
+- [ ] Reportes PDF automáticos
+- [ ] Dashboard de métricas avanzadas
+
+### **v4.2 (Q2 2025)**
+- [ ] App móvil nativa
+- [ ] Integración con bancos
+- [ ] Workflow de aprobaciones
+- [ ] Chat interno
+
+### **v5.0 (Q3 2025)**
+- [ ] IA para predicciones
+- [ ] Módulo de inventario
+- [ ] E-commerce integrado
+- [ ] Facturación internacional
+
+---
+
+*¿Necesitas ayuda? ¡No dudes en contactarnos!* 🚀
