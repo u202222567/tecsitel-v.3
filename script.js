@@ -2152,38 +2152,39 @@ async function logout() {
 async function checkExistingSession() {
     const token = localStorage.getItem('tecsitel_token');
     const userData = localStorage.getItem('tecsitel_user');
-    
+
     if (token && userData) {
         try {
             AppState.token = token;
-            const response = await APIClient.get('/auth/verify');
-            
+            const response = await APIClient.get('/auth/verify'); // Validar token con el backend
+
             if (response.success) {
+                // Si el token es válido, proceder a inicializar la app
                 AppState.isAuthenticated = true;
-                AppState.user = JSON.parse(userData);
-                AppState.userRole = AppState.user.role;
+                AppState.user = response.user; // Usar los datos de usuario frescos de la API
+                AppState.userRole = response.user.role;
                 AppState.sessionStart = Date.now();
-                AppState.permissions = getUserPermissions(AppState.user.role);
-                
-                // Inicializar app directamente
+                AppState.permissions = response.user.permissions;
+
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('loadingScreen').style.display = 'flex';
-                
+
                 setTimeout(() => {
                     setupLoadingAnimation();
                     initializeApp();
                 }, 100);
-                
+
                 return true;
             }
         } catch (error) {
-            console.error('Sesión inválida:', error);
+            console.error('Sesión inválida o expirada:', error);
+            // Si hay un error (ej. token expirado), limpiar el almacenamiento local
             localStorage.removeItem('tecsitel_token');
             localStorage.removeItem('tecsitel_user');
         }
     }
-    
-    return false;
+
+    return false; // Si no hay token o no es válido, no hacer nada.
 }
 
 // ========================================
