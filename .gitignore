@@ -1,61 +1,56 @@
-# ===================================
-# TECSITEL V.3 - ARCHIVOS A IGNORAR
-# ===================================
+# ========================================
+# Tecsitel v4.0 - .gitignore
+# ========================================
 
-# Añadir a .gitignore
-docker-compose.yml
-setup.sh
-Dockerfile*
-.local-dev/
-
-# Variables de entorno y configuración sensible
+# ========================================
+# Variables de Entorno y Configuración Sensible
+# ========================================
 .env
 .env.local
 .env.production
 .env.staging
 .env.development
-config/production.json
-config/local.json
+.env.test
 
-# Dependencias de Node.js
+# Archivos de configuración con datos sensibles
+config.json
+secrets.json
+credentials.json
+
+# ========================================
+# Node.js y npm
+# ========================================
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-package-lock.json
-yarn.lock
+.npm
+.yarn-integrity
 
-# Logs
+# Archivos de lock opcionales (descomenta si usas yarn)
+# yarn.lock
+package-lock.json
+
+# ========================================
+# Logs y Debugging
+# ========================================
 logs/
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
+debug.log
+error.log
+access.log
 
-# Base de datos local
-*.db
-*.sqlite
-*.sqlite3
-database.db
-local.db
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
 
-# Archivos de respaldo
-backups/
-*.backup
-*.bak
-exports/
-*.csv
-*.json.backup
+# ========================================
+# Archivos de Sistema Operativo
+# ========================================
 
-# Archivos temporales
-temp/
-tmp/
-*.tmp
-*.temp
-.cache/
-
-# Archivos del sistema operativo
+# macOS
 .DS_Store
 .DS_Store?
 ._*
@@ -63,50 +58,245 @@ tmp/
 .Trashes
 ehthumbs.db
 Thumbs.db
-Desktop.ini
 
-# IDEs y editores
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.nfs*
+
+# ========================================
+# IDEs y Editores
+# ========================================
+
+# Visual Studio Code
 .vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# JetBrains (WebStorm, IntelliJ, etc.)
 .idea/
 *.swp
 *.swo
 *~
-.project
-.settings/
-.classpath
 
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*.tmp
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ========================================
 # Netlify
+# ========================================
 .netlify/
+netlify.toml.backup
+
+# Build outputs de Netlify
 dist/
 build/
+public/
 
-# Vercel
-.vercel/
+# Functions locales
+.netlify/functions-serve/
 
-# Local Netlify folder
-.netlify
-
-# Coverage directory used by tools like istanbul
+# ========================================
+# Testing y Coverage
+# ========================================
 coverage/
+.nyc_output/
 *.lcov
 
-# nyc test coverage
-.nyc_output
+# Jest
+jest_coverage/
+
+# Mocha
+.mocha.opts
+
+# ========================================
+# Databases y Backups
+# ========================================
+
+# Backups de base de datos
+*.sql.backup
+*.dump
+*.backup
+backup_*.sql
+db_backup_*
+
+# Archivos de base de datos local
+*.sqlite
+*.sqlite3
+*.db
+
+# Archivos de migración temporal
+migrations/temp_*
+
+# ========================================
+# Uploads y Archivos de Usuario
+# ========================================
+uploads/
+temp/
+tmp/
+user-uploads/
+
+# Facturas y documentos subidos
+invoices/
+documents/
+attachments/
+
+# ========================================
+# SSL y Certificados
+# ========================================
+*.pem
+*.key
+*.crt
+*.cer
+*.csr
+*.p7b
+*.p7s
+*.spc
+ssl/
+
+# ========================================
+# Cache y Archivos Temporales
+# ========================================
+.cache/
+*.tmp
+*.temp
+.tmp/
+.temp/
 
 # ESLint cache
 .eslintcache
 
-# Microbundle cache
-.rpt2_cache/
-.rts2_cache_cjs/
-.rts2_cache_es/
-.rts2_cache_umd/
+# Prettier cache
+.prettiercache
+
+# TypeScript cache
+*.tsbuildinfo
+
+# ========================================
+# Deployment y Production
+# ========================================
+
+# Build artifacts
+build/
+dist/
+out/
+
+# Production bundles
+*.bundle.js
+*.bundle.css
+
+# Source maps (opcional en producción)
+*.map
+
+# ========================================
+# Monitoring y Analytics
+# ========================================
+
+# Logs de error tracking
+sentry.log
+rollbar.log
+
+# Archivos de métricas
+metrics/
+analytics/
+
+# ========================================
+# Development Tools
+# ========================================
+
+# Storybook
+storybook-static/
+
+# Webpack
+.webpack/
+
+# Parcel
+.parcel-cache/
+
+# ========================================
+# API Keys y Tokens (por si acaso)
+# ========================================
+api-keys.txt
+tokens.txt
+secrets.txt
+credentials.txt
+
+# AWS
+.aws/
+
+# Google Cloud
+gcloud/
+service-account-key.json
+
+# ========================================
+# Tecsitel Específico
+# ========================================
+
+# Archivos de configuración local del proyecto
+tecsitel.config.local.js
+local-config.json
+
+# Backups del sistema Tecsitel
+tecsitel-backup-*
+respaldo-*
+
+# Archivos de desarrollo
+dev-notes.md
+todo.md
+desarrollo.txt
+
+# Datos de prueba sensibles
+test-data/
+sample-data/
+
+# Reportes generados
+reportes/
+informes/
+exports/
+
+# ========================================
+# Archivos de Documentación Temporal
+# ========================================
+NOTES.md
+TODO.md
+CHANGELOG.draft.md
+
+# Documentación de desarrollo
+docs/draft/
+docs/temp/
+
+# ========================================
+# Dependencies y Lock Files
+# ========================================
+
+# Dependency directories
+jspm_packages/
 
 # Optional npm cache directory
 .npm
-
-# Optional eslint cache
-.eslintcache
 
 # Optional REPL history
 .node_repl_history
@@ -117,85 +307,101 @@ coverage/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variables file
-.env.test
+# ========================================
+# Runtime y Process Files
+# ========================================
 
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# next.js build output
-.next
+# Directory for instrumented libs generated by jscoverage/JSCover
+lib-cov
 
-# nuxt.js build output
-.nuxt
+# Coverage directory used by tools like istanbul
+coverage
 
-# vuepress build output
-.vuepress/dist
+# nyc test coverage
+.nyc_output
 
-# Serverless directories
-.serverless/
+# ========================================
+# Archivos de Configuración Local
+# ========================================
 
-# FuseBox cache
-.fusebox/
+# Local development overrides
+local.js
+local.json
+dev.json
 
-# DynamoDB Local files
-.dynamodb/
+# Configuración de base de datos local
+database.local.js
+db.local.json
 
-# TernJS port file
-.tern-port
+# ========================================
+# Herramientas de Build
+# ========================================
 
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
+# Grunt intermediate storage
+.grunt
 
-# Archivos específicos de Tecsitel
-uploads/
-files/
-documents/
-reports/
-invoices/
-payslips/
+# Bower dependency directory
+bower_components
 
-# Archivos de desarrollo
-test-data/
-mock-data/
-development/
+# ========================================
+# Archivos de Respaldo Automático
+# ========================================
+*.backup
+*.bak
+*.old
+*.orig
 
-# Archivos de configuración local
-config.local.js
-settings.local.json
+# Respaldos del editor
+*~
+*.swp
+*.swo
 
-# Certificados y claves
-*.pem
-*.key
-*.crt
-*.p12
-certificates/
+# ========================================
+# Archivos Específicos del Servidor
+# ========================================
 
-# Archivos grandes que no deben estar en Git
-*.pdf
-*.zip
-*.rar
-*.7z
-*.tar.gz
+# PM2
+.pm2
 
-# Archivos de auditoría local
-audit-logs/
-security-logs/
+# Forever logs
+forever.log
 
-# Archivos de prueba
-test-uploads/
-test-exports/
-sandbox/
+# ========================================
+# Mobile Development
+# ========================================
 
-# ===================================
-# NOTAS IMPORTANTES:
-# ===================================
-# - NUNCA incluir archivos .env en Git
-# - Los respaldos deben guardarse externamente
-# - Las claves y certificados son sensibles
-<<<<<<< HEAD
-# - Los logs pueden contener información sensible
-=======
-# - Los logs pueden contener información sensible
->>>>>>> d9eedb43289122ca398703decd30c6b43f98d340
+# React Native
+.expo/
+.expo-shared/
+
+# ========================================
+# Comentarios sobre el .gitignore
+# ========================================
+
+# Este .gitignore está optimizado para:
+# 1. Proyectos Node.js con Netlify Functions
+# 2. Aplicaciones con base de datos PostgreSQL
+# 3. Sistemas con variables de entorno sensibles
+# 4. Desarrollo en múltiples IDEs
+# 5. Deploy automatizado en Netlify
+
+# IMPORTANTE:
+# - Nunca subas archivos .env al repositorio
+# - Nunca subas credenciales o API keys
+# - Nunca subas backups de base de datos
+# - Mantén este archivo actualizado con nuevas exclusiones
+
+# Para verificar qué archivos están siendo ignorados:
+# git status --ignored
+
+# Para ver todos los archivos rastreados por git:
+# git ls-files
+
+# Para añadir archivos que están siendo ignorados:
+# git add -f archivo_ignorado.txt
