@@ -2,6 +2,12 @@
 # TECSITEL V.3 - ARCHIVOS A IGNORAR
 # ===================================
 
+# Añadir a .gitignore
+docker-compose.yml
+setup.sh
+Dockerfile*
+.local-dev/
+
 # Variables de entorno y configuración sensible
 .env
 .env.local
