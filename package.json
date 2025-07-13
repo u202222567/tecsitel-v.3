@@ -5,12 +5,10 @@
   "main": "index.html",
   "type": "commonjs",
   "scripts": {
-    "build": "npm install --production && echo 'TECSITEL v4.0 - Build completed successfully'",
-    "start": "node -e \"console.log('TECSITEL v4.0 ready for production')\"",
+    "start": "netlify dev",
     "dev": "netlify dev",
     "deploy": "netlify deploy --prod",
-    "postinstall": "echo 'Dependencies installed for TECSITEL'",
-    "test": "echo 'No tests configured'"
+    "test": "echo \"No tests configured\""
   },
   "keywords": [
     "tecsitel",
@@ -34,20 +32,7 @@
     "pg": "^8.11.5",
     "serverless-http": "^3.2.0"
   },
-  "devDependencies": {},
   "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  },
-  "browserslist": [
-    "defaults",
-    "not ie 11",
-    "not ie_mob 11"
-  ],
-  "netlify": {
-    "functions": "netlify/functions"
-  },
-  "config": {
-    "unsafe-perm": true
+    "node": ">=18.0.0"
   }
 }
