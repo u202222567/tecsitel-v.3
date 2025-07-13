@@ -1,20 +1,23 @@
 [build]
   publish = "."
-  command = "echo 'Build completed'"
+  command = "npm install"
 
 [functions]
   directory = "netlify/functions"
+  node_bundler = "esbuild"
 
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
+  force = true
 
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
 
 [[headers]]
   for = "/.netlify/functions/*"
