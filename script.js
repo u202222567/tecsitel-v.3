@@ -669,9 +669,68 @@ function saveEmployee(event) {
     showToast(`✅ Empleado ${firstName} ${lastName} agregado correctamente`, 'success');
 }
 
+// ========================================
+// Gestión de Edición de Empleados FUNCIONAL
+// ========================================
 function editEmployee(dni) {
-    // Esta funcionalidad se puede implementar con un modal de edición
-    showToast('🔧 Función de edición en desarrollo', 'info');
+    const employee = AppState.employees.find(e => e.dni === dni);
+    if (!employee) {
+        showToast('❌ Empleado no encontrado', 'error');
+        return;
+    }
+    
+    // Poblar el formulario con los datos actuales
+    document.getElementById('originalDni').value = employee.dni;
+    document.getElementById('editDni').value = employee.dni;
+    document.getElementById('editFirstName').value = employee.firstName;
+    document.getElementById('editLastName').value = employee.lastName;
+    document.getElementById('editStatus').value = employee.status;
+    document.getElementById('editNotes').value = employee.notes || '';
+    
+    // Mostrar el modal
+    showModal('editEmployee');
+}
+
+function updateEmployee(event) {
+    event.preventDefault();
+    const form = event.target;
+    
+    const originalDni = form.originalDni.value;
+    const firstName = sanitizeInput(form.firstName.value);
+    const lastName = sanitizeInput(form.lastName.value);
+    const status = form.status.value;
+    const notes = sanitizeInput(form.notes.value || '');
+    
+    // Buscar el empleado en el estado
+    const employeeIndex = AppState.employees.findIndex(e => e.dni === originalDni);
+    
+    if (employeeIndex === -1) {
+        showToast('❌ Error: Empleado no encontrado', 'error');
+        return;
+    }
+    
+    // Actualizar los datos del empleado
+    AppState.employees[employeeIndex] = {
+        ...AppState.employees[employeeIndex],
+        firstName: firstName,
+        lastName: lastName,
+        status: status,
+        notes: notes,
+        avatar: `${firstName[0]}${lastName[0]}`.toUpperCase(),
+        dateUpdated: new Date().toISOString().split('T')[0]
+    };
+    
+    // Re-renderizar la tabla de empleados
+    renderEmployees();
+    renderEmployeeOptions(); // Actualizar selects que usan empleados
+    updateDashboardStats(); // Actualizar estadísticas
+    
+    // Cerrar modal y mostrar confirmación
+    closeModal('editEmployee');
+    showToast(`✅ Empleado ${firstName} ${lastName} actualizado correctamente`, 'success');
+    
+    // Log para debugging
+    console.log('Empleado actualizado:', AppState.employees[employeeIndex]);
 }
 
 function deleteEmployee(dni) {

@@ -1,5 +1,36 @@
 /* ===========================
-   Variables CSS Modernas
+   Paneles Modernos - FONDO BLANCO FORZADO
+=========================== */
+.panel {
+    background: #ffffff !important;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--gray-200);
+    margin-bottom: var(--space-6);
+    overflow: hidden;
+}
+
+.panel-header {
+    padding: var(--space-6);
+    background: var(--gray-50) !important;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.panel-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0;
+}
+
+.panel-body {
+    padding: var(--space-6);
+    background: #ffffff !important;
+}/* ===========================
+   Variables CSS Modernas - MODO CLARO FORZADO
 =========================== */
 :root {
     /* Colores primarios */
@@ -8,19 +39,19 @@
     --primary-light: #e74c3c;
     --primary-alpha: rgba(220, 20, 60, 0.1);
     
-    /* Colores neutros */
-    --white: #ffffff;
+    /* Colores neutros - SIEMPRE MODO CLARO */
+    --white: #ffffff !important;
     --dark: #1f2937;
-    --gray-50: #f9fafb;
-    --gray-100: #f3f4f6;
-    --gray-200: #e5e7eb;
-    --gray-300: #d1d5db;
-    --gray-400: #9ca3af;
-    --gray-500: #6b7280;
-    --gray-600: #4b5563;
-    --gray-700: #374151;
-    --gray-800: #1f2937;
-    --gray-900: #111827;
+    --gray-50: #f9fafb !important;
+    --gray-100: #f3f4f6 !important;
+    --gray-200: #e5e7eb !important;
+    --gray-300: #d1d5db !important;
+    --gray-400: #9ca3af !important;
+    --gray-500: #6b7280 !important;
+    --gray-600: #4b5563 !important;
+    --gray-700: #374151 !important;
+    --gray-800: #1f2937 !important;
+    --gray-900: #111827 !important;
     
     /* Colores de estado */
     --success: #10b981;
@@ -80,7 +111,7 @@
 }
 
 /* ===========================
-   Reset y Base Moderna
+   Reset y Base Moderna - FONDO BLANCO FORZADO
 =========================== */
 *, *::before, *::after {
     margin: 0;
@@ -93,15 +124,21 @@ html {
     text-size-adjust: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #ffffff !important;
 }
 
 body {
     font-family: var(--font-sans);
     font-size: 14px;
     line-height: 1.6;
-    color: var(--gray-700);
-    background: var(--gray-50);
+    color: var(--gray-700) !important;
+    background: #ffffff !important;
     overflow-x: hidden;
+}
+
+/* Forzar todos los elementos principales a fondo blanco */
+#app, .app-container, main, section, article, div[class*="content"] {
+    background-color: #ffffff !important;
 }
 
 /* ===========================
@@ -466,11 +503,11 @@ body {
 }
 
 /* ===========================
-   Header Moderno
+   Header Moderno - FONDO BLANCO FORZADO
 =========================== */
 .header {
     height: var(--header-height);
-    background: var(--white);
+    background: #ffffff !important;
     box-shadow: var(--shadow);
     display: flex;
     align-items: center;
@@ -543,17 +580,44 @@ body {
 }
 
 /* ===========================
-   Stats Grid Moderno
+   Contenido Tabs - FONDO BLANCO FORZADO
+=========================== */
+.content {
+    flex: 1;
+    padding: var(--space-8);
+    padding-bottom: calc(var(--bottom-nav-height) + var(--space-8));
+    background: #ffffff !important;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+    background: #ffffff !important;
+}
+
+.tab-content.active {
+    display: block;
+    background: #ffffff !important;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===========================
+   Stats Grid Moderno - FONDO BLANCO FORZADO
 =========================== */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: var(--space-6);
     margin-bottom: var(--space-8);
+    background: #ffffff !important;
 }
 
 .stat-card {
-    background: var(--white);
+    background: #ffffff !important;
     padding: var(--space-6);
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow);
@@ -730,7 +794,7 @@ body {
 }
 
 /* ===========================
-   Formularios Modernos
+   Formularios Modernos - FONDO BLANCO FORZADO
 =========================== */
 .form-group {
     margin-bottom: var(--space-5);
@@ -759,7 +823,8 @@ body {
     border-radius: var(--radius);
     font-size: 14px;
     transition: all var(--transition);
-    background: var(--white);
+    background: #ffffff !important;
+    color: var(--gray-700) !important;
 }
 
 .form-input:focus,
@@ -769,11 +834,13 @@ body {
     border-color: var(--primary);
     box-shadow: 0 0 0 3px var(--primary-alpha);
     transform: translateY(-1px);
+    background: #ffffff !important;
 }
 
 .form-textarea {
     resize: vertical;
     min-height: 80px;
+    background: #ffffff !important;
 }
 
 .form-checkbox {
@@ -808,26 +875,27 @@ body {
 }
 
 /* ===========================
-   Tablas Modernas
+   Tablas Modernas - FONDO BLANCO FORZADO
 =========================== */
 .table-responsive {
     overflow-x: auto;
     margin: calc(-1 * var(--space-6));
     padding: var(--space-6);
+    background: #ffffff !important;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
-    background: var(--white);
+    background: #ffffff !important;
     border-radius: var(--radius-lg);
     overflow: hidden;
     box-shadow: var(--shadow-sm);
 }
 
 .table thead {
-    background: var(--gray-50);
+    background: var(--gray-50) !important;
 }
 
 .table th {
@@ -837,6 +905,7 @@ body {
     color: var(--gray-700);
     border-bottom: 1px solid var(--gray-200);
     white-space: nowrap;
+    background: var(--gray-50) !important;
 }
 
 .table td {
@@ -844,10 +913,11 @@ body {
     border-bottom: 1px solid var(--gray-100);
     color: var(--gray-600);
     vertical-align: middle;
+    background: #ffffff !important;
 }
 
 .table tbody tr:hover {
-    background: var(--gray-50);
+    background: var(--gray-50) !important;
 }
 
 .table tbody tr:last-child td {
@@ -889,7 +959,7 @@ body {
 }
 
 /* ===========================
-   Modales Modernos
+   Modales Modernos - FONDO BLANCO FORZADO
 =========================== */
 .modal {
     display: none;
@@ -917,7 +987,7 @@ body {
 }
 
 .modal-content {
-    background: var(--white);
+    background: #ffffff !important;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-2xl);
     width: 100%;
@@ -940,7 +1010,7 @@ body {
 
 .modal-header {
     padding: var(--space-6);
-    background: var(--gray-50);
+    background: var(--gray-50) !important;
     border-bottom: 1px solid var(--gray-200);
     display: flex;
     align-items: center;
@@ -975,11 +1045,12 @@ body {
     padding: var(--space-6);
     max-height: 60vh;
     overflow-y: auto;
+    background: #ffffff !important;
 }
 
 .modal-footer {
     padding: var(--space-6);
-    background: var(--gray-50);
+    background: var(--gray-50) !important;
     border-top: 1px solid var(--gray-200);
     display: flex;
     gap: var(--space-3);
@@ -987,7 +1058,7 @@ body {
 }
 
 /* ===========================
-   Alertas Modernas
+   Alertas Modernas - MODO CLARO FORZADO
 =========================== */
 .alert {
     display: flex;
@@ -997,6 +1068,7 @@ body {
     border-radius: var(--radius-lg);
     margin-bottom: var(--space-4);
     border: 1px solid;
+    background: #ffffff !important;
 }
 
 .alert-icon {
@@ -1012,31 +1084,31 @@ body {
 }
 
 .alert-info {
-    background: var(--info-alpha);
+    background: #ffffff !important;
     border-color: rgba(59, 130, 246, 0.2);
-    color: #1e40af;
+    color: #1e40af !important;
 }
 
 .alert-success {
-    background: var(--success-alpha);
+    background: #ffffff !important;
     border-color: rgba(16, 185, 129, 0.2);
-    color: #065f46;
+    color: #065f46 !important;
 }
 
 .alert-warning {
-    background: var(--warning-alpha);
+    background: #ffffff !important;
     border-color: rgba(245, 158, 11, 0.2);
-    color: #92400e;
+    color: #92400e !important;
 }
 
 .alert-danger {
-    background: var(--danger-alpha);
+    background: #ffffff !important;
     border-color: rgba(239, 68, 68, 0.2);
-    color: #991b1b;
+    color: #991b1b !important;
 }
 
 /* ===========================
-   Toast Notifications
+   Toast Notifications - FONDO BLANCO FORZADO
 =========================== */
 .toast-container {
     position: fixed;
@@ -1050,7 +1122,7 @@ body {
 }
 
 .toast {
-    background: var(--white);
+    background: #ffffff !important;
     padding: var(--space-4);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-xl);
@@ -1092,20 +1164,21 @@ body {
 .toast-content {
     flex: 1;
     font-size: 14px;
-    color: var(--gray-700);
+    color: var(--gray-700) !important;
 }
 
 /* ===========================
-   Balance Sheet Styles
+   Balance Sheet Styles - FONDO BLANCO FORZADO
 =========================== */
 .balance-sheet {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--space-6);
+    background: #ffffff !important;
 }
 
 .balance-section {
-    background: var(--gray-50);
+    background: var(--gray-50) !important;
     padding: var(--space-6);
     border-radius: var(--radius-lg);
     border: 1px solid var(--gray-200);
@@ -1127,6 +1200,7 @@ body {
     padding: var(--space-3) 0;
     border-bottom: 1px solid var(--gray-200);
     font-size: 14px;
+    background: transparent !important;
 }
 
 .balance-item:last-of-type:not(.balance-total) {
@@ -1143,19 +1217,21 @@ body {
     font-weight: 600;
     font-size: 16px;
     color: var(--gray-800);
+    background: transparent !important;
 }
 
 /* ===========================
-   Compliance Grid
+   Compliance Grid - FONDO BLANCO FORZADO
 =========================== */
 .compliance-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: var(--space-6);
+    background: #ffffff !important;
 }
 
 .compliance-card {
-    background: var(--gray-50);
+    background: var(--gray-50) !important;
     padding: var(--space-6);
     border-radius: var(--radius-lg);
     border: 1px solid var(--gray-200);
@@ -1201,17 +1277,18 @@ body {
 }
 
 /* ===========================
-   Backup Actions
+   Backup Actions - FONDO BLANCO FORZADO
 =========================== */
 .backup-actions {
     display: flex;
     gap: var(--space-4);
     margin-bottom: var(--space-6);
     flex-wrap: wrap;
+    background: #ffffff !important;
 }
 
 /* ===========================
-   Bottom Navigation (Mobile)
+   Bottom Navigation (Mobile) - FONDO BLANCO FORZADO
 =========================== */
 .bottom-nav {
     position: fixed;
@@ -1219,7 +1296,7 @@ body {
     left: 0;
     right: 0;
     height: var(--bottom-nav-height);
-    background: var(--white);
+    background: #ffffff !important;
     display: none;
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
@@ -1238,6 +1315,7 @@ body {
     gap: var(--space-1);
     position: relative;
     transition: all var(--transition);
+    background: #ffffff !important;
 }
 
 .bottom-nav-item.active {
@@ -1461,13 +1539,28 @@ body {
     }
 }
 
+/* FORZAR MODO CLARO - Ignorar preferencias del sistema */
 @media (prefers-color-scheme: dark) {
-    /* Variables para modo oscuro (opcional) */
     :root {
-        --gray-50: #18181b;
-        --gray-100: #27272a;
-        --gray-200: #3f3f46;
+        /* Mantener colores claros incluso en dark mode del sistema */
+        --white: #ffffff !important;
+        --gray-50: #f9fafb !important;
+        --gray-100: #f3f4f6 !important;
+        --gray-200: #e5e7eb !important;
+        --gray-300: #d1d5db !important;
+        --gray-400: #9ca3af !important;
+        --gray-500: #6b7280 !important;
+        --gray-600: #4b5563 !important;
+        --gray-700: #374151 !important;
+        --gray-800: #1f2937 !important;
+        --gray-900: #111827 !important;
     }
+}
+
+/* Forzar fondo blanco en body */
+html, body {
+    background-color: #ffffff !important;
+    color: #374151 !important;
 }
 
 /* ===========================
