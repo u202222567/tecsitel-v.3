@@ -1,42 +1,43 @@
 {
-  "name": "tecsitel-v3",
-  "version": "3.0.1",
-  "description": "Sistema de Gestión Empresarial Integral con facturación electrónica, contabilidad PCGE, gestión humana y cumplimiento normativo para Perú",
+  "name": "tecsitel-sistema-gestion",
+  "version": "4.0.0",
+  "description": "TECSITEL PERU E.I.R.L. - Sistema de Gestión Empresarial Completo con Facturación Electrónica y Cumplimiento Normativo",
   "main": "index.html",
+  "type": "module",
   "scripts": {
-    "start": "netlify dev",
-    "build": "echo 'Static site - no build required'",
-    "test": "echo 'No tests configured'",
+    "build": "node -e \"console.log('TECSITEL v4.0 - Build completed successfully'); process.exit(0)\"",
+    "start": "node -e \"console.log('TECSITEL v4.0 - Production ready'); process.exit(0)\"",
     "dev": "netlify dev",
     "deploy": "netlify deploy",
-    "deploy:prod": "netlify deploy --prod"
+    "deploy:prod": "netlify deploy --prod",
+    "test": "node -e \"console.log('TECSITEL v4.0 - Tests not configured'); process.exit(0)\"",
+    "postinstall": "node -e \"console.log('TECSITEL v4.0 - Dependencies installed'); process.exit(0)\""
   },
   "keywords": [
+    "tecsitel",
+    "sistema-gestion",
     "facturacion-electronica",
     "contabilidad",
-    "pcge",
-    "sunat",
-    "planilla",
-    "plame",
-    "ple",
-    "gestion-empresarial",
+    "telecomunicaciones",
     "peru",
-    "normativas"
+    "sunat",
+    "sunafil",
+    "netlify"
   ],
   "author": {
-    "name": "Tecsitel",
-    "email": "contacto@tecsitel.com",
-    "url": "https://tecsitel.com"
+    "name": "TECSITEL PERU E.I.R.L.",
+    "email": "contacto@tecsitel.pe",
+    "url": "https://tecsitel.netlify.app"
   },
-  "license": "MIT",
+  "license": "Proprietary",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tu-usuario/tecsitel-v3.git"
+    "url": "https://github.com/u202222567/tecsitel-v.3.git"
   },
   "bugs": {
-    "url": "https://github.com/tu-usuario/tecsitel-v3/issues"
+    "url": "https://github.com/u202222567/tecsitel-v.3/issues"
   },
-  "homepage": "https://tecsitel-v3.netlify.app",
+  "homepage": "https://tecsitel.netlify.app",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -46,55 +47,64 @@
     "serverless-http": "^3.2.0"
   },
   "devDependencies": {
-    "netlify-cli": "^17.10.1"
+    "netlify-cli": "^17.0.0"
   },
   "engines": {
     "node": ">=18.0.0",
-    "npm": ">=8.0.0"
+    "npm": ">=9.0.0"
   },
   "netlify": {
     "functions": "netlify/functions",
     "publish": ".",
-    "command": "echo 'Static deployment'"
+    "command": "npm run build"
+  },
+  "config": {
+    "tecsitel": {
+      "version": "4.0.0",
+      "empresa": "TECSITEL PERU E.I.R.L.",
+      "ruc": "20605908285",
+      "sistema": "Gestión Empresarial Integrado"
+    }
   },
   "features": {
     "facturacion": {
       "electronica": true,
-      "sunat": true,
-      "xml": true,
-      "pdf": true
+      "sunat_3_0": true,
+      "igv_automatico": true
     },
     "contabilidad": {
-      "pcge": true,
-      "asientos": true,
-      "reportes": true,
-      "ple": true
+      "balance_general": true,
+      "estado_financiero": true,
+      "calculos_automaticos": true
     },
-    "rrhh": {
-      "planilla": true,
-      "boletas": true,
-      "plame": true,
-      "t-registro": true
+    "personal": {
+      "gestion_empleados": true,
+      "control_asistencia": true,
+      "marcaje_digital": true
     },
     "cumplimiento": {
       "sunat": true,
       "sunafil": true,
-      "mintra": true
+      "monitoreo_automatico": true
     },
     "exportacion": {
-      "csv": true,
       "json": true,
-      "txt": true,
-      "ple": true,
-      "plame": true
+      "csv": true,
+      "reportes_personalizados": true
     }
   },
-  "normativas": {
-    "peru": {
-      "sunat": "2024",
-      "pcge": "2024",
-      "uit": 5150,
-      "rmv": 1025
+  "usuarios": {
+    "demo": {
+      "admin": "Administrador completo",
+      "contable": "Facturas y contabilidad", 
+      "supervisor": "Solo marcaje de tiempo",
+      "rrhh": "Personal y cumplimiento"
     }
+  },
+  "normativas_peru": {
+    "sunat": "2025",
+    "sunafil": "2025",
+    "igv_rate": "0.18",
+    "uit": "5150"
   }
 }
