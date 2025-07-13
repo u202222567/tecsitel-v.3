@@ -17,7 +17,6 @@
 
 [build.environment]
   NODE_VERSION = "18"
-  NPM_FLAGS = "--prefix=/dev/null" # Evita warnings de postinstall
 
 # =============================================
 # CONFIGURACIÓN DE FUNCIONES
@@ -66,3 +65,5 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
+
+
