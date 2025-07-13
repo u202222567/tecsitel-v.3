@@ -1565,12 +1565,12 @@
                             <h3 class="panel-title">🏢 TECSITEL PERU E.I.R.L.</h3>
                         </div>
                         <div class="panel-body">
-                            <div class="alert alert-info">
+                            <div class="alert alert-info" id="companyInfo">
                                 <span class="alert-icon">ℹ️</span>
                                 <div class="alert-content">
                                     <strong>RUC: 20605908285</strong><br>
                                     Sistema integrado de gestión empresarial con backend PostgreSQL (Neon) y cumplimiento normativo SUNAT y SUNAFIL.
-                                    Conectado a base de datos en la nube con autenticación JWT.
+                                    <span id="connectionMode">Verificando conexión...</span>
                                 </div>
                             </div>
                         </div>
@@ -1653,8 +1653,45 @@
             baseURL: window.location.hostname === 'localhost' 
                 ? 'http://localhost:8888/.netlify/functions'
                 : 'https://tecsitel.netlify.app/.netlify/functions',
-            timeout: 30000,
-            retryAttempts: 3
+            timeout: 10000,
+            retryAttempts: 2,
+            fallbackMode: false
+        };
+
+        // Usuarios de fallback para cuando el backend no esté disponible
+        const FALLBACK_USERS = {
+            'admin': {
+                password: 'admin123',
+                id: '1',
+                username: 'admin',
+                full_name: 'Administrador General',
+                role: 'Administrador',
+                email: 'admin@tecsitel.pe'
+            },
+            'contable': {
+                password: 'cont123',
+                id: '2',
+                username: 'contable',
+                full_name: 'Contador Principal',
+                role: 'Contador',
+                email: 'contable@tecsitel.pe'
+            },
+            'supervisor': {
+                password: 'super123',
+                id: '3',
+                username: 'supervisor',
+                full_name: 'Supervisor General',
+                role: 'Supervisor',
+                email: 'supervisor@tecsitel.pe'
+            },
+            'rrhh': {
+                password: 'rrhh123',
+                id: '4',
+                username: 'rrhh',
+                full_name: 'Recursos Humanos',
+                role: 'RRHH',
+                email: 'rrhh@tecsitel.pe'
+            }
         };
 
         const AppState = {
@@ -1677,6 +1714,11 @@
         // UTILIDADES DE API
         // =============================================
         async function makeAPICall(endpoint, options = {}) {
+            // Si estamos en modo fallback, no intentar llamadas API
+            if (API_CONFIG.fallbackMode && !options.forceAPI) {
+                throw new Error('Modo local activado - Backend no disponible');
+            }
+
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
 
@@ -1705,24 +1747,40 @@
                 clearTimeout(timeoutId);
 
                 if (!response.ok) {
+                    // Si es 404, activar modo fallback
+                    if (response.status === 404) {
+                        console.warn('Backend no encontrado, activando modo local');
+                        API_CONFIG.fallbackMode = true;
+                        updateConnectionStatus('offline');
+                        throw new Error('Backend no disponible - Modo local activado');
+                    }
+                    
                     const errorData = await response.json().catch(() => ({}));
                     throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
                 }
 
                 updateConnectionStatus('online');
                 AppState.lastSync = new Date();
+                API_CONFIG.fallbackMode = false; // Restaurar modo normal si funciona
                 
                 return await response.json();
             } catch (error) {
                 clearTimeout(timeoutId);
                 
-                if (error.name === 'AbortError') {
+                if (error.name === 'AbortError' || error.message.includes('fetch')) {
                     updateConnectionStatus('offline');
-                    throw new Error('Tiempo de espera agotado. Verifica tu conexión.');
+                    API_CONFIG.fallbackMode = true;
+                    throw new Error('Backend no disponible - Modo local activado');
                 }
 
                 updateConnectionStatus('offline');
                 console.error('Error en API:', error);
+                
+                // Activar modo fallback en errores de red
+                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                    API_CONFIG.fallbackMode = true;
+                }
+                
                 throw error;
             }
         }
@@ -1747,12 +1805,41 @@
             loginBtn.innerHTML = '<div class="loading-spinner"></div><span>Validando...</span>';
             
             try {
-                // Llamada al backend
-                const response = await makeAPICall('/api/auth/login', {
-                    method: 'POST',
-                    body: { username, password },
-                    skipAuth: true
-                });
+                let response;
+                let usingFallback = false;
+
+                try {
+                    // Intentar autenticación con backend
+                    response = await makeAPICall('/api/auth/login', {
+                        method: 'POST',
+                        body: { username, password },
+                        skipAuth: true
+                    });
+                } catch (backendError) {
+                    console.warn('Backend no disponible, usando modo local:', backendError.message);
+                    
+                    // Usar sistema de fallback
+                    const fallbackUser = FALLBACK_USERS[username];
+                    if (!fallbackUser || fallbackUser.password !== password) {
+                        throw new Error('Credenciales incorrectas');
+                    }
+                    
+                    // Simular respuesta del backend
+                    response = {
+                        success: true,
+                        token: 'fallback_token_' + Date.now(),
+                        user: {
+                            id: fallbackUser.id,
+                            username: fallbackUser.username,
+                            full_name: fallbackUser.full_name,
+                            role: fallbackUser.role,
+                            email: fallbackUser.email
+                        }
+                    };
+                    
+                    usingFallback = true;
+                    API_CONFIG.fallbackMode = true;
+                }
 
                 if (response.success) {
                     // Autenticación exitosa
@@ -1761,15 +1848,20 @@
                     AppState.token = response.token;
                     AppState.sessionStart = Date.now();
                     
-                    // Guardar token en sessionStorage (más seguro que localStorage)
+                    // Guardar token en sessionStorage
                     sessionStorage.setItem('tecsitel_token', response.token);
                     sessionStorage.setItem('tecsitel_user', JSON.stringify(response.user));
+                    sessionStorage.setItem('tecsitel_fallback', usingFallback.toString());
                     
                     // Mostrar pantalla de carga
                     document.getElementById('loginScreen').classList.add('hidden');
                     document.getElementById('loadingScreen').classList.add('active');
                     
-                    startLoadingSequence();
+                    if (usingFallback) {
+                        showToast('🔄 Modo local activado - Backend no disponible', 'warning');
+                    }
+                    
+                    startLoadingSequence(usingFallback);
                 } else {
                     throw new Error(response.error || 'Error de autenticación');
                 }
@@ -1789,8 +1881,16 @@
             }
         }
 
-        function startLoadingSequence() {
-            const statusMessages = [
+        function startLoadingSequence(usingFallback = false) {
+            const statusMessages = usingFallback ? [
+                'Modo local activado...',
+                'Cargando datos locales...',
+                'Verificando permisos de usuario...',
+                'Preparando módulos del sistema...',
+                'Inicializando datos de demostración...',
+                'Configurando interfaz...',
+                '¡Sistema listo en modo local!'
+            ] : [
                 'Autenticación exitosa...',
                 'Conectando con base de datos PostgreSQL...',
                 'Verificando permisos de usuario...',
@@ -1809,9 +1909,9 @@
                 if (currentIndex < statusMessages.length) {
                     statusElement.textContent = statusMessages[currentIndex];
                     currentIndex++;
-                    setTimeout(updateStatus, 400);
+                    setTimeout(updateStatus, 300);
                 } else {
-                    setTimeout(showMainApp, 800);
+                    setTimeout(showMainApp, 500);
                 }
             };
             
@@ -1870,26 +1970,60 @@
         async function checkExistingSession() {
             const token = sessionStorage.getItem('tecsitel_token');
             const userData = sessionStorage.getItem('tecsitel_user');
+            const wasFallback = sessionStorage.getItem('tecsitel_fallback') === 'true';
             
             if (token && userData) {
                 try {
                     AppState.token = token;
+                    AppState.user = JSON.parse(userData);
                     
-                    // Verificar si el token sigue siendo válido
-                    const response = await makeAPICall('/api/auth/verify');
-                    
-                    if (response.valid) {
+                    if (wasFallback || token.startsWith('fallback_token_')) {
+                        // Estábamos en modo fallback
+                        API_CONFIG.fallbackMode = true;
                         AppState.isAuthenticated = true;
-                        AppState.user = JSON.parse(userData);
                         AppState.sessionStart = Date.now();
                         
-                        // Mostrar app directamente
+                        // Mostrar app directamente en modo local
                         document.getElementById('loginScreen').classList.add('hidden');
                         document.getElementById('appContainer').classList.add('active');
                         
                         await initializeApp();
-                        showToast('🔄 Sesión restaurada', 'success');
+                        showToast('🔄 Sesión restaurada (modo local)', 'info');
                         return true;
+                    } else {
+                        // Verificar si el token del backend sigue siendo válido
+                        try {
+                            const response = await makeAPICall('/api/auth/verify');
+                            
+                            if (response.valid) {
+                                AppState.isAuthenticated = true;
+                                AppState.sessionStart = Date.now();
+                                
+                                // Mostrar app directamente
+                                document.getElementById('loginScreen').classList.add('hidden');
+                                document.getElementById('appContainer').classList.add('active');
+                                
+                                await initializeApp();
+                                showToast('🔄 Sesión restaurada', 'success');
+                                return true;
+                            }
+                        } catch (error) {
+                            console.warn('Backend no disponible, cambiando a modo local:', error);
+                            
+                            // Cambiar a modo fallback si el backend no responde
+                            API_CONFIG.fallbackMode = true;
+                            sessionStorage.setItem('tecsitel_fallback', 'true');
+                            
+                            AppState.isAuthenticated = true;
+                            AppState.sessionStart = Date.now();
+                            
+                            document.getElementById('loginScreen').classList.add('hidden');
+                            document.getElementById('appContainer').classList.add('active');
+                            
+                            await initializeApp();
+                            showToast('🔄 Sesión restaurada (modo local)', 'warning');
+                            return true;
+                        }
                     }
                 } catch (error) {
                     console.error('Error verificando sesión:', error);
@@ -1974,10 +2108,22 @@
 
         async function loadInitialData() {
             try {
-                await Promise.all([
-                    loadInvoices(),
-                    loadEmployees()
-                ]);
+                if (API_CONFIG.fallbackMode) {
+                    // Cargar datos de demostración locales
+                    loadFallbackData();
+                } else {
+                    // Intentar cargar datos del backend
+                    try {
+                        await Promise.all([
+                            loadInvoices(),
+                            loadEmployees()
+                        ]);
+                    } catch (error) {
+                        console.warn('Error cargando desde backend, usando datos locales:', error);
+                        API_CONFIG.fallbackMode = true;
+                        loadFallbackData();
+                    }
+                }
                 
                 updateDashboardMetrics();
                 
@@ -1987,6 +2133,58 @@
             }
         }
 
+        function loadFallbackData() {
+            // Datos de demostración para modo local
+            AppState.invoices = [
+                {
+                    id: '1',
+                    invoice_number: 'F001-000001',
+                    client_name: 'CLIENTE EJEMPLO S.A.C.',
+                    issue_date: '2024-01-15',
+                    total: 1500.00,
+                    status: 'paid'
+                },
+                {
+                    id: '2',
+                    invoice_number: 'F001-000002',
+                    client_name: 'SERVICIOS GLOBALES E.I.R.L.',
+                    issue_date: '2024-01-20',
+                    total: 2300.00,
+                    status: 'issued'
+                }
+            ];
+
+            AppState.employees = [
+                {
+                    id: '1',
+                    dni: '12345678',
+                    first_name: 'Juan Carlos',
+                    last_name: 'Pérez López',
+                    position: 'Técnico de Campo',
+                    status: 'Activo'
+                },
+                {
+                    id: '2',
+                    dni: '87654321',
+                    first_name: 'María Elena',
+                    last_name: 'García Rojas',
+                    position: 'Administrativo',
+                    status: 'Activo'
+                },
+                {
+                    id: '3',
+                    dni: '11223344',
+                    first_name: 'Carlos Alberto',
+                    last_name: 'Mendoza Silva',
+                    position: 'Supervisor',
+                    status: 'Activo'
+                }
+            ];
+
+            updateConnectionStatus('offline');
+            showToast('📱 Modo local - Datos de demostración cargados', 'info');
+        }
+
         async function loadInvoices() {
             try {
                 const response = await makeAPICall('/api/invoices');
@@ -1994,6 +2192,7 @@
             } catch (error) {
                 console.error('Error cargando facturas:', error);
                 AppState.invoices = [];
+                throw error;
             }
         }
 
@@ -2004,6 +2203,7 @@
             } catch (error) {
                 console.error('Error cargando empleados:', error);
                 AppState.employees = [];
+                throw error;
             }
         }
 
@@ -2052,6 +2252,22 @@
         // =============================================
         function renderDashboard() {
             updateDashboardMetrics();
+            updateConnectionInfo();
+        }
+
+        function updateConnectionInfo() {
+            const connectionModeElement = document.getElementById('connectionMode');
+            const companyInfoElement = document.getElementById('companyInfo');
+            
+            if (API_CONFIG.fallbackMode) {
+                connectionModeElement.textContent = 'Funcionando en modo local con datos de demostración.';
+                companyInfoElement.className = 'alert alert-warning';
+                companyInfoElement.querySelector('.alert-icon').textContent = '⚠️';
+            } else {
+                connectionModeElement.textContent = 'Conectado a base de datos en la nube con autenticación JWT.';
+                companyInfoElement.className = 'alert alert-info';
+                companyInfoElement.querySelector('.alert-icon').textContent = 'ℹ️';
+            }
         }
 
         function updateDashboardMetrics() {
@@ -2212,7 +2428,30 @@
         async function refreshData() {
             try {
                 showToast('🔄 Actualizando datos...', 'info');
-                await loadInitialData();
+                
+                // Si estamos en modo fallback, intentar reconectar
+                if (API_CONFIG.fallbackMode) {
+                    try {
+                        // Intentar una llamada simple para verificar conectividad
+                        await makeAPICall('/api/auth/verify', { forceAPI: true });
+                        
+                        // Si llegamos aquí, el backend está funcionando
+                        API_CONFIG.fallbackMode = false;
+                        sessionStorage.setItem('tecsitel_fallback', 'false');
+                        
+                        showToast('🌐 ¡Conexión restaurada! Recargando datos del servidor...', 'success');
+                        
+                        // Recargar datos del backend
+                        await loadInitialData();
+                    } catch (error) {
+                        // Seguir en modo local
+                        showToast('📱 Modo local - Backend no disponible', 'warning');
+                        loadFallbackData();
+                    }
+                } else {
+                    // Modo normal, actualizar desde backend
+                    await loadInitialData();
+                }
                 
                 // Recargar la vista actual
                 const activeTab = document.querySelector('.nav-item.active');
@@ -2221,7 +2460,9 @@
                     showTab(tabName);
                 }
                 
-                showToast('✅ Datos actualizados', 'success');
+                if (!API_CONFIG.fallbackMode) {
+                    showToast('✅ Datos actualizados desde servidor', 'success');
+                }
                 
             } catch (error) {
                 console.error('Error actualizando datos:', error);
@@ -2270,10 +2511,11 @@
             
             switch (status) {
                 case 'online':
-                    textElement.textContent = 'Conectado';
+                    textElement.textContent = API_CONFIG.fallbackMode ? 'Modo local' : 'Conectado';
+                    statusElement.className = `connection-status ${API_CONFIG.fallbackMode ? 'offline' : 'online'}`;
                     break;
                 case 'offline':
-                    textElement.textContent = 'Sin conexión';
+                    textElement.textContent = API_CONFIG.fallbackMode ? 'Modo local' : 'Sin conexión';
                     break;
                 case 'connecting':
                     textElement.textContent = 'Conectando...';
@@ -2432,9 +2674,16 @@
 ================================================
 RUC: 20605908285
 Backend: PostgreSQL (Neon) + Netlify Functions
-Autenticación: JWT + Seguridad mejorada
+Autenticación: JWT + Modo Local de Respaldo
+Fallback: Datos locales si backend no disponible
 
-🚀 Sistema completamente integrado y listo!
+👥 Usuarios disponibles:
+• admin / admin123 - Administrador
+• contable / cont123 - Contador  
+• supervisor / super123 - Supervisor
+• rrhh / rrhh123 - Recursos Humanos
+
+🚀 Sistema listo - Funciona online y offline!
             `);
             
             setupEventListeners();
