@@ -806,6 +806,25 @@
             font-weight: 700;
             font-size: 1rem;
         }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--tecsitel-white);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            font-size: 0.875rem;
+        }
 
         .user-info {
             display: flex;
@@ -936,6 +955,10 @@
         .metric-change.positive {
             color: var(--success);
         }
+        
+        .metric-change.warning {
+            color: var(--warning);
+        }
 
         .metric-change.negative {
             color: var(--danger);
@@ -994,6 +1017,7 @@
             padding: var(--space-4);
             text-align: left;
             border-bottom: 1px solid var(--tecsitel-gray-200);
+            vertical-align: middle;
         }
 
         .table th {
@@ -1006,6 +1030,12 @@
 
         .table tr:hover {
             background: var(--tecsitel-gray-50);
+        }
+        
+        .employee-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
         }
 
         /* =============================================
@@ -1193,6 +1223,80 @@
         .alert-content strong {
             color: inherit;
         }
+        
+        /* =============================================
+           MODALS
+        ============================================= */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10002;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--tecsitel-white);
+            padding: var(--space-8);
+            border-radius: var(--radius-2xl);
+            box-shadow: var(--shadow-2xl);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalFadeIn 0.4s var(--transition-bounce);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: var(--space-4);
+            border-bottom: 1px solid var(--tecsitel-gray-200);
+            margin-bottom: var(--space-6);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--tecsitel-gray-900);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.75rem;
+            cursor: pointer;
+            color: var(--tecsitel-gray-400);
+            transition: all var(--transition-fast);
+        }
+
+        .modal-close:hover {
+            color: var(--tecsitel-red);
+            transform: rotate(90deg);
+        }
+
 
         /* =============================================
            RESPONSIVE DESIGN MEJORADO
@@ -1458,6 +1562,7 @@
         .text-warning { color: var(--warning); }
         .text-danger { color: var(--danger); }
         .text-info { color: var(--info); }
+        .text-muted { color: var(--tecsitel-gray-600); }
         .mb-4 { margin-bottom: var(--space-4); }
         .mb-6 { margin-bottom: var(--space-6); }
         .mt-4 { margin-top: var(--space-4); }
@@ -1495,6 +1600,10 @@
             outline: none;
             border-color: var(--tecsitel-red);
             box-shadow: 0 0 0 3px var(--tecsitel-alpha);
+        }
+        
+        .form-control.error {
+            border-color: var(--danger);
         }
 
         .form-control:invalid {
@@ -1608,7 +1717,7 @@
                     <div class="user-demo" data-user="rrhh" data-pass="rrhh123">
                         <div class="user-demo-avatar">R</div>
                         <div class="user-demo-name">rrhh</div>
-                        <div class="user-demo-role">Recursos Humanos</div>
+                        <div class="user-demo-role">RRHH</div>
                     </div>
                 </div>
             </div>
@@ -1754,7 +1863,7 @@
                     <div class="panel">
                         <div class="panel-header">
                             <h3 class="panel-title">📄 Gestión de Facturas</h3>
-                            <button class="btn btn-primary" onclick="showCreateInvoiceModal()">
+                            <button class="btn btn-primary" onclick="showCreateInvoice()">
                                 ➕ Nueva Factura
                             </button>
                         </div>
@@ -1978,11 +2087,11 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Modal Nueva Factura Responsive -->
-    <div class="modal" id="createInvoiceModal">
+    <div class="modal" id="newInvoice">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title">📄 Nueva Factura</h3>
-                <button class="modal-close" onclick="closeModal('createInvoiceModal')">×</button>
+                <button class="modal-close" onclick="closeModal('newInvoice')">×</button>
             </div>
             <form id="invoiceForm" onsubmit="createInvoice(event)">
                 <div class="responsive-grid">
@@ -2008,7 +2117,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Subtotal (S/) *</label>
-                        <input type="number" class="form-control" name="subtotal" placeholder="0.00" step="0.01" min="0" required onchange="calculateTotal()">
+                        <input type="number" class="form-control" name="subtotal" placeholder="0.00" step="0.01" min="0" required oninput="calculateTotal()">
                     </div>
                     <div class="form-group">
                         <label class="form-label">IGV (18%)</label>
@@ -2024,7 +2133,7 @@
                     <textarea class="form-control" name="notes" rows="3" placeholder="Observaciones adicionales..."></textarea>
                 </div>
                 <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('createInvoiceModal')">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('newInvoice')">
                         ❌ Cancelar
                     </button>
                     <button type="submit" class="btn btn-primary">
@@ -2034,6 +2143,52 @@
             </form>
         </div>
     </div>
+    
+    <!-- Modal Nuevo Empleado -->
+    <div class="modal" id="newEmployee">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">👤 Nuevo Empleado</h3>
+                <button class="modal-close" onclick="closeModal('newEmployee')">×</button>
+            </div>
+            <form id="employeeForm" onsubmit="saveEmployee(event)">
+                <div class="responsive-grid">
+                    <div class="form-group">
+                        <label class="form-label">DNI *</label>
+                        <input type="text" class="form-control" name="employeeDni" placeholder="8 dígitos numéricos" required pattern="[0-9]{8}" maxlength="8">
+                        <small id="dniError" style="color: var(--danger); height: 1em; display: block;"></small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nombres *</label>
+                        <input type="text" class="form-control" name="employeeFirstName" placeholder="Nombres del empleado" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Apellidos *</label>
+                        <input type="text" class="form-control" name="employeeLastName" placeholder="Apellidos del empleado" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estado *</label>
+                        <select class="form-control" name="employeeStatus" required>
+                            <option value="Activo">✅ Activo</option>
+                            <option value="Vacaciones">🏖️ Vacaciones</option>
+                            <option value="Descanso Médico">🏥 Descanso Médico</option>
+                            <option value="Suspendido">⏸️ Suspendido</option>
+                            <option value="Cesado">❌ Cesado</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('newEmployee')">
+                        ❌ Cancelar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        💾 Guardar Empleado
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Modal Nueva Marcación Responsive -->
     <div class="modal" id="timeEntryModal">
@@ -2526,18 +2681,24 @@
         // =============================================
         // INICIALIZACIÓN DE LA APLICACIÓN
         // =============================================
-        async function initializeApp() {
-            try {
-                setupUserInterface();
-                setupNavigation();
-                await loadInitialData();
-                renderDashboard();
-                setupConnectionMonitoring();
-                
-            } catch (error) {
-                console.error('Error inicializando aplicación:', error);
-                showToast('❌ Error cargando datos iniciales', 'error');
+        function initializeApp() {
+            document.getElementById('loadingScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'flex';
+            
+            // Configurar información del usuario
+            if (AppState.user) {
+                document.getElementById('userAvatar').textContent = AppState.user.avatar || AppState.user.full_name?.charAt(0).toUpperCase() || 'U';
+                document.getElementById('userName').textContent = AppState.user.full_name || AppState.user.name || 'Usuario';
+                document.getElementById('userRole').textContent = AppState.user.role || 'Usuario';
             }
+            
+            // Aplicar restricciones de interfaz según el rol
+            applyRoleRestrictions();
+            
+            // Cargar datos iniciales
+            loadInitialData();
+            renderDashboard();
+            showTab('dashboard');
         }
 
         function setupUserInterface() {
@@ -2556,10 +2717,11 @@
             sidebarNav.innerHTML = '';
             
             modules.forEach(moduleId => {
-                const navItem = document.createElement('button');
+                const navItem = document.createElement('a');
+                navItem.href = '#';
                 navItem.className = `nav-item ${moduleId === 'dashboard' ? 'active' : ''}`;
                 navItem.dataset.tab = moduleId;
-                navItem.onclick = () => showTab(moduleId);
+                navItem.onclick = (e) => { e.preventDefault(); showTab(moduleId); };
                 
                 const moduleConfig = getModuleConfig(moduleId);
                 navItem.innerHTML = `
@@ -2574,10 +2736,10 @@
         function getAvailableModules() {
             // Módulos disponibles según el rol del usuario
             const roleModules = {
-                'Administrador': ['dashboard', 'invoices', 'accounting', 'employees', 'timetracking', 'compliance'],
+                'Administrador': ['dashboard', 'invoices', 'accounting', 'employees', 'timetracking', 'compliance', 'personnel'],
                 'Contador': ['dashboard', 'invoices', 'accounting'],
-                'RRHH': ['dashboard', 'employees', 'timetracking', 'employee-status'],
-                'Supervisor': ['dashboard', 'employees', 'timetracking']
+                'RRHH': ['dashboard', 'employees', 'timetracking', 'employee-status', 'personnel'],
+                'Supervisor': ['dashboard', 'employees', 'timetracking', 'personnel']
             };
             
             return roleModules[AppState.user.role] || ['dashboard'];
@@ -2591,7 +2753,8 @@
                 'employees': { name: 'Personal', icon: '👥' },
                 'timetracking': { name: 'Marcaje', icon: '⏰' },
                 'employee-status': { name: 'Estados Personal', icon: '👤' },
-                'compliance': { name: 'Cumplimiento', icon: '⚖️' }
+                'compliance': { name: 'Cumplimiento', icon: '⚖️' },
+                'personnel': { name: 'Personal', icon: '👥' }
             };
             
             return modules[moduleId] || { name: 'Módulo', icon: '📋' };
@@ -2669,78 +2832,18 @@
             ];
 
             AppState.employees = [
-                {
-                    id: '1',
-                    dni: '12345678',
-                    first_name: 'Juan Carlos',
-                    last_name: 'Pérez López',
-                    position: 'Técnico de Campo',
-                    status: 'Activo',
-                    hire_date: '2023-01-15'
-                },
-                {
-                    id: '2',
-                    dni: '87654321',
-                    first_name: 'María Elena',
-                    last_name: 'García Rojas',
-                    position: 'Administrativo',
-                    status: 'Activo',
-                    hire_date: '2023-03-10'
-                },
-                {
-                    id: '3',
-                    dni: '11223344',
-                    first_name: 'Carlos Alberto',
-                    last_name: 'Mendoza Silva',
-                    position: 'Supervisor',
-                    status: 'Vacaciones',
-                    hire_date: '2022-08-20'
-                },
-                {
-                    id: '4',
-                    dni: '44332211',
-                    first_name: 'Ana Sofía',
-                    last_name: 'Ramírez Torres',
-                    position: 'Técnico de Campo',
-                    status: 'Activo',
-                    hire_date: '2023-06-05'
-                }
+                { dni: '12345678', firstName: 'Juan Carlos', lastName: 'Pérez López', avatar: 'JP', status: 'Activo', notes: '' },
+                { dni: '87654321', firstName: 'María Elena', lastName: 'García Rojas', avatar: 'MG', status: 'Activo', notes: '' },
+                { dni: '11223344', firstName: 'Carlos Alberto', lastName: 'Mendoza Silva', avatar: 'CM', status: 'Vacaciones', notes: '' },
+                { dni: '44332211', firstName: 'Ana Sofía', lastName: 'Ramírez Torres', avatar: 'AR', status: 'Activo', notes: '' }
             ];
 
             // Marcaciones de tiempo
             AppState.timeEntries = [
-                {
-                    id: '1',
-                    employee_id: '1',
-                    entry_type: 'entrada',
-                    entry_date: new Date().toISOString().split('T')[0],
-                    entry_time: '08:00',
-                    notes: 'Entrada normal'
-                },
-                {
-                    id: '2',
-                    employee_id: '1',
-                    entry_type: 'salida',
-                    entry_date: new Date().toISOString().split('T')[0],
-                    entry_time: '17:00',
-                    notes: 'Salida normal'
-                },
-                {
-                    id: '3',
-                    employee_id: '2',
-                    entry_type: 'entrada',
-                    entry_date: new Date().toISOString().split('T')[0],
-                    entry_time: '08:15',
-                    notes: 'Llegada tardía'
-                },
-                {
-                    id: '4',
-                    employee_id: '4',
-                    entry_type: 'entrada',
-                    entry_date: new Date().toISOString().split('T')[0],
-                    entry_time: '07:45',
-                    notes: 'Entrada temprana'
-                }
+                { id: '1', employee_id: '1', entry_type: 'entrada', entry_date: new Date().toISOString().split('T')[0], entry_time: '08:00', notes: 'Entrada normal' },
+                { id: '2', employee_id: '1', entry_type: 'salida', entry_date: new Date().toISOString().split('T')[0], entry_time: '17:00', notes: 'Salida normal' },
+                { id: '3', employee_id: '2', entry_type: 'entrada', entry_date: new Date().toISOString().split('T')[0], entry_time: '08:15', notes: 'Llegada tardía' },
+                { id: '4', employee_id: '4', entry_type: 'entrada', entry_date: new Date().toISOString().split('T')[0], entry_time: '07:45', notes: 'Entrada temprana' }
             ];
 
             updateConnectionStatus('offline');
@@ -2773,34 +2876,40 @@
         // NAVEGACIÓN Y TABS
         // =============================================
         function showTab(tabName) {
-            // Verificar permisos
-            if (!hasPermissionForModule(tabName)) {
-                showToast('❌ No tienes permisos para acceder a este módulo', 'error');
+            // Verificar permisos para ciertas pestañas
+            const tabPermissions = {
+                'accounting': ['Administrador', 'Contador'],
+                'compliance': ['Administrador', 'RRHH'],
+                'employees': ['Administrador', 'RRHH', 'Supervisor'],
+                'personnel': ['Administrador', 'RRHH', 'Supervisor']
+            };
+            
+            const allowedRoles = tabPermissions[tabName];
+            if (allowedRoles && !allowedRoles.includes(AppState.user?.role)) {
+                showToast('⚠️ No tienes permisos para acceder a esta sección', 'warning');
                 return;
             }
-
+            
             // Ocultar todas las pestañas
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
             // Mostrar pestaña seleccionada
-            const targetTab = document.getElementById(tabName);
-            if (targetTab) {
-                targetTab.classList.add('active');
+            const activeTab = document.getElementById(tabName);
+            if (activeTab) {
+                activeTab.classList.add('active');
             }
             
             // Actualizar navegación
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
+            document.querySelectorAll('.sidebar-nav a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-tab') === tabName) {
+                    link.classList.add('active');
+                }
             });
             
-            const activeNavItem = document.querySelector(`[data-tab="${tabName}"]`);
-            if (activeNavItem) {
-                activeNavItem.classList.add('active');
-            }
-            
-            // Actualizar título
+             // Actualizar título
             const moduleConfig = getModuleConfig(tabName);
             document.getElementById('pageTitle').textContent = moduleConfig.name;
             
@@ -2814,6 +2923,7 @@
                     renderAccounting();
                     break;
                 case 'employees':
+                case 'personnel':
                     renderEmployees();
                     break;
                 case 'timetracking':
@@ -2832,6 +2942,55 @@
         function hasPermissionForModule(moduleId) {
             const availableModules = getAvailableModules();
             return availableModules.includes(moduleId);
+        }
+
+        // =============================================
+        // PERMISOS
+        // =============================================
+        function hasPermission(action) {
+            const permissions = {
+                'Administrador': ['all'], // Todos los permisos
+                'Contador': ['view_invoices', 'create_invoices', 'view_employees', 'view_accounting'],
+                'Supervisor': ['view_employees', 'view_invoices', 'time_tracking'], // Sin create_employees
+                'RRHH': ['view_employees', 'create_employees', 'edit_employees', 'time_tracking']
+            };
+            
+            const userRole = AppState.user?.role || '';
+            const rolePermissions = permissions[userRole] || [];
+            
+            return rolePermissions.includes('all') || rolePermissions.includes(action);
+        }
+
+        function applyRoleRestrictions() {
+            const userRole = AppState.user?.role || '';
+            
+            // Ocultar elementos según el rol
+            if (userRole === 'Supervisor') {
+                // Ocultar botones de crear empleado en todas las ubicaciones
+                document.querySelectorAll('button').forEach(btn => {
+                    if (btn.textContent.includes('Nuevo Empleado')) {
+                        btn.style.display = 'none';
+                    }
+                });
+                
+                // Ocultar opción en quick actions si existe
+                document.querySelectorAll('.action-card').forEach(card => {
+                    if (card.querySelector('.action-title')?.textContent.includes('Nuevo Empleado')) {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Aplicar otras restricciones según sea necesario
+            if (userRole === 'Contador') {
+                // El contador no debería poder editar empleados
+                document.querySelectorAll('.sidebar-nav a').forEach(link => {
+                    if (link.textContent.includes('Cumplimiento')) {
+                        link.style.opacity = '0.5';
+                        link.style.pointerEvents = 'none';
+                    }
+                });
+            }
         }
 
         // =============================================
@@ -2935,18 +3094,14 @@
             `;
         }
 
-        function showCreateInvoiceModal() {
-            document.getElementById('createInvoiceModal').classList.add('active');
-            
-            // Establecer fecha actual
-            const today = new Date().toISOString().split('T')[0];
-            // No hay campo de fecha en el formulario actual, pero podríamos añadirlo
+        function showCreateInvoice() {
+            showModal('newInvoice');
         }
 
         function calculateTotal() {
-            const subtotalInput = document.querySelector('[name="subtotal"]');
-            const igvInput = document.querySelector('[name="igv"]');
-            const totalInput = document.querySelector('[name="total"]');
+            const subtotalInput = document.querySelector('#newInvoice [name="subtotal"]');
+            const igvInput = document.querySelector('#newInvoice [name="igv"]');
+            const totalInput = document.querySelector('#newInvoice [name="total"]');
             
             const subtotal = parseFloat(subtotalInput.value) || 0;
             const igv = subtotal * 0.18; // 18% IGV
@@ -2997,7 +3152,7 @@
                     showToast(`✅ Factura ${invoiceData.invoice_number} creada`, 'success');
                 }
                 
-                closeModal('createInvoiceModal');
+                closeModal('newInvoice');
                 document.getElementById('invoiceForm').reset();
                 renderInvoices();
                 updateDashboardMetrics();
@@ -3325,121 +3480,124 @@
                 showToast('✅ Datos contables actualizados', 'success');
             }, 1000);
         }
-        function renderEmployees() {
-            const container = document.getElementById('employeesTableContainer');
-            
-            if (!AppState.employees || AppState.employees.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; color: var(--tecsitel-gray-600);">
-                        👥 No hay empleados registrados en la base de datos.
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = `
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>DNI</th>
-                                <th>Nombre Completo</th>
-                                <th class="hide-mobile">Puesto</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${AppState.employees.map(employee => `
-                                <tr>
-                                    <td><strong>${employee.dni}</strong></td>
-                                    <td>
-                                        <div style="display: flex; align-items: center; gap: var(--space-3);">
-                                            <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.875rem;">
-                                                ${(employee.first_name || '').charAt(0)}
-                                            </div>
-                                            ${employee.first_name} ${employee.last_name}
-                                        </div>
-                                    </td>
-                                    <td class="hide-mobile">${employee.position || 'N/A'}</td>
-                                    <td>
-                                        <span class="badge badge-${employee.status === 'Activo' ? 'success' : 'danger'}">
-                                            ${employee.status}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-secondary" onclick="viewEmployee('${employee.id}')">
-                                            👁 Ver
-                                        </button>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-
+        
         // =============================================
         // GESTIÓN DE EMPLEADOS
         // =============================================
         function renderEmployees() {
             const container = document.getElementById('employeesTableContainer');
+            if (!container) return;
             
-            if (!AppState.employees || AppState.employees.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; color: var(--tecsitel-gray-600);">
-                        👥 No hay empleados registrados en la base de datos.
+            // Actualizar el botón de nuevo empleado según permisos
+            const newEmployeeBtn = document.querySelector('#employees .panel-header button');
+            if (newEmployeeBtn) {
+                if (!hasPermission('create_employees')) {
+                    newEmployeeBtn.style.display = 'none';
+                } else {
+                    newEmployeeBtn.style.display = 'inline-flex';
+                }
+            }
+            
+            const tbody = document.querySelector('#employeesTable tbody');
+            if (!tbody) {
+                 container.innerHTML = `
+                    <div class="table-responsive">
+                        <table class="table" id="employeesTable">
+                            <thead>
+                                <tr>
+                                    <th>DNI</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 `;
+            }
+            
+            const tableBody = container.querySelector('#employeesTable tbody');
+            tableBody.innerHTML = '';
+            
+            if (AppState.employees.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No hay empleados registrados.</td></tr>';
                 return;
             }
             
-            container.innerHTML = `
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>DNI</th>
-                                <th>Nombre Completo</th>
-                                <th class="hide-mobile">Puesto</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${AppState.employees.map(employee => {
-                                const statusConfig = getEmployeeStatusConfig(employee.status);
-                                return `
-                                    <tr>
-                                        <td><strong>${employee.dni}</strong></td>
-                                        <td>
-                                            <div style="display: flex; align-items: center; gap: var(--space-3);">
-                                                <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.875rem;">
-                                                    ${(employee.first_name || '').charAt(0)}
-                                                </div>
-                                                ${employee.first_name} ${employee.last_name}
-                                            </div>
-                                        </td>
-                                        <td class="hide-mobile">${employee.position || 'N/A'}</td>
-                                        <td>
-                                            <span class="badge" style="background: ${statusConfig.color}; color: white;">
-                                                ${statusConfig.icon} ${employee.status}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-sm btn-secondary" onclick="viewEmployee('${employee.id}')">
-                                                👁 Ver
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
+            AppState.employees.forEach(emp => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${emp.dni}</td>
+                    <td>
+                        <div class="employee-info">
+                            <div class="avatar avatar-sm">${emp.avatar}</div>
+                            <span>${emp.firstName} ${emp.lastName}</span>
+                        </div>
+                    </td>
+                    <td><span class="badge badge-${emp.status === 'Activo' ? 'success' : 'warning'}">${emp.status}</span></td>
+                    <td>
+                        ${hasPermission('edit_employees') ? 
+                            `<button class="btn btn-sm btn-secondary" onclick="editEmployee('${emp.dni}')">Editar</button>` 
+                            : '<span class="text-muted">Sin permisos</span>'}
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
         }
+        
+        function showCreateEmployee() {
+            // Verificar permisos antes de mostrar el modal
+            if (AppState.user && AppState.user.role === 'Supervisor') {
+                showToast('⚠️ No tienes permisos para registrar nuevos empleados', 'warning');
+                return;
+            }
+            showModal('newEmployee');
+        }
+        
+        async function saveEmployee(event) {
+            event.preventDefault();
+            
+            // Verificación de permisos
+            if (AppState.user && AppState.user.role === 'Supervisor') {
+                showToast('⚠️ No tienes permisos para registrar nuevos empleados', 'warning');
+                closeModal('newEmployee');
+                return;
+            }
+            
+            const form = event.target;
+            const dni = form.employeeDni.value;
+            const dniErrorEl = document.getElementById('dniError');
+            dniErrorEl.textContent = '';
+            form.employeeDni.classList.remove('error');
+            
+            // Validación de DNI
+            if (!validateDNI(dni)) {
+                dniErrorEl.textContent = 'DNI debe tener 8 dígitos';
+                form.employeeDni.classList.add('error');
+                return;
+            }
+            
+            if (AppState.employees.some(e => e.dni === dni)) {
+                dniErrorEl.textContent = `El DNI ${dni} ya está registrado`;
+                form.employeeDni.classList.add('error');
+                return;
+            }
+            
+            const firstName = sanitizeInput(form.employeeFirstName.value);
+            const lastName = sanitizeInput(form.employeeLastName.value);
+            const status = form.employeeStatus.value;
+            const avatar = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase();
+            const newEmployee = { dni, firstName, lastName, avatar, status, notes: '' };
+            AppState.employees.push(newEmployee);
+            
+            renderEmployees();
+            // renderEmployeeOptions(); // Esta función no está definida, se omite
+            showToast(`✅ Empleado ${firstName} ${lastName} registrado.`, 'success');
+            closeModal('newEmployee');
+            form.reset();
+        }
+
 
         // =============================================
         // CUMPLIMIENTO NORMATIVO
@@ -3452,6 +3610,13 @@
         // =============================================
         // FUNCIONES DE MODALES
         // =============================================
+        function showModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if(modal) {
+                modal.classList.add('active');
+            }
+        }
+
         function closeModal(modalId) {
             const modal = document.getElementById(modalId);
             if (modal) {
@@ -3462,10 +3627,6 @@
         // =============================================
         // FUNCIONES AUXILIARES Y PLACEHOLDER
         // =============================================
-        function showCreateEmployee() {
-            showToast('🚧 Función en desarrollo - Crear empleado', 'info');
-        }
-
         function viewInvoice(id) {
             const invoice = AppState.invoices.find(inv => inv.id === id);
             if (invoice) {
@@ -3491,11 +3652,9 @@ ${invoice.notes ? 'Notas: ' + invoice.notes : ''}
             const employee = AppState.employees.find(emp => emp.id === id);
             if (employee) {
                 const details = `
-Empleado: ${employee.first_name} ${employee.last_name}
+Empleado: ${employee.firstName} ${employee.lastName}
 DNI: ${employee.dni}
-Puesto: ${employee.position || 'N/A'}
 Estado: ${employee.status}
-Fecha Ingreso: ${formatDate(employee.hire_date)}
                 `.trim();
                 
                 alert(details);
@@ -3503,6 +3662,11 @@ Fecha Ingreso: ${formatDate(employee.hire_date)}
                 showToast(`❌ Empleado no encontrado`, 'error');
             }
         }
+        
+        function editEmployee(dni) {
+            showToast(`🚧 Función en desarrollo - Editar empleado DNI: ${dni}`, 'info');
+        }
+        
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('mainContent');
@@ -3659,6 +3823,10 @@ Fecha Ingreso: ${formatDate(employee.hire_date)}
             div.textContent = input;
             return div.innerHTML;
         }
+        
+        function validateDNI(dni) {
+            return /^[0-9]{8}$/.test(dni);
+        }
 
         // =============================================
         // CONTROL DE TIEMPO Y ASISTENCIA
@@ -3706,13 +3874,12 @@ Fecha Ingreso: ${formatDate(employee.hire_date)}
                                 return `
                                     <tr>
                                         <td>
-                                            <div style="display: flex; align-items: center; gap: var(--space-3);">
-                                                <div class="user-avatar" style="width: 32px; height: 32px; font-size: 0.875rem;">
+                                            <div class="employee-info">
+                                                <div class="avatar avatar-sm">
                                                     ${entry.avatar}
                                                 </div>
                                                 <div>
                                                     <div style="font-weight: 600;">${entry.name}</div>
-                                                    <div style="font-size: 0.75rem; color: var(--tecsitel-gray-600);">${entry.position}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -3743,7 +3910,7 @@ Fecha Ingreso: ${formatDate(employee.hire_date)}
             const grouped = {};
             
             AppState.timeEntries.forEach(entry => {
-                const employee = AppState.employees.find(emp => emp.id === entry.employee_id);
+                const employee = AppState.employees.find(emp => emp.dni === entry.employee_id);
                 if (!employee) return;
                 
                 const key = `${entry.employee_id}-${entry.entry_date}`;
@@ -3751,9 +3918,8 @@ Fecha Ingreso: ${formatDate(employee.hire_date)}
                 if (!grouped[key]) {
                     grouped[key] = {
                         employeeId: entry.employee_id,
-                        name: `${employee.first_name} ${employee.last_name}`,
-                        position: employee.position,
-                        avatar: (employee.first_name || '').charAt(0),
+                        name: `${employee.firstName} ${employee.lastName}`,
+                        avatar: employee.avatar,
                         date: entry.entry_date,
                         entryTime: '--:--',
                         exitTime: '--:--'
@@ -3804,14 +3970,16 @@ Fecha Ingreso: ${formatDate(employee.hire_date)}
             selects.forEach(select => {
                 if (!select) return;
                 
+                const currentValue = select.value;
                 select.innerHTML = '<option value="">Seleccionar empleado...</option>';
                 
                 AppState.employees.filter(emp => emp.status === 'Activo').forEach(employee => {
                     const option = document.createElement('option');
-                    option.value = employee.id;
-                    option.textContent = `${employee.first_name} ${employee.last_name} - ${employee.position}`;
+                    option.value = employee.dni;
+                    option.textContent = `${employee.firstName} ${employee.lastName}`;
                     select.appendChild(option);
                 });
+                select.value = currentValue;
             });
         }
 
@@ -3850,8 +4018,8 @@ Fecha Ingreso: ${formatDate(employee.hire_date)}
             try {
                 AppState.timeEntries.push(timeEntryData);
                 
-                const employee = AppState.employees.find(emp => emp.id === timeEntryData.employee_id);
-                showToast(`✅ Marcación de ${timeEntryData.entry_type} registrada para ${employee.first_name}`, 'success');
+                const employee = AppState.employees.find(emp => emp.dni === timeEntryData.employee_id);
+                showToast(`✅ Marcación de ${timeEntryData.entry_type} registrada para ${employee.firstName}`, 'success');
                 
                 closeModal('timeEntryModal');
                 document.getElementById('timeEntryForm').reset();
@@ -3898,8 +4066,8 @@ Fecha Ingreso: ${formatDate(employee.hire_date)}
             try {
                 AppState.timeEntries.push(timeEntryData);
                 
-                const employee = AppState.employees.find(emp => emp.id === timeEntryData.employee_id);
-                showToast(`⚡ ${type.toUpperCase()} registrada para ${employee.first_name} a las ${timeEntryData.entry_time}`, 'success');
+                const employee = AppState.employees.find(emp => emp.dni === timeEntryData.employee_id);
+                showToast(`⚡ ${type.toUpperCase()} registrada para ${employee.firstName} a las ${timeEntryData.entry_time}`, 'success');
                 
                 renderTimeTracking();
                 
@@ -4065,7 +4233,7 @@ Fallback: Datos locales si backend no disponible
         window.refreshData = refreshData;
         
         // Funciones de facturas
-        window.showCreateInvoiceModal = showCreateInvoiceModal;
+        window.showCreateInvoice = showCreateInvoice;
         window.calculateTotal = calculateTotal;
         window.createInvoice = createInvoice;
         window.markAsPaid = markAsPaid;
@@ -4078,7 +4246,9 @@ Fallback: Datos locales si backend no disponible
         
         // Funciones de empleados
         window.showCreateEmployee = showCreateEmployee;
+        window.saveEmployee = saveEmployee;
         window.viewEmployee = viewEmployee;
+        window.editEmployee = editEmployee;
         
         // Funciones de marcación de tiempo
         window.showTimeEntryModal = showTimeEntryModal;
@@ -4086,146 +4256,17 @@ Fallback: Datos locales si backend no disponible
         window.quickTimeEntry = quickTimeEntry;
         window.deleteTimeEntry = deleteTimeEntry;
         
-        // Funciones de estados de empleados
-        window.showEmployeeStatusModal = showEmployeeStatusModal;
-        window.changeEmployeeStatus = changeEmployeeStatus;
-        window.filterEmployeesByStatus = filterEmployeesByStatus;
-        window.showAllEmployees = showAllEmployees;
-        window.viewEmployeeHistory = viewEmployeeHistory;
+        // Funciones de estados de empleados (placeholders)
+        window.showEmployeeStatusModal = () => showToast('🚧 Función en desarrollo', 'info');
+        window.changeEmployeeStatus = () => showToast('🚧 Función en desarrollo', 'info');
+        window.filterEmployeesByStatus = () => showToast('🚧 Función en desarrollo', 'info');
+        window.showAllEmployees = () => showToast('🚧 Función en desarrollo', 'info');
+        window.viewEmployeeHistory = () => showToast('🚧 Función en desarrollo', 'info');
+        window.renderEmployeeStatus = () => {};
         
         // Funciones de modales
         window.closeModal = closeModal;
-        
-        // Función mejorada para crear empleados
-        window.showCreateEmployee = showCreateEmployee;
-        window.createEmployee = createEmployee;
-        function showCreateEmployee() {
-            if (!hasPermissionForModule('employees')) {
-                showToast('❌ No tienes permisos para crear empleados', 'error');
-                return;
-            }
-            
-            // Crear modal dinámico para crear empleado
-            const modal = document.createElement('div');
-            modal.className = 'modal active';
-            modal.id = 'createEmployeeModal';
-            modal.innerHTML = `
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">👤 Nuevo Empleado</h3>
-                        <button class="modal-close" onclick="closeModal('createEmployeeModal')">&times;</button>
-                    </div>
-                    <form id="createEmployeeForm" onsubmit="createEmployee(event)">
-                        <div class="responsive-grid">
-                            <div class="form-group">
-                                <label class="form-label">DNI *</label>
-                                <input type="text" class="form-control" name="dni" placeholder="12345678" maxlength="8" required pattern="[0-9]{8}">
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Nombres *</label>
-                                <input type="text" class="form-control" name="first_name" placeholder="Nombres" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Apellidos *</label>
-                                <input type="text" class="form-control" name="last_name" placeholder="Apellidos" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Puesto *</label>
-                                <select class="form-control" name="position" required>
-                                    <option value="">Seleccionar puesto</option>
-                                    <option value="Técnico de Campo">🔧 Técnico de Campo</option>
-                                    <option value="Supervisor">👨‍💼 Supervisor</option>
-                                    <option value="Administrativo">📋 Administrativo</option>
-                                    <option value="Gerente">🎯 Gerente</option>
-                                    <option value="Contador">🧮 Contador</option>
-                                    <option value="RRHH">👥 Recursos Humanos</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Fecha de Ingreso *</label>
-                                <input type="date" class="form-control" name="hire_date" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Estado *</label>
-                                <select class="form-control" name="status" required>
-                                    <option value="Activo">✅ Activo</option>
-                                    <option value="Vacaciones">🏖️ Vacaciones</option>
-                                    <option value="Descanso Médico">🏥 Descanso Médico</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
-                            <button type="button" class="btn btn-secondary" onclick="closeModal('createEmployeeModal')">
-                                ❌ Cancelar
-                            </button>
-                            <button type="submit" class="btn btn-primary">
-                                💾 Guardar Empleado
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            
-            // Establecer fecha actual
-            modal.querySelector('[name="hire_date"]').value = new Date().toISOString().split('T')[0];
-        }
-
-        async function createEmployee(event) {
-            event.preventDefault();
-            
-            if (!hasPermissionForModule('employees')) {
-                showToast('❌ No tienes permisos para crear empleados', 'error');
-                return;
-            }
-            
-            const formData = new FormData(event.target);
-            const employeeData = {
-                id: (AppState.employees.length + 1).toString(),
-                dni: formData.get('dni'),
-                first_name: formData.get('first_name'),
-                last_name: formData.get('last_name'),
-                position: formData.get('position'),
-                hire_date: formData.get('hire_date'),
-                status: formData.get('status'),
-                created_by: AppState.user.username,
-                created_at: new Date().toISOString()
-            };
-            
-            // Validaciones
-            if (!/^[0-9]{8}$/.test(employeeData.dni)) {
-                showToast('❌ DNI debe tener exactamente 8 dígitos', 'error');
-                return;
-            }
-            
-            if (AppState.employees.find(emp => emp.dni === employeeData.dni)) {
-                showToast('❌ Ya existe un empleado con ese DNI', 'error');
-                return;
-            }
-            
-            try {
-                AppState.employees.push(employeeData);
-                
-                showToast(`✅ Empleado ${employeeData.first_name} ${employeeData.last_name} creado exitosamente`, 'success');
-                
-                closeModal('createEmployeeModal');
-                document.getElementById('createEmployeeModal').remove();
-                
-                // Actualizar vistas
-                renderEmployees();
-                populateEmployeeSelects();
-                updateDashboardMetrics();
-                
-                if (document.getElementById('employee-status').classList.contains('active')) {
-                    renderEmployeeStatus();
-                }
-                
-            } catch (error) {
-                console.error('Error creando empleado:', error);
-                showToast('❌ Error creando empleado', 'error');
-            }
-        }
+        window.showModal = showModal;
 
         // =============================================
         // FUNCIÓN DE INICIALIZACIÓN CON RESIZE HANDLER
