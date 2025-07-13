@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "netlify dev",
     "build": "echo 'Build completed'",
-    "deploy": "netlify deploy --prod"
+    "deploy": "netlify deploy --prod",
+    "install-deps": "npm install"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
