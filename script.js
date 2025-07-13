@@ -609,6 +609,28 @@ function loadTabContent(tabName) {
             renderTimeEntries();
             renderEmployeeOptions();
             break;
+        case 'compliance':
+            initializeComplianceContent();
+            break;
+    }
+}
+
+// ========================================
+// Inicializar Contenido de Cumplimiento
+// ========================================
+function initializeComplianceContent() {
+    // El contenido ya está en HTML, solo verificamos que se muestre
+    const complianceTab = document.getElementById('compliance');
+    if (complianceTab) {
+        console.log('✅ Tab de Cumplimiento cargado');
+        
+        // Animar las cards de cumplimiento
+        const complianceCards = complianceTab.querySelectorAll('.compliance-card');
+        complianceCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.animation = 'fadeInUp 0.5s ease forwards';
+            }, index * 100);
+        });
     }
 }
 
