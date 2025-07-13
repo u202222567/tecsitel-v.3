@@ -225,3 +225,19 @@
   ENABLE_ANALYTICS = "true"
   ENABLE_ERROR_REPORTING = "true"
   TECSITEL_VERSION = "4.0.0"
+
+# =============================================
+# NOTAS DE CONFIGURACIÓN
+# =============================================
+# Este archivo configura:
+# 1. Redirecciones de API hacia funciones serverless
+# 2. Headers de seguridad apropiados para TECSITEL
+# 3. Configuración CORS para el frontend y API
+# 4. Optimizaciones de performance
+# 5. Variables de entorno específicas
+#
+# Para que funcione correctamente:
+# 1. Coloca este archivo como netlify.toml en la raíz del proyecto
+# 2. Asegúrate de que el archivo API esté en netlify/functions/api.js
+# 3. Configura las variables de entorno en el panel de Netlify
+# 4. El frontend (index.html) debe estar en la raíz del proyecto
