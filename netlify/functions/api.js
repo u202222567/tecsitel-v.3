@@ -1,4 +1,3 @@
-// netlify/functions/api.js - Backend completo para TECSITEL
 const serverless = require('serverless-http');
 const express = require('express');
 const cors = require('cors');
@@ -8,405 +7,643 @@ const { Pool } = require('pg');
 
 const app = express();
 
-// Configuración de middleware
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
-  credentials: true
-}));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Configuración de base de datos PostgreSQL
+// ========================================
+// Configuración de la base de datos
+// ========================================
 const pool = new Pool({
-  connectionString: process.env.NETLIFY_DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
 });
+
+// ========================================
+// Middleware
+// ========================================
+app.use(cors());
+app.use(express.json());
 
 // Middleware de autenticación
 const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
 
-  if (!token) {
-    return res.status(401).json({ error: 'Token de acceso requerido' });
-  }
-
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ error: 'Token inválido' });
+    if (!token) {
+        return res.status(401).json({ error: 'Token de acceso requerido' });
     }
-    req.user = user;
-    next();
-  });
+
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: 'Token inválido' });
+        }
+        req.user = user;
+        next();
+    });
 };
 
-// ====================================
-// RUTAS DE AUTENTICACIÓN
-// ====================================
+// Middleware de roles
+const requireRole = (allowedRoles) => {
+    return (req, res, next) => {
+        if (!allowedRoles.includes(req.user.role) && !req.user.role === 'admin') {
+            return res.status(403).json({ error: 'Permisos insuficientes' });
+        }
+        next();
+    };
+};
+
+// ========================================
+// Rutas de Autenticación
+// ========================================
 
 // Login
-app.post('/api/auth/login', async (req, res) => {
-  try {
-    const { username, password } = req.body;
+app.post('/auth/login', async (req, res) => {
+    try {
+        const { username, password } = req.body;
 
-    if (!username || !password) {
-      return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
+        if (!username || !password) {
+            return res.status(400).json({ error: 'Usuario y contraseña requeridos' });
+        }
+
+        // Buscar usuario en la base de datos
+        const userQuery = 'SELECT * FROM users WHERE username = $1';
+        const userResult = await pool.query(userQuery, [username]);
+
+        if (userResult.rows.length === 0) {
+            return res.status(401).json({ error: 'Usuario no encontrado' });
+        }
+
+        const user = userResult.rows[0];
+
+        // Verificar contraseña
+        const validPassword = await bcrypt.compare(password, user.password_hash);
+        if (!validPassword) {
+            return res.status(401).json({ error: 'Contraseña incorrecta' });
+        }
+
+        // Verificar que el usuario esté activo
+        if (!user.is_active) {
+            return res.status(401).json({ error: 'Usuario desactivado' });
+        }
+
+        // Generar token JWT
+        const token = jwt.sign(
+            { 
+                userId: user.id, 
+                username: user.username, 
+                role: user.role,
+                name: user.full_name 
+            },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN || '8h' }
+        );
+
+        // Actualizar último login
+        await pool.query(
+            'UPDATE users SET last_login = NOW() WHERE id = $1',
+            [user.id]
+        );
+
+        res.json({
+            success: true,
+            token,
+            user: {
+                id: user.id,
+                username: user.username,
+                role: user.role,
+                name: user.full_name,
+                permissions: user.permissions
+            }
+        });
+
+    } catch (error) {
+        console.error('Error en login:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
+});
 
-    // Buscar usuario en la base de datos
-    const userQuery = 'SELECT * FROM users WHERE username = $1 AND active = true';
-    const userResult = await pool.query(userQuery, [username]);
-
-    if (userResult.rows.length === 0) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
+// Logout
+app.post('/auth/logout', authenticateToken, async (req, res) => {
+    try {
+        // En una implementación real, aquí se invalidaría el token
+        res.json({ success: true, message: 'Sesión cerrada correctamente' });
+    } catch (error) {
+        console.error('Error en logout:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
-
-    const user = userResult.rows[0];
-
-    // Verificar contraseña
-    const validPassword = await bcrypt.compare(password, user.password_hash);
-    if (!validPassword) {
-      return res.status(401).json({ error: 'Credenciales inválidas' });
-    }
-
-    // Generar JWT
-    const token = jwt.sign(
-      { 
-        id: user.id, 
-        username: user.username, 
-        role: user.role,
-        company_id: user.company_id
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN || '24h' }
-    );
-
-    // Registrar último acceso
-    await pool.query(
-      'UPDATE users SET last_login = NOW() WHERE id = $1',
-      [user.id]
-    );
-
-    res.json({
-      success: true,
-      token,
-      user: {
-        id: user.id,
-        username: user.username,
-        full_name: user.full_name,
-        role: user.role,
-        email: user.email
-      }
-    });
-
-  } catch (error) {
-    console.error('Error en login:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
 });
 
 // Verificar token
-app.get('/api/auth/verify', authenticateToken, (req, res) => {
-  res.json({ valid: true, user: req.user });
+app.get('/auth/verify', authenticateToken, (req, res) => {
+    res.json({ 
+        success: true, 
+        user: req.user 
+    });
 });
 
-// ====================================
-// RUTAS DE USUARIOS
-// ====================================
+// ========================================
+// Rutas de Usuarios
+// ========================================
 
-// Obtener perfil de usuario
-app.get('/api/users/profile', authenticateToken, async (req, res) => {
-  try {
-    const userQuery = 'SELECT id, username, full_name, email, role, created_at FROM users WHERE id = $1';
-    const result = await pool.query(userQuery, [req.user.id]);
-    
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Usuario no encontrado' });
+// Obtener todos los usuarios (solo admin)
+app.get('/users', authenticateToken, requireRole(['admin']), async (req, res) => {
+    try {
+        const query = `
+            SELECT id, username, role, full_name, email, is_active, 
+                   created_at, last_login, permissions
+            FROM users 
+            ORDER BY created_at DESC
+        `;
+        const result = await pool.query(query);
+        res.json({ success: true, users: result.rows });
+    } catch (error) {
+        console.error('Error obteniendo usuarios:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
-
-    res.json(result.rows[0]);
-  } catch (error) {
-    console.error('Error obteniendo perfil:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
 });
 
-// ====================================
-// RUTAS DE FACTURAS
-// ====================================
+// Crear usuario (solo admin)
+app.post('/users', authenticateToken, requireRole(['admin']), async (req, res) => {
+    try {
+        const { username, password, role, full_name, email } = req.body;
 
-// Obtener facturas
-app.get('/api/invoices', authenticateToken, async (req, res) => {
-  try {
-    const invoicesQuery = `
-      SELECT 
-        i.*,
-        c.name as client_name,
-        c.ruc as client_ruc
-      FROM invoices i
-      LEFT JOIN clients c ON i.client_id = c.id
-      WHERE i.company_id = $1
-      ORDER BY i.created_at DESC
-    `;
-    
-    const result = await pool.query(invoicesQuery, [req.user.company_id]);
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error obteniendo facturas:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-});
+        if (!username || !password || !role || !full_name) {
+            return res.status(400).json({ error: 'Datos requeridos faltantes' });
+        }
 
-// Crear nueva factura
-app.post('/api/invoices', authenticateToken, async (req, res) => {
-  const client = await pool.connect();
-  
-  try {
-    await client.query('BEGIN');
+        // Verificar si el usuario ya existe
+        const existingUser = await pool.query('SELECT id FROM users WHERE username = $1', [username]);
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({ error: 'El usuario ya existe' });
+        }
 
-    const {
-      client_id,
-      invoice_number,
-      issue_date,
-      due_date,
-      items,
-      subtotal,
-      igv,
-      total,
-      notes
-    } = req.body;
+        // Hash de la contraseña
+        const saltRounds = 12;
+        const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // Insertar factura
-    const invoiceQuery = `
-      INSERT INTO invoices (
-        company_id, client_id, invoice_number, issue_date, due_date,
-        subtotal, igv, total, notes, status, created_by
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-      RETURNING *
-    `;
+        // Obtener permisos según el rol
+        const permissions = getRolePermissions(role);
 
-    const invoiceResult = await client.query(invoiceQuery, [
-      req.user.company_id,
-      client_id,
-      invoice_number,
-      issue_date,
-      due_date,
-      subtotal,
-      igv,
-      total,
-      notes,
-      'draft',
-      req.user.id
-    ]);
+        // Insertar usuario
+        const insertQuery = `
+            INSERT INTO users (username, password_hash, role, full_name, email, permissions, is_active)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id, username, role, full_name, email, is_active, created_at
+        `;
+        
+        const result = await pool.query(insertQuery, [
+            username, passwordHash, role, full_name, email, 
+            JSON.stringify(permissions), true
+        ]);
 
-    const invoiceId = invoiceResult.rows[0].id;
+        res.status(201).json({ 
+            success: true, 
+            user: result.rows[0],
+            message: 'Usuario creado correctamente' 
+        });
 
-    // Insertar items de factura
-    for (const item of items) {
-      await client.query(
-        `INSERT INTO invoice_items 
-         (invoice_id, description, quantity, unit_price, total_price)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [invoiceId, item.description, item.quantity, item.unit_price, item.total_price]
-      );
+    } catch (error) {
+        console.error('Error creando usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
-
-    await client.query('COMMIT');
-    res.status(201).json(invoiceResult.rows[0]);
-
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Error creando factura:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  } finally {
-    client.release();
-  }
 });
 
-// ====================================
-// RUTAS DE PERSONAL
-// ====================================
-
-// Obtener empleados
-app.get('/api/employees', authenticateToken, async (req, res) => {
-  try {
-    const employeesQuery = `
-      SELECT * FROM employees 
-      WHERE company_id = $1 
-      ORDER BY last_name, first_name
-    `;
+// Función auxiliar para obtener permisos por rol
+function getRolePermissions(role) {
+    const rolePermissions = {
+        'admin': ['all'],
+        'contabilidad': ['dashboard', 'invoices', 'accounting', 'compliance', 'sharepoint'],
+        'rrhh': ['dashboard', 'personnel', 'timetracking', 'compliance', 'sharepoint'],
+        'supervisor': ['dashboard', 'timetracking']
+    };
     
-    const result = await pool.query(employeesQuery, [req.user.company_id]);
-    res.json(result.rows);
-  } catch (error) {
-    console.error('Error obteniendo empleados:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
+    return rolePermissions[role] || [];
+}
+
+// ========================================
+// Rutas de Empleados
+// ========================================
+
+// Obtener todos los empleados
+app.get('/employees', authenticateToken, requireRole(['admin', 'rrhh', 'supervisor']), async (req, res) => {
+    try {
+        const query = `
+            SELECT dni, first_name, last_name, status, notes, created_at, updated_at
+            FROM employees 
+            WHERE deleted_at IS NULL
+            ORDER BY created_at DESC
+        `;
+        const result = await pool.query(query);
+        res.json({ success: true, employees: result.rows });
+    } catch (error) {
+        console.error('Error obteniendo empleados:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
 });
 
 // Crear empleado
-app.post('/api/employees', authenticateToken, async (req, res) => {
-  try {
-    const {
-      first_name,
-      last_name,
-      dni,
-      email,
-      phone,
-      position,
-      department,
-      salary,
-      hire_date,
-      status
-    } = req.body;
+app.post('/employees', authenticateToken, requireRole(['admin', 'rrhh']), async (req, res) => {
+    try {
+        const { dni, first_name, last_name, status, notes } = req.body;
 
-    const employeeQuery = `
-      INSERT INTO employees (
-        company_id, first_name, last_name, dni, email, phone,
-        position, department, salary, hire_date, status, created_by
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      RETURNING *
-    `;
+        if (!dni || !first_name || !last_name || !status) {
+            return res.status(400).json({ error: 'DNI, nombre, apellido y estado son requeridos' });
+        }
 
-    const result = await pool.query(employeeQuery, [
-      req.user.company_id,
-      first_name,
-      last_name,
-      dni,
-      email,
-      phone,
-      position,
-      department,
-      salary,
-      hire_date,
-      status,
-      req.user.id
-    ]);
+        // Verificar formato de DNI
+        if (!/^[0-9]{8}$/.test(dni)) {
+            return res.status(400).json({ error: 'DNI debe tener 8 dígitos' });
+        }
 
-    res.status(201).json(result.rows[0]);
-  } catch (error) {
-    console.error('Error creando empleado:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
-});
+        // Verificar si el empleado ya existe
+        const existingEmployee = await pool.query('SELECT dni FROM employees WHERE dni = $1 AND deleted_at IS NULL', [dni]);
+        if (existingEmployee.rows.length > 0) {
+            return res.status(400).json({ error: 'El empleado ya existe' });
+        }
 
-// ====================================
-// RUTAS DE REPORTES Y EXPORTACIÓN
-// ====================================
-
-// Exportar datos
-app.get('/api/export/:type', authenticateToken, async (req, res) => {
-  try {
-    const { type } = req.params;
-    const { format = 'json' } = req.query;
-
-    let query;
-    let filename;
-
-    switch (type) {
-      case 'invoices':
-        query = `
-          SELECT 
-            i.invoice_number,
-            i.issue_date,
-            i.due_date,
-            c.name as client_name,
-            c.ruc as client_ruc,
-            i.subtotal,
-            i.igv,
-            i.total,
-            i.status
-          FROM invoices i
-          LEFT JOIN clients c ON i.client_id = c.id
-          WHERE i.company_id = $1
-          ORDER BY i.issue_date DESC
+        // Insertar empleado
+        const insertQuery = `
+            INSERT INTO employees (dni, first_name, last_name, status, notes, created_by)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING dni, first_name, last_name, status, notes, created_at
         `;
-        filename = 'facturas';
-        break;
+        
+        const result = await pool.query(insertQuery, [
+            dni, first_name, last_name, status, notes || '', req.user.userId
+        ]);
 
-      case 'employees':
-        query = `
-          SELECT 
-            first_name,
-            last_name,
-            dni,
-            email,
-            phone,
-            position,
-            department,
-            salary,
-            hire_date,
-            status
-          FROM employees
-          WHERE company_id = $1
-          ORDER BY last_name, first_name
+        res.status(201).json({ 
+            success: true, 
+            employee: result.rows[0],
+            message: 'Empleado creado correctamente' 
+        });
+
+    } catch (error) {
+        console.error('Error creando empleado:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+// Actualizar empleado
+app.put('/employees/:dni', authenticateToken, requireRole(['admin', 'rrhh']), async (req, res) => {
+    try {
+        const { dni } = req.params;
+        const { first_name, last_name, status, notes } = req.body;
+
+        const updateQuery = `
+            UPDATE employees 
+            SET first_name = $1, last_name = $2, status = $3, notes = $4, 
+                updated_at = NOW(), updated_by = $5
+            WHERE dni = $6 AND deleted_at IS NULL
+            RETURNING dni, first_name, last_name, status, notes, updated_at
         `;
-        filename = 'empleados';
-        break;
+        
+        const result = await pool.query(updateQuery, [
+            first_name, last_name, status, notes || '', req.user.userId, dni
+        ]);
 
-      default:
-        return res.status(400).json({ error: 'Tipo de exportación no válido' });
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Empleado no encontrado' });
+        }
+
+        res.json({ 
+            success: true, 
+            employee: result.rows[0],
+            message: 'Empleado actualizado correctamente' 
+        });
+
+    } catch (error) {
+        console.error('Error actualizando empleado:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
-
-    const result = await pool.query(query, [req.user.company_id]);
-
-    if (format === 'csv') {
-      // Convertir a CSV
-      const csv = convertToCSV(result.rows);
-      res.setHeader('Content-Type', 'text/csv');
-      res.setHeader('Content-Disposition', `attachment; filename="${filename}.csv"`);
-      res.send(csv);
-    } else {
-      res.json({
-        data: result.rows,
-        count: result.rows.length,
-        exported_at: new Date().toISOString()
-      });
-    }
-
-  } catch (error) {
-    console.error('Error en exportación:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
 });
 
-// ====================================
-// FUNCIONES AUXILIARES
-// ====================================
+// Eliminar empleado (soft delete)
+app.delete('/employees/:dni', authenticateToken, requireRole(['admin', 'rrhh']), async (req, res) => {
+    try {
+        const { dni } = req.params;
 
-function convertToCSV(data) {
-  if (!data.length) return '';
-  
-  const headers = Object.keys(data[0]);
-  const csvHeaders = headers.join(',');
-  
-  const csvRows = data.map(row => 
-    headers.map(header => {
-      const value = row[header];
-      // Escapar comillas y envolver en comillas si contiene comas
-      return typeof value === 'string' && value.includes(',') 
-        ? `"${value.replace(/"/g, '""')}"` 
-        : value;
-    }).join(',')
-  );
-  
-  return [csvHeaders, ...csvRows].join('\n');
-}
+        const deleteQuery = `
+            UPDATE employees 
+            SET deleted_at = NOW(), deleted_by = $1
+            WHERE dni = $2 AND deleted_at IS NULL
+            RETURNING dni, first_name, last_name
+        `;
+        
+        const result = await pool.query(deleteQuery, [req.user.userId, dni]);
 
-// ====================================
-// MANEJO DE ERRORES GLOBAL
-// ====================================
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Empleado no encontrado' });
+        }
 
-app.use((err, req, res, next) => {
-  console.error('Error no manejado:', err);
-  res.status(500).json({ error: 'Error interno del servidor' });
+        res.json({ 
+            success: true, 
+            message: 'Empleado eliminado correctamente' 
+        });
+
+    } catch (error) {
+        console.error('Error eliminando empleado:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
 });
 
-// Ruta por defecto
+// ========================================
+// Rutas de Registro de Tiempo
+// ========================================
+
+// Obtener registros de tiempo
+app.get('/time-entries', authenticateToken, requireRole(['admin', 'rrhh', 'supervisor']), async (req, res) => {
+    try {
+        const { date, employee_dni } = req.query;
+        
+        let query = `
+            SELECT te.id, te.employee_dni, te.entry_date, te.entry_time, te.exit_time, 
+                   te.notes, te.created_at,
+                   e.first_name, e.last_name
+            FROM time_entries te
+            JOIN employees e ON te.employee_dni = e.dni
+            WHERE te.deleted_at IS NULL
+        `;
+        
+        const queryParams = [];
+        let paramCount = 1;
+
+        if (date) {
+            query += ` AND te.entry_date = $${paramCount}`;
+            queryParams.push(date);
+            paramCount++;
+        }
+
+        if (employee_dni) {
+            query += ` AND te.employee_dni = $${paramCount}`;
+            queryParams.push(employee_dni);
+            paramCount++;
+        }
+
+        query += ' ORDER BY te.entry_date DESC, te.entry_time DESC';
+
+        const result = await pool.query(query, queryParams);
+        res.json({ success: true, timeEntries: result.rows });
+
+    } catch (error) {
+        console.error('Error obteniendo registros de tiempo:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+// Crear registro de tiempo
+app.post('/time-entries', authenticateToken, requireRole(['admin', 'rrhh', 'supervisor']), async (req, res) => {
+    try {
+        const { employee_dni, entry_date, entry_time, exit_time, notes } = req.body;
+
+        if (!employee_dni || !entry_date) {
+            return res.status(400).json({ error: 'DNI del empleado y fecha son requeridos' });
+        }
+
+        // Verificar que el empleado existe
+        const employeeCheck = await pool.query('SELECT dni FROM employees WHERE dni = $1 AND deleted_at IS NULL', [employee_dni]);
+        if (employeeCheck.rows.length === 0) {
+            return res.status(400).json({ error: 'Empleado no encontrado' });
+        }
+
+        // Verificar si ya existe un registro para esta fecha
+        const existingEntry = await pool.query(
+            'SELECT id FROM time_entries WHERE employee_dni = $1 AND entry_date = $2 AND deleted_at IS NULL',
+            [employee_dni, entry_date]
+        );
+
+        if (existingEntry.rows.length > 0) {
+            return res.status(400).json({ error: 'Ya existe un registro para este empleado en esta fecha' });
+        }
+
+        // Insertar registro
+        const insertQuery = `
+            INSERT INTO time_entries (employee_dni, entry_date, entry_time, exit_time, notes, created_by)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING id, employee_dni, entry_date, entry_time, exit_time, notes, created_at
+        `;
+        
+        const result = await pool.query(insertQuery, [
+            employee_dni, entry_date, entry_time, exit_time, notes || '', req.user.userId
+        ]);
+
+        res.status(201).json({ 
+            success: true, 
+            timeEntry: result.rows[0],
+            message: 'Registro de tiempo creado correctamente' 
+        });
+
+    } catch (error) {
+        console.error('Error creando registro de tiempo:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+// Actualizar registro de tiempo
+app.put('/time-entries/:id', authenticateToken, requireRole(['admin', 'rrhh', 'supervisor']), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { entry_time, exit_time, notes } = req.body;
+
+        const updateQuery = `
+            UPDATE time_entries 
+            SET entry_time = $1, exit_time = $2, notes = $3, 
+                updated_at = NOW(), updated_by = $4
+            WHERE id = $5 AND deleted_at IS NULL
+            RETURNING id, employee_dni, entry_date, entry_time, exit_time, notes, updated_at
+        `;
+        
+        const result = await pool.query(updateQuery, [
+            entry_time, exit_time, notes || '', req.user.userId, id
+        ]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Registro no encontrado' });
+        }
+
+        res.json({ 
+            success: true, 
+            timeEntry: result.rows[0],
+            message: 'Registro actualizado correctamente' 
+        });
+
+    } catch (error) {
+        console.error('Error actualizando registro de tiempo:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+// ========================================
+// Rutas de Facturas
+// ========================================
+
+// Obtener facturas
+app.get('/invoices', authenticateToken, requireRole(['admin', 'contabilidad']), async (req, res) => {
+    try {
+        const query = `
+            SELECT id, invoice_number, client_ruc, client_name, description, 
+                   currency, amount, status, is_export, invoice_date, created_at
+            FROM invoices 
+            WHERE deleted_at IS NULL
+            ORDER BY created_at DESC
+        `;
+        const result = await pool.query(query);
+        res.json({ success: true, invoices: result.rows });
+    } catch (error) {
+        console.error('Error obteniendo facturas:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+// Crear factura
+app.post('/invoices', authenticateToken, requireRole(['admin', 'contabilidad']), async (req, res) => {
+    try {
+        const { client_ruc, client_name, description, currency, amount, is_export } = req.body;
+
+        if (!client_ruc || !client_name || !description || !currency || !amount) {
+            return res.status(400).json({ error: 'Todos los campos son requeridos' });
+        }
+
+        // Verificar formato de RUC
+        if (!/^[0-9]{11}$/.test(client_ruc)) {
+            return res.status(400).json({ error: 'RUC debe tener 11 dígitos' });
+        }
+
+        // Generar número de factura
+        const lastInvoice = await pool.query(
+            'SELECT invoice_number FROM invoices ORDER BY created_at DESC LIMIT 1'
+        );
+        
+        let nextNumber = 1;
+        if (lastInvoice.rows.length > 0) {
+            const lastNumber = parseInt(lastInvoice.rows[0].invoice_number.split('-')[1]);
+            nextNumber = lastNumber + 1;
+        }
+        
+        const invoice_number = `F001-${nextNumber.toString().padStart(4, '0')}`;
+
+        // Insertar factura
+        const insertQuery = `
+            INSERT INTO invoices (invoice_number, client_ruc, client_name, description, 
+                                currency, amount, status, is_export, invoice_date, created_by)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING id, invoice_number, client_ruc, client_name, description, 
+                     currency, amount, status, is_export, invoice_date, created_at
+        `;
+        
+        const result = await pool.query(insertQuery, [
+            invoice_number, client_ruc, client_name, description, currency, 
+            amount, 'Pendiente', is_export || false, new Date().toISOString().split('T')[0], 
+            req.user.userId
+        ]);
+
+        res.status(201).json({ 
+            success: true, 
+            invoice: result.rows[0],
+            message: 'Factura creada correctamente' 
+        });
+
+    } catch (error) {
+        console.error('Error creando factura:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+// ========================================
+// Rutas de Estadísticas y Reportes
+// ========================================
+
+// Obtener estadísticas del dashboard
+app.get('/dashboard/stats', authenticateToken, async (req, res) => {
+    try {
+        const stats = {};
+
+        // Total de ingresos
+        const incomeQuery = `
+            SELECT COALESCE(SUM(
+                CASE 
+                    WHEN currency = 'USD' THEN amount * 3.8 
+                    ELSE amount 
+                END
+            ), 0) as total_income
+            FROM invoices 
+            WHERE deleted_at IS NULL
+        `;
+        const incomeResult = await pool.query(incomeQuery);
+        stats.totalIncome = parseFloat(incomeResult.rows[0].total_income);
+
+        // Facturas pendientes
+        const pendingQuery = `
+            SELECT COUNT(*) as pending_count
+            FROM invoices 
+            WHERE status = 'Pendiente' AND deleted_at IS NULL
+        `;
+        const pendingResult = await pool.query(pendingQuery);
+        stats.pendingInvoices = parseInt(pendingResult.rows[0].pending_count);
+
+        // Empleados activos
+        const employeesQuery = `
+            SELECT COUNT(*) as active_count
+            FROM employees 
+            WHERE status = 'Activo' AND deleted_at IS NULL
+        `;
+        const employeesResult = await pool.query(employeesQuery);
+        stats.activeEmployees = parseInt(employeesResult.rows[0].active_count);
+
+        // Compliance (siempre 100% por ahora)
+        stats.compliance = 100;
+
+        res.json({ success: true, stats });
+
+    } catch (error) {
+        console.error('Error obteniendo estadísticas:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+// ========================================
+// Rutas de Sistema
+// ========================================
+
+// Health check
+app.get('/health', (req, res) => {
+    res.json({ 
+        success: true, 
+        message: 'Tecsitel API v4.0 funcionando correctamente',
+        timestamp: new Date().toISOString()
+    });
+});
+
+// Información del sistema
+app.get('/system/info', authenticateToken, requireRole(['admin']), (req, res) => {
+    res.json({
+        success: true,
+        system: {
+            name: 'Tecsitel',
+            version: '4.0',
+            environment: process.env.NODE_ENV || 'development',
+            database: 'PostgreSQL (Neon)',
+            deployment: 'Netlify Functions'
+        }
+    });
+});
+
+// ========================================
+// Manejo de errores global
+// ========================================
+app.use((error, req, res, next) => {
+    console.error('Error no manejado:', error);
+    res.status(500).json({ 
+        error: 'Error interno del servidor',
+        message: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+});
+
+// Ruta 404
 app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Ruta no encontrada' });
+    res.status(404).json({ error: 'Ruta no encontrada' });
 });
 
+// ========================================
+// Exportar handler para Netlify
+// ========================================
 module.exports.handler = serverless(app);
