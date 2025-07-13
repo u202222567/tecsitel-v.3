@@ -149,6 +149,18 @@
                         </div>
                     </div>
                     
+                    <!-- Quick Access Personalizado por Rol -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">🚀 Acceso Rápido</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="quick-access-grid" id="quickAccessGrid">
+                                <!-- Contenido dinámico basado en roles -->
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="panel">
                         <div class="panel-header">
                             <h3 class="panel-title">📊 Información del Sistema</h3>
@@ -288,7 +300,7 @@
                 <div id="compliance" class="tab-content">
                     <div class="panel">
                         <div class="panel-header">
-                            <h3 class="panel-title">⚖️ Cumplimiento Normativo</h3>
+                            <h3 class="panel-title">⚖️ Estado de Cumplimiento Normativo</h3>
                         </div>
                         <div class="panel-body">
                             <div class="compliance-grid">
@@ -297,21 +309,115 @@
                                         <h4>SUNAT</h4>
                                         <span class="compliance-status success">✅ Al día</span>
                                     </div>
-                                    <p>Declaraciones tributarias actualizadas</p>
+                                    <div class="compliance-details">
+                                        <p><strong>Facturación Electrónica:</strong> Activa</p>
+                                        <p><strong>Declaraciones:</strong> Presentadas</p>
+                                        <p><strong>Libros Electrónicos:</strong> Actualizados</p>
+                                        <p><strong>Próximo vencimiento:</strong> 15/08/2025</p>
+                                    </div>
                                 </div>
                                 <div class="compliance-card">
                                     <div class="compliance-header">
                                         <h4>SUNAFIL</h4>
                                         <span class="compliance-status success">✅ Cumple</span>
                                     </div>
-                                    <p>Registro de asistencia implementado</p>
+                                    <div class="compliance-details">
+                                        <p><strong>Control de Asistencia:</strong> Implementado</p>
+                                        <p><strong>Planilla Electrónica:</strong> Al día</p>
+                                        <p><strong>Registro de empleados:</strong> Actualizado</p>
+                                        <p><strong>Última inspección:</strong> Sin observaciones</p>
+                                    </div>
                                 </div>
                                 <div class="compliance-card">
                                     <div class="compliance-header">
                                         <h4>MINTRA</h4>
                                         <span class="compliance-status success">✅ Cumple</span>
                                     </div>
-                                    <p>Derechos laborales garantizados</p>
+                                    <div class="compliance-details">
+                                        <p><strong>Derechos Laborales:</strong> Garantizados</p>
+                                        <p><strong>Seguridad y Salud:</strong> Implementado</p>
+                                        <p><strong>Contratos:</strong> Registrados</p>
+                                        <p><strong>Beneficios sociales:</strong> Al día</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">📋 Checklist de Cumplimiento</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="compliance-checklist">
+                                <div class="checklist-item completed">
+                                    <span class="checklist-icon">✅</span>
+                                    <div class="checklist-content">
+                                        <strong>Registro de Control de Asistencia</strong>
+                                        <p>Sistema digital implementado según SUNAFIL</p>
+                                    </div>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <span class="checklist-icon">✅</span>
+                                    <div class="checklist-content">
+                                        <strong>Facturación Electrónica SUNAT</strong>
+                                        <p>Certificado digital activo y funcionando</p>
+                                    </div>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <span class="checklist-icon">✅</span>
+                                    <div class="checklist-content">
+                                        <strong>Libros Contables Electrónicos</strong>
+                                        <p>PLE generado y enviado mensualmente</p>
+                                    </div>
+                                </div>
+                                <div class="checklist-item completed">
+                                    <span class="checklist-icon">✅</span>
+                                    <div class="checklist-content">
+                                        <strong>Registro de Empleados</strong>
+                                        <p>Base de datos actualizada con información completa</p>
+                                    </div>
+                                </div>
+                                <div class="checklist-item pending">
+                                    <span class="checklist-icon">⏳</span>
+                                    <div class="checklist-content">
+                                        <strong>Declaración Jurada Anual</strong>
+                                        <p>Pendiente para el próximo período fiscal</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">📅 Calendario de Obligaciones</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="obligations-calendar">
+                                <div class="obligation-item urgent">
+                                    <div class="obligation-date">15 AGO</div>
+                                    <div class="obligation-content">
+                                        <strong>Declaración IGV Julio</strong>
+                                        <p>Vencimiento declaración mensual</p>
+                                    </div>
+                                    <div class="obligation-status">📅 Próximo</div>
+                                </div>
+                                <div class="obligation-item normal">
+                                    <div class="obligation-date">31 AGO</div>
+                                    <div class="obligation-content">
+                                        <strong>Libros Electrónicos</strong>
+                                        <p>Envío PLE Julio 2025</p>
+                                    </div>
+                                    <div class="obligation-status">📋 Pendiente</div>
+                                </div>
+                                <div class="obligation-item completed">
+                                    <div class="obligation-date">12 JUL</div>
+                                    <div class="obligation-content">
+                                        <strong>Planilla Electrónica</strong>
+                                        <p>Envío PDT Junio 2025</p>
+                                    </div>
+                                    <div class="obligation-status">✅ Completado</div>
                                 </div>
                             </div>
                         </div>

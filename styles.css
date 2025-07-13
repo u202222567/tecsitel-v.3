@@ -1,4 +1,252 @@
 /* ===========================
+   Quick Status Edit
+=========================== */
+.quick-status-select {
+    width: 100%;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--primary);
+    border-radius: var(--radius);
+    background: #ffffff !important;
+    color: var(--gray-700);
+    font-size: 12px;
+    cursor: pointer;
+    outline: none;
+}
+
+.quick-status-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-alpha);
+}
+
+/* Status badges clickeable */
+.status-badge[onclick] {
+    transition: all var(--transition);
+}
+
+.status-badge[onclick]:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-sm);
+}/* ===========================
+   Compliance Styles Expandidos
+=========================== */
+.compliance-details {
+    margin-top: var(--space-3);
+}
+
+.compliance-details p {
+    margin-bottom: var(--space-2);
+    font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.compliance-details strong {
+    color: var(--gray-700);
+}
+
+/* Checklist de Cumplimiento */
+.compliance-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    background: #ffffff !important;
+}
+
+.checklist-item.completed {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.05) !important;
+}
+
+.checklist-item.pending {
+    border-color: var(--warning);
+    background: rgba(245, 158, 11, 0.05) !important;
+}
+
+.checklist-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.checklist-content {
+    flex: 1;
+}
+
+.checklist-content strong {
+    display: block;
+    color: var(--gray-800);
+    margin-bottom: var(--space-1);
+}
+
+.checklist-content p {
+    color: var(--gray-600);
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 0;
+}
+
+/* Calendario de Obligaciones */
+.obligations-calendar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.obligation-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius);
+    border: 1px solid var(--gray-200);
+    background: #ffffff !important;
+}
+
+.obligation-item.urgent {
+    border-color: var(--danger);
+    background: rgba(239, 68, 68, 0.05) !important;
+}
+
+.obligation-item.normal {
+    border-color: var(--warning);
+    background: rgba(245, 158, 11, 0.05) !important;
+}
+
+.obligation-item.completed {
+    border-color: var(--success);
+    background: rgba(16, 185, 129, 0.05) !important;
+    opacity: 0.8;
+}
+
+.obligation-date {
+    background: var(--primary);
+    color: var(--white);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+    min-width: 60px;
+    flex-shrink: 0;
+}
+
+.obligation-item.urgent .obligation-date {
+    background: var(--danger);
+}
+
+.obligation-item.normal .obligation-date {
+    background: var(--warning);
+}
+
+.obligation-item.completed .obligation-date {
+    background: var(--success);
+}
+
+.obligation-content {
+    flex: 1;
+}
+
+.obligation-content strong {
+    display: block;
+    color: var(--gray-800);
+    margin-bottom: var(--space-1);
+}
+
+.obligation-content p {
+    color: var(--gray-600);
+    font-size: 13px;
+    margin: 0;
+}
+
+.obligation-status {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--gray-600);
+    padding: var(--space-1) var(--space-2);
+    background: var(--gray-100);
+    border-radius: var(--radius);
+    flex-shrink: 0;
+}/* ===========================
+   Quick Access Grid
+=========================== */
+.quick-access-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--space-4);
+    background: #ffffff !important;
+}
+
+.quick-access-card {
+    background: #ffffff !important;
+    border: 2px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    text-align: center;
+    cursor: pointer;
+    transition: all var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.quick-access-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.quick-access-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--primary-light));
+}
+
+.quick-access-icon {
+    font-size: 32px;
+    margin-bottom: var(--space-3);
+    display: block;
+}
+
+.quick-access-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin-bottom: var(--space-1);
+}
+
+.quick-access-desc {
+    font-size: 12px;
+    color: var(--gray-600);
+    line-height: 1.4;
+}
+
+.quick-access-card.primary { border-color: var(--primary); }
+.quick-access-card.primary .quick-access-icon { color: var(--primary); }
+
+.quick-access-card.success { border-color: var(--success); }
+.quick-access-card.success .quick-access-icon { color: var(--success); }
+.quick-access-card.success::before { background: var(--success); }
+
+.quick-access-card.warning { border-color: var(--warning); }
+.quick-access-card.warning .quick-access-icon { color: var(--warning); }
+.quick-access-card.warning::before { background: var(--warning); }
+
+.quick-access-card.info { border-color: var(--info); }
+.quick-access-card.info .quick-access-icon { color: var(--info); }
+.quick-access-card.info::before { background: var(--info); }/* ===========================
    Agregar animación de flotación para partículas
 =========================== */
 @keyframes float {
