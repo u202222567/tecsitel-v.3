@@ -4,2070 +4,335 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="TECSITEL PERU E.I.R.L. - Sistema de Gestión Empresarial Integrado con Facturación Electrónica, HCM y Cumplimiento Normativo">
-    <meta name="author" content="TECSITEL PERU E.I.R.L.">
+    <meta name="description" content="Tecsitel - Sistema de Gestión Empresarial Integrado con facturación electrónica, contabilidad y cumplimiento normativo">
+    <meta name="author" content="Tecsitel">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#dc143c">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://i.imgur.com data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' https://tecsitel.netlify.app https://*.neon.tech;">
     
-    <title>TECSITEL - Sistema de Gestión Profesional v4.0</title>
+    <!-- Mejoras de Seguridad: Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://i.imgur.com data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    
+    <title>Tecsitel - Sistema de Gestión Empresarial v4.0</title>
     
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="https://i.imgur.com/6XXdcPR.png">
     <link rel="apple-touch-icon" href="https://i.imgur.com/6XXdcPR.png">
     
-    <style>
-        /* =============================================
-           VARIABLES CORPORATIVAS TECSITEL
-        ============================================= */
-        :root {
-            --tecsitel-red: #dc143c;
-            --tecsitel-red-dark: #b91c3c;
-            --tecsitel-red-light: #ff4757;
-            --tecsitel-white: #ffffff;
-            --tecsitel-gray-50: #f8fafc;
-            --tecsitel-gray-100: #f1f5f9;
-            --tecsitel-gray-200: #e2e8f0;
-            --tecsitel-gray-300: #cbd5e1;
-            --tecsitel-gray-600: #475569;
-            --tecsitel-gray-700: #334155;
-            --tecsitel-gray-800: #1e293b;
-            --tecsitel-gray-900: #0f172a;
-            
-            /* Estados */
-            --success: #10b981;
-            --success-light: #34d399;
-            --warning: #f59e0b;
-            --warning-light: #fbbf24;
-            --danger: #ef4444;
-            --danger-light: #f87171;
-            --info: #3b82f6;
-            --info-light: #60a5fa;
-            
-            /* Alphas */
-            --tecsitel-alpha: rgba(220, 20, 60, 0.1);
-            --success-alpha: rgba(16, 185, 129, 0.1);
-            --warning-alpha: rgba(245, 158, 11, 0.1);
-            --danger-alpha: rgba(239, 68, 68, 0.1);
-            --info-alpha: rgba(59, 130, 246, 0.1);
-            
-            /* Sombras profesionales */
-            --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            
-            /* Transiciones suaves */
-            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-normal: 300ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-slow: 500ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-bounce: 600ms cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            
-            /* Espaciado */
-            --space-1: 0.25rem;
-            --space-2: 0.5rem;
-            --space-3: 0.75rem;
-            --space-4: 1rem;
-            --space-5: 1.25rem;
-            --space-6: 1.5rem;
-            --space-8: 2rem;
-            --space-10: 2.5rem;
-            --space-12: 3rem;
-            --space-16: 4rem;
-            --space-20: 5rem;
-            
-            /* Border radius */
-            --radius-sm: 0.125rem;
-            --radius: 0.25rem;
-            --radius-md: 0.375rem;
-            --radius-lg: 0.5rem;
-            --radius-xl: 0.75rem;
-            --radius-2xl: 1rem;
-            --radius-3xl: 1.5rem;
-            --radius-full: 9999px;
-            
-            /* Layout */
-            --header-height: 80px;
-            --sidebar-width: 300px;
-            --sidebar-collapsed: 80px;
-        }
-
-        /* =============================================
-           RESET Y BASE
-        ============================================= */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            font-size: 16px;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, var(--tecsitel-gray-50) 0%, var(--tecsitel-gray-100) 100%);
-            color: var(--tecsitel-gray-900);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* =============================================
-           PANTALLA DE LOGIN SIMPLIFICADA
-        ============================================= */
-        .login-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-            opacity: 1;
-            transition: opacity var(--transition-slow);
-        }
-
-        .login-screen.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .login-background {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
-            animation: pulse 4s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 0.6; }
-        }
-
-        .login-container {
-            position: relative;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(20px);
-            padding: var(--space-10);
-            border-radius: var(--radius-3xl);
-            box-shadow: var(--shadow-2xl);
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
-            animation: slideInUp 0.8s var(--transition-bounce);
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(60px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .login-logo-container {
-            margin-bottom: var(--space-8);
-            position: relative;
-        }
-
-        .login-logo {
-            width: 100px;
-            height: 100px;
-            background: var(--tecsitel-white);
-            border-radius: var(--radius-full);
-            margin: 0 auto var(--space-6);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 4px solid var(--tecsitel-red);
-            animation: logoFloat 3s ease-in-out infinite;
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-xl);
-        }
-
-        .login-logo img {
-            width: 70%;
-            height: 70%;
-            object-fit: contain;
-        }
-
-        @keyframes logoFloat {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
-        }
-
-        .login-title {
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--tecsitel-red);
-            margin-bottom: var(--space-2);
-            letter-spacing: -0.025em;
-        }
-
-        .login-subtitle {
-            color: var(--tecsitel-gray-600);
-            font-size: 1rem;
-            margin-bottom: var(--space-8);
-            font-weight: 500;
-        }
-
-        /* =============================================
-           FORMULARIO DE LOGIN
-        ============================================= */
-        .login-form {
-            margin-bottom: var(--space-8);
-        }
-
-        .form-group {
-            margin-bottom: var(--space-6);
-            text-align: left;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: var(--space-2);
-            font-weight: 600;
-            color: var(--tecsitel-gray-700);
-            font-size: 0.875rem;
-        }
-
-        .form-input-container {
-            position: relative;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: var(--space-4) var(--space-5);
-            border: 2px solid var(--tecsitel-gray-200);
-            border-radius: var(--radius-xl);
-            font-size: 1rem;
-            transition: all var(--transition-normal);
-            background: var(--tecsitel-white);
-            padding-left: var(--space-12);
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: var(--tecsitel-red);
-            box-shadow: 0 0 0 3px var(--tecsitel-alpha);
-            transform: translateY(-2px);
-        }
-
-        .form-input.error {
-            border-color: var(--danger);
-            box-shadow: 0 0 0 3px var(--danger-alpha);
-        }
-
-        .form-icon {
-            position: absolute;
-            left: var(--space-4);
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.25rem;
-            color: var(--tecsitel-gray-400);
-            transition: color var(--transition-normal);
-        }
-
-        .form-input:focus + .form-icon {
-            color: var(--tecsitel-red);
-        }
-
-        .btn {
-            padding: var(--space-4) var(--space-8);
-            border: none;
-            border-radius: var(--radius-xl);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--space-2);
-            text-decoration: none;
-            position: relative;
-            overflow: hidden;
-            min-height: 48px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
-            color: var(--tecsitel-white);
-            width: 100%;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-xl);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-primary:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-sm {
-            padding: var(--space-2) var(--space-4);
-            font-size: 0.875rem;
-            min-height: 36px;
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: var(--tecsitel-white);
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: var(--tecsitel-white);
-        }
-
-        .btn-secondary {
-            background: var(--tecsitel-gray-200);
-            color: var(--tecsitel-gray-700);
-        }
-
-        /* =============================================
-           USUARIOS HORIZONTALES CON SCROLL
-        ============================================= */
-        .users-demo {
-            background: var(--tecsitel-white);
-            padding: var(--space-6);
-            border-radius: var(--radius-2xl);
-            border: 2px solid var(--tecsitel-gray-200);
-            margin-bottom: var(--space-6);
-        }
-
-        .users-demo h4 {
-            color: var(--tecsitel-red);
-            font-size: 1rem;
-            margin-bottom: var(--space-4);
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .users-scroll-container {
-            display: flex;
-            overflow-x: auto;
-            gap: var(--space-3);
-            padding: var(--space-2) 0;
-            scrollbar-width: thin;
-            scrollbar-color: var(--tecsitel-red) var(--tecsitel-gray-200);
-        }
-
-        .users-scroll-container::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .users-scroll-container::-webkit-scrollbar-track {
-            background: var(--tecsitel-gray-200);
-            border-radius: var(--radius-full);
-        }
-
-        .users-scroll-container::-webkit-scrollbar-thumb {
-            background: var(--tecsitel-red);
-            border-radius: var(--radius-full);
-        }
-
-        .user-demo {
-            background: var(--tecsitel-gray-50);
-            padding: var(--space-4);
-            border-radius: var(--radius-xl);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            border: 2px solid transparent;
-            text-align: center;
-            min-width: 120px;
-            flex-shrink: 0;
-        }
-
-        .user-demo:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-            border-color: var(--tecsitel-red);
-            background: var(--tecsitel-white);
-        }
-
-        .user-demo.selected {
-            background: var(--tecsitel-alpha);
-            border-color: var(--tecsitel-red);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-md);
-        }
-
-        .user-demo-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-full);
-            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
-            color: var(--tecsitel-white);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            margin: 0 auto var(--space-2);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .user-demo-name {
-            font-weight: 600;
-            color: var(--tecsitel-gray-900);
-            font-size: 0.875rem;
-        }
-
-        .user-demo-role {
-            font-size: 0.75rem;
-            color: var(--tecsitel-gray-600);
-            margin-top: var(--space-1);
-        }
-
-        /* =============================================
-           PANTALLA DE CARGA CON LOGO GIRATORIO
-        ============================================= */
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-dark) 100%);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-            flex-direction: column;
-        }
-
-        .loading-screen.active {
-            display: flex;
-        }
-
-        .loading-content {
-            text-align: center;
-            color: var(--tecsitel-white);
-        }
-
-        .loading-logo-container {
-            width: 120px;
-            height: 120px;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: var(--radius-full);
-            margin: 0 auto var(--space-8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            animation: containerPulse 2s ease-in-out infinite;
-        }
-
-        .loading-logo {
-            width: 80px;
-            height: 80px;
-            background: var(--tecsitel-white);
-            border-radius: var(--radius-full);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            animation: logoSpin 3s linear infinite;
-            box-shadow: var(--shadow-lg);
-        }
-
-        .loading-logo img {
-            width: 70%;
-            height: 70%;
-            object-fit: contain;
-        }
-
-        @keyframes containerPulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-        }
-
-        @keyframes logoSpin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .loading-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: var(--space-4);
-            animation: titleGlow 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes titleGlow {
-            from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
-            to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
-        }
-
-        .loading-subtitle {
-            font-size: 1.25rem;
-            margin-bottom: var(--space-8);
-            opacity: 0.9;
-        }
-
-        .loading-status {
-            font-size: 1.125rem;
-            margin-bottom: var(--space-8);
-            min-height: 28px;
-            font-weight: 500;
-        }
-
-        .loading-progress {
-            width: 300px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: var(--radius-full);
-            overflow: hidden;
-            margin: 0 auto;
-        }
-
-        .loading-bar {
-            height: 100%;
-            background: var(--tecsitel-white);
-            border-radius: var(--radius-full);
-            width: 0%;
-            animation: progressLoad 3s ease-out forwards;
-        }
-
-        @keyframes progressLoad {
-            0% { width: 0%; }
-            20% { width: 30%; }
-            50% { width: 70%; }
-            80% { width: 90%; }
-            100% { width: 100%; }
-        }
-
-        /* =============================================
-           LAYOUT PRINCIPAL MEJORADO
-        ============================================= */
-        .app-container {
-            display: none;
-            min-height: 100vh;
-            background: var(--tecsitel-gray-50);
-            opacity: 0;
-            transition: opacity var(--transition-slow);
-        }
-
-        .app-container.active {
-            display: flex;
-            opacity: 1;
-        }
-
-        .sidebar {
-            width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--tecsitel-gray-900) 0%, var(--tecsitel-gray-800) 100%);
-            color: var(--tecsitel-white);
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            overflow-y: auto;
-            transition: transform var(--transition-normal);
-            z-index: 1000;
-            box-shadow: var(--shadow-2xl);
-        }
-
-        .sidebar.collapsed {
-            width: var(--sidebar-collapsed);
-        }
-
-        .sidebar-header {
-            padding: var(--space-8);
-            text-align: center;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
-
-        .sidebar-logo {
-            width: 80px;
-            height: 80px;
-            background: var(--tecsitel-white);
-            border-radius: var(--radius-full);
-            margin: 0 auto var(--space-4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            border: 3px solid var(--tecsitel-red);
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow-xl);
-        }
-
-        .sidebar-logo img {
-            width: 70%;
-            height: 70%;
-            object-fit: contain;
-        }
-
-        .sidebar-logo:hover {
-            transform: scale(1.05) rotate(-5deg);
-            box-shadow: var(--shadow-2xl);
-        }
-
-        .sidebar-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            margin-bottom: var(--space-2);
-            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .sidebar-subtitle {
-            font-size: 0.875rem;
-            opacity: 0.7;
-            font-weight: 500;
-        }
-
-        .sidebar-nav {
-            padding: var(--space-6);
-        }
-
-        .nav-item {
-            width: 100%;
-            padding: var(--space-4) var(--space-6);
-            background: transparent;
-            border: none;
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 1rem;
-            border-radius: var(--radius-xl);
-            margin-bottom: var(--space-2);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            display: flex;
-            align-items: center;
-            gap: var(--space-4);
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .nav-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
-            transition: left var(--transition-normal);
-        }
-
-        .nav-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--tecsitel-white);
-            transform: translateX(8px);
-        }
-
-        .nav-item:hover::before {
-            left: 100%;
-        }
-
-        .nav-item.active {
-            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
-            color: var(--tecsitel-white);
-            transform: translateX(8px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .nav-icon {
-            font-size: 1.25rem;
-            min-width: 24px;
-            text-align: center;
-        }
-
-        .nav-text {
-            font-weight: 500;
-        }
-
-        /* =============================================
-           CONTENIDO PRINCIPAL
-        ============================================= */
-        .main-content {
-            margin-left: var(--sidebar-width);
-            width: calc(100% - var(--sidebar-width));
-            min-height: 100vh;
-            transition: all var(--transition-normal);
-        }
-
-        .main-content.expanded {
-            margin-left: var(--sidebar-collapsed);
-            width: calc(100% - var(--sidebar-collapsed));
-        }
-
-        .header {
-            height: var(--header-height);
-            background: var(--tecsitel-white);
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 var(--space-8);
-            position: sticky;
-            top: 0;
-            z-index: 999;
-            border-bottom: 3px solid var(--tecsitel-red);
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: var(--space-4);
-        }
-
-        .sidebar-toggle {
-            width: 48px;
-            height: 48px;
-            border: none;
-            background: var(--tecsitel-gray-100);
-            border-radius: var(--radius-xl);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all var(--transition-normal);
-            font-size: 1.25rem;
-        }
-
-        .sidebar-toggle:hover {
-            background: var(--tecsitel-red);
-            color: var(--tecsitel-white);
-            transform: scale(1.05);
-        }
-
-        .page-title {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--tecsitel-gray-900);
-            margin: 0;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: var(--space-4);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: var(--space-3);
-        }
-
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-            padding: var(--space-2) var(--space-4);
-            background: var(--tecsitel-gray-100);
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            transition: all var(--transition-normal);
-        }
-
-        .user-menu:hover {
-            background: var(--tecsitel-red);
-            color: var(--tecsitel-white);
-            transform: scale(1.02);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-full);
-            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--tecsitel-white);
-            font-weight: 700;
-            font-size: 1rem;
-        }
-        
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-full);
-            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--tecsitel-white);
-            font-weight: 700;
-            font-size: 1rem;
-        }
-        
-        .avatar-sm {
-            width: 32px;
-            height: 32px;
-            font-size: 0.875rem;
-        }
-
-        .user-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .user-name {
-            font-weight: 600;
-            font-size: 0.875rem;
-            line-height: 1.2;
-        }
-
-        .user-role {
-            font-size: 0.75rem;
-            opacity: 0.7;
-            line-height: 1.2;
-        }
-
-        /* =============================================
-           CONTENT AREA
-        ============================================= */
-        .content-area {
-            padding: var(--space-8);
-            min-height: calc(100vh - var(--header-height));
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeInUp 0.5s ease-out;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* =============================================
-           DASHBOARD CARDS MEJORADAS
-        ============================================= */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: var(--space-8);
-            margin-bottom: var(--space-12);
-        }
-
-        .metric-card {
-            background: var(--tecsitel-white);
-            border-radius: var(--radius-2xl);
-            padding: var(--space-8);
-            box-shadow: var(--shadow-lg);
-            transition: all var(--transition-normal);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            border: 1px solid var(--tecsitel-gray-200);
-        }
-
-        .metric-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
-        }
-
-        .metric-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: var(--shadow-2xl);
-        }
-
-        .metric-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: var(--space-6);
-        }
-
-        .metric-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: var(--radius-2xl);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.75rem;
-            background: linear-gradient(135deg, var(--tecsitel-red) 0%, var(--tecsitel-red-light) 100%);
-            color: var(--tecsitel-white);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .metric-value {
-            font-size: 2.75rem;
-            font-weight: 800;
-            color: var(--tecsitel-gray-900);
-            margin-bottom: var(--space-2);
-            line-height: 1;
-        }
-
-        .metric-label {
-            color: var(--tecsitel-gray-600);
-            font-size: 1rem;
-            font-weight: 500;
-            margin-bottom: var(--space-3);
-        }
-
-        .metric-change {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
-
-        .metric-change.positive {
-            color: var(--success);
-        }
-        
-        .metric-change.warning {
-            color: var(--warning);
-        }
-
-        .metric-change.negative {
-            color: var(--danger);
-        }
-
-        .metric-change-icon {
-            font-size: 1rem;
-        }
-
-        /* =============================================
-           PANELS Y TABLAS
-        ============================================= */
-        .panel {
-            background: var(--tecsitel-white);
-            border-radius: var(--radius-2xl);
-            box-shadow: var(--shadow-lg);
-            margin-bottom: var(--space-8);
-            overflow: hidden;
-            border: 1px solid var(--tecsitel-gray-200);
-        }
-
-        .panel-header {
-            padding: var(--space-6) var(--space-8);
-            border-bottom: 1px solid var(--tecsitel-gray-200);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--tecsitel-gray-50);
-        }
-
-        .panel-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: var(--tecsitel-gray-900);
-            margin: 0;
-        }
-
-        .panel-body {
-            padding: var(--space-8);
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            margin: -var(--space-4);
-            padding: var(--space-4);
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.875rem;
-        }
-
-        .table th,
-        .table td {
-            padding: var(--space-4);
-            text-align: left;
-            border-bottom: 1px solid var(--tecsitel-gray-200);
-            vertical-align: middle;
-        }
-
-        .table th {
-            background: var(--tecsitel-gray-50);
-            font-weight: 600;
-            color: var(--tecsitel-gray-700);
-            position: sticky;
-            top: 0;
-        }
-
-        .table tr:hover {
-            background: var(--tecsitel-gray-50);
-        }
-        
-        .employee-info {
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-        }
-
-        /* =============================================
-           BADGES Y ESTADOS
-        ============================================= */
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            padding: var(--space-1) var(--space-3);
-            border-radius: var(--radius-full);
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-
-        .badge-success {
-            background: var(--success-alpha);
-            color: var(--success);
-        }
-
-        .badge-warning {
-            background: var(--warning-alpha);
-            color: var(--warning);
-        }
-
-        .badge-danger {
-            background: var(--danger-alpha);
-            color: var(--danger);
-        }
-
-        .badge-info {
-            background: var(--info-alpha);
-            color: var(--info);
-        }
-
-        /* =============================================
-           NOTIFICACIONES TOAST
-        ============================================= */
-        .toast-container {
-            position: fixed;
-            top: var(--space-6);
-            right: var(--space-6);
-            z-index: 10001;
-            display: flex;
-            flex-direction: column;
-            gap: var(--space-3);
-            max-width: 400px;
-        }
-
-        .toast {
-            background: var(--tecsitel-white);
-            padding: var(--space-4) var(--space-6);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-xl);
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-            border-left: 4px solid;
-            animation: toastSlideIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .toast::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 2px;
-            background: currentColor;
-            width: 100%;
-            animation: toastProgress 4s linear;
-        }
-
-        @keyframes toastSlideIn {
-            from {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes toastProgress {
-            from { width: 100%; }
-            to { width: 0%; }
-        }
-
-        .toast.success {
-            border-left-color: var(--success);
-            color: var(--success);
-        }
-
-        .toast.error {
-            border-left-color: var(--danger);
-            color: var(--danger);
-        }
-
-        .toast.warning {
-            border-left-color: var(--warning);
-            color: var(--warning);
-        }
-
-        .toast.info {
-            border-left-color: var(--info);
-            color: var(--info);
-        }
-
-        .toast-icon {
-            font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-
-        .toast-content {
-            flex: 1;
-            color: var(--tecsitel-gray-900);
-        }
-
-        .toast-close {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.125rem;
-            color: var(--tecsitel-gray-400);
-            padding: var(--space-1);
-            border-radius: var(--radius);
-            transition: all var(--transition-fast);
-        }
-
-        .toast-close:hover {
-            background: var(--tecsitel-gray-100);
-            color: var(--tecsitel-gray-600);
-        }
-
-        /* =============================================
-           ALERTAS
-        ============================================= */
-        .alert {
-            display: flex;
-            align-items: flex-start;
-            gap: var(--space-3);
-            padding: var(--space-4) var(--space-6);
-            border-radius: var(--radius-xl);
-            margin-bottom: var(--space-6);
-            border: 1px solid;
-        }
-
-        .alert-info {
-            background: var(--info-alpha);
-            border-color: var(--info);
-            color: var(--info);
-        }
-
-        .alert-success {
-            background: var(--success-alpha);
-            border-color: var(--success);
-            color: var(--success);
-        }
-
-        .alert-warning {
-            background: var(--warning-alpha);
-            border-color: var(--warning);
-            color: var(--warning);
-        }
-
-        .alert-danger {
-            background: var(--danger-alpha);
-            border-color: var(--danger);
-            color: var(--danger);
-        }
-
-        .alert-icon {
-            font-size: 1.25rem;
-            flex-shrink: 0;
-        }
-
-        .alert-content {
-            flex: 1;
-            color: var(--tecsitel-gray-900);
-        }
-
-        .alert-content strong {
-            color: inherit;
-        }
-        
-        /* =============================================
-           MODALS
-        ============================================= */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10002;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: var(--tecsitel-white);
-            padding: var(--space-8);
-            border-radius: var(--radius-2xl);
-            box-shadow: var(--shadow-2xl);
-            width: 90%;
-            max-width: 700px;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: modalFadeIn 0.4s var(--transition-bounce);
-        }
-
-        @keyframes modalFadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: var(--space-4);
-            border-bottom: 1px solid var(--tecsitel-gray-200);
-            margin-bottom: var(--space-6);
-        }
-
-        .modal-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--tecsitel-gray-900);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.75rem;
-            cursor: pointer;
-            color: var(--tecsitel-gray-400);
-            transition: all var(--transition-fast);
-        }
-
-        .modal-close:hover {
-            color: var(--tecsitel-red);
-            transform: rotate(90deg);
-        }
-
-
-        /* =============================================
-           RESPONSIVE DESIGN MEJORADO
-        ============================================= */
-        @media (max-width: 1024px) {
-            .sidebar {
-                transform: translateX(-100%);
-            }
-            
-            .sidebar.active {
-                transform: translateX(0);
-            }
-            
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-            
-            .sidebar-toggle {
-                display: flex;
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            }
-            
-            .compliance-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            :root {
-                --space-8: 1.5rem;
-                --space-6: 1rem;
-                --space-4: 0.75rem;
-            }
-            
-            .login-container {
-                padding: var(--space-8);
-                margin: var(--space-4);
-            }
-            
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-                gap: var(--space-6);
-            }
-            
-            .content-area {
-                padding: var(--space-6);
-            }
-            
-            .header {
-                padding: 0 var(--space-4);
-            }
-            
-            .page-title {
-                font-size: 1.5rem;
-            }
-            
-            .user-info {
-                display: none;
-            }
-            
-            .users-scroll-container {
-                gap: var(--space-2);
-            }
-            
-            .user-demo {
-                min-width: 100px;
-                padding: var(--space-3);
-            }
-
-            .hide-mobile {
-                display: none;
-            }
-            
-            /* Modal responsive improvements */
-            .modal-content {
-                margin: var(--space-4);
-                max-width: none;
-                width: calc(100% - 2rem);
-                max-height: calc(100vh - 2rem);
-            }
-            
-            /* Table responsive improvements */
-            .table-responsive {
-                font-size: 0.875rem;
-            }
-            
-            .table th,
-            .table td {
-                padding: var(--space-2) var(--space-3);
-            }
-            
-            /* Form responsive improvements */
-            .form-grid {
-                grid-template-columns: 1fr;
-                gap: var(--space-4);
-            }
-            
-            /* Button responsive improvements */
-            .btn-sm {
-                font-size: 0.75rem;
-                padding: var(--space-1) var(--space-2);
-            }
-            
-            /* Chart responsive */
-            #incomeChart {
-                width: 100%;
-                height: auto;
-                max-width: 400px;
-            }
-            
-            /* Metric cards responsive */
-            .metric-card {
-                padding: var(--space-6);
-            }
-            
-            .metric-value {
-                font-size: 2rem;
-            }
-            
-            .metric-icon {
-                width: 50px;
-                height: 50px;
-                font-size: 1.5rem;
-            }
-            
-            /* Time tracking responsive */
-            .quick-time-grid {
-                grid-template-columns: 1fr;
-                gap: var(--space-3);
-            }
-            
-            .quick-time-grid select {
-                margin-bottom: var(--space-3);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .toast-container {
-                top: var(--space-4);
-                right: var(--space-4);
-                left: var(--space-4);
-                max-width: none;
-            }
-            
-            .modal-content {
-                margin: var(--space-2);
-                padding: var(--space-4);
-            }
-            
-            .metric-value {
-                font-size: 1.75rem;
-            }
-            
-            .panel-header {
-                flex-direction: column;
-                align-items: stretch;
-                gap: var(--space-3);
-            }
-            
-            .panel-header .btn {
-                width: 100%;
-                justify-content: center;
-            }
-            
-            /* Stack form elements on very small screens */
-            .time-quick-actions {
-                flex-direction: column;
-                gap: var(--space-2);
-            }
-            
-            .time-quick-actions .btn {
-                width: 100%;
-            }
-        }
-
-        /* =============================================
-           NUEVAS CLASES RESPONSIVE
-        ============================================= */
-        .responsive-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: var(--space-4);
-        }
-        
-        .responsive-stack {
-            display: flex;
-            flex-wrap: wrap;
-            gap: var(--space-3);
-            align-items: center;
-        }
-        
-        .responsive-stack > * {
-            flex: 1;
-            min-width: 200px;
-        }
-        
-        @media (max-width: 768px) {
-            .responsive-stack {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .responsive-stack > * {
-                min-width: 100%;
-            }
-        }
-        
-        .chart-container {
-            position: relative;
-            width: 100%;
-            height: 300px;
-            margin: var(--space-4) 0;
-        }
-        
-        @media (max-width: 768px) {
-            .chart-container {
-                height: 250px;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .chart-container {
-                height: 200px;
-            }
-        }
-        
-        .time-quick-actions {
-            display: flex;
-            gap: var(--space-3);
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .employee-status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: var(--space-4);
-            margin-bottom: var(--space-6);
-        }
-        
-        @media (max-width: 480px) {
-            .employee-status-grid {
-                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-                gap: var(--space-3);
-            }
-        }
-
-        /* =============================================
-           UTILIDADES
-        ============================================= */
-        .hidden { display: none !important; }
-        .text-center { text-align: center; }
-        .font-bold { font-weight: 700; }
-        .font-semibold { font-weight: 600; }
-        .text-sm { font-size: 0.875rem; }
-        .text-xs { font-size: 0.75rem; }
-        .text-red { color: var(--tecsitel-red); }
-        .text-success { color: var(--success); }
-        .text-warning { color: var(--warning); }
-        .text-danger { color: var(--danger); }
-        .text-info { color: var(--info); }
-        .text-muted { color: var(--tecsitel-gray-600); }
-        .mb-4 { margin-bottom: var(--space-4); }
-        .mb-6 { margin-bottom: var(--space-6); }
-        .mt-4 { margin-top: var(--space-4); }
-        .mt-6 { margin-top: var(--space-6); }
-
-        /* =============================================
-           LOADING STATES
-        ============================================= */
-        .loading-spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid var(--tecsitel-red);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .form-control {
-            width: 100%;
-            padding: var(--space-3) var(--space-4);
-            border: 2px solid var(--tecsitel-gray-200);
-            border-radius: var(--radius-lg);
-            font-size: 1rem;
-            transition: all var(--transition-normal);
-            background: var(--tecsitel-white);
-        }
-
-        .form-control:focus {
-            outline: none;
-            border-color: var(--tecsitel-red);
-            box-shadow: 0 0 0 3px var(--tecsitel-alpha);
-        }
-        
-        .form-control.error {
-            border-color: var(--danger);
-        }
-
-        .form-control:invalid {
-            border-color: var(--danger);
-        }
-
-        /* =============================================
-           CONNECTION STATUS
-        ============================================= */
-        .connection-status {
-            position: fixed;
-            bottom: var(--space-4);
-            left: var(--space-4);
-            padding: var(--space-2) var(--space-4);
-            border-radius: var(--radius-full);
-            font-size: 0.875rem;
-            font-weight: 500;
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-            transition: all var(--transition-normal);
-        }
-
-        .connection-status.online {
-            background: var(--success-alpha);
-            color: var(--success);
-            border: 1px solid var(--success);
-        }
-
-        .connection-status.offline {
-            background: var(--danger-alpha);
-            color: var(--danger);
-            border: 1px solid var(--danger);
-        }
-
-        .connection-status.connecting {
-            background: var(--warning-alpha);
-            color: var(--warning);
-            border: 1px solid var(--warning);
-        }
-
-        .connection-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: currentColor;
-            animation: pulse-dot 2s infinite;
-        }
-
-        @keyframes pulse-dot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-    </style>
+    <!-- CSS External File -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Pantalla de Login -->
     <div class="login-screen" id="loginScreen">
-        <div class="login-background"></div>
-        <div class="login-container">
-            <div class="login-logo-container">
-                <div class="login-logo">
-                    <img src="https://i.imgur.com/6XXdcPR.png" alt="TECSITEL Logo">
-                </div>
-                <h1 class="login-title">TECSITEL</h1>
-                <p class="login-subtitle">Sistema de Gestión Empresarial</p>
+        <div class="login-form">
+            <div class="login-logo">
+                <img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel Logo">
             </div>
-
-            <form class="login-form" id="loginForm" onsubmit="handleLogin(event)">
+            <h2 class="login-title">TECSITEL - Acceso Seguro v4.0</h2>
+            <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label class="form-label">Usuario</label>
-                    <div class="form-input-container">
-                        <input type="text" class="form-input" id="username" placeholder="Ingresa tu usuario" required autocomplete="username">
-                        <div class="form-icon">👤</div>
-                    </div>
+                    <select class="form-select" id="username" required>
+                        <option value="">Seleccionar usuario...</option>
+                        <option value="admin">Administrador General</option>
+                        <option value="contabilidad">Contabilidad</option>
+                        <option value="rrhh">Recursos Humanos</option>
+                        <option value="supervisor">Supervisor</option>
+                    </select>
                 </div>
-                
                 <div class="form-group">
                     <label class="form-label">Contraseña</label>
-                    <div class="form-input-container">
-                        <input type="password" class="form-input" id="password" placeholder="Ingresa tu contraseña" required autocomplete="current-password">
-                        <div class="form-icon">🔒</div>
-                    </div>
+                    <input type="password" class="form-input" id="password" placeholder="••••••••" required>
                 </div>
-
-                <button type="submit" class="btn btn-primary" id="loginBtn">
-                    <span>🚀</span>
-                    <span>Acceder al Sistema</span>
-                </button>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
+                <div class="login-demo-info">
+                    <p><strong>Usuarios Demo:</strong></p>
+                    <p>• Admin General: admin / admin123</p>
+                    <p>• Contabilidad: contabilidad / conta123</p>
+                    <p>• RR.HH.: rrhh / rrhh123</p>
+                    <p>• Supervisor: supervisor / super123</p>
+                </div>
             </form>
-
-            <div class="users-demo">
-                <h4>👥 Selecciona un Usuario de Prueba</h4>
-                <div class="users-scroll-container">
-                    <div class="user-demo" data-user="admin" data-pass="admin123">
-                        <div class="user-demo-avatar">A</div>
-                        <div class="user-demo-name">admin</div>
-                        <div class="user-demo-role">Administrador</div>
-                    </div>
-                    <div class="user-demo" data-user="contable" data-pass="cont123">
-                        <div class="user-demo-avatar">C</div>
-                        <div class="user-demo-name">contable</div>
-                        <div class="user-demo-role">Contador</div>
-                    </div>
-                    <div class="user-demo" data-user="supervisor" data-pass="super123">
-                        <div class="user-demo-avatar">S</div>
-                        <div class="user-demo-name">supervisor</div>
-                        <div class="user-demo-role">Supervisor</div>
-                    </div>
-                    <div class="user-demo" data-user="rrhh" data-pass="rrhh123">
-                        <div class="user-demo-avatar">R</div>
-                        <div class="user-demo-name">rrhh</div>
-                        <div class="user-demo-role">RRHH</div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
     <!-- Pantalla de Carga -->
     <div class="loading-screen" id="loadingScreen">
+        <div class="loading-particles" id="loadingParticles"></div>
         <div class="loading-content">
-            <div class="loading-logo-container">
-                <div class="loading-logo">
-                    <img src="https://i.imgur.com/6XXdcPR.png" alt="TECSITEL Logo">
-                </div>
+            <div class="loading-logo">
+                <img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel Logo">
             </div>
-            <h1 class="loading-title">TECSITEL</h1>
-            <p class="loading-subtitle">PERU E.I.R.L.</p>
-            <div class="loading-status" id="loadingStatus">Conectando con el servidor...</div>
-            <div class="loading-progress">
-                <div class="loading-bar"></div>
-            </div>
+            <h1 class="loading-title">TECSITEL v4.0</h1>
+            <p class="loading-status" id="loadingStatus">Validando credenciales...</p>
         </div>
     </div>
 
-    <!-- Aplicación Principal -->
+    <!-- Contenedor Principal de la App -->
     <div class="app-container" id="appContainer">
-        <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo" onclick="showTab('dashboard')">
-                    <img src="https://i.imgur.com/6XXdcPR.png" alt="TECSITEL Logo">
+                <div class="logo" onclick="showTab('dashboard')">
+                    <img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel">
                 </div>
                 <h2 class="sidebar-title">TECSITEL</h2>
-                <p class="sidebar-subtitle">Gestión Empresarial v4.0</p>
+                <p class="sidebar-subtitle">Sistema de Gestión v4.0</p>
+                <div class="user-info">
+                    <div class="user-avatar" id="userAvatarSidebar">A</div>
+                    <div class="user-details">
+                        <div class="user-name" id="userNameSidebar">Usuario</div>
+                        <div class="user-role" id="userRoleSidebar">Rol</div>
+                    </div>
+                </div>
             </div>
-            <nav class="sidebar-nav" id="sidebarNav">
-                <!-- Se llenará dinámicamente según permisos del usuario -->
+            <nav class="nav-menu" id="navMenu">
+                <!-- Contenido dinámico basado en roles -->
             </nav>
         </aside>
 
-        <!-- Contenido Principal -->
-        <main class="main-content" id="mainContent">
-            <!-- Header -->
+        <main class="main-content">
             <header class="header">
-                <div class="header-left">
-                    <button class="sidebar-toggle" id="sidebarToggle" onclick="toggleSidebar()">
-                        <span>☰</span>
-                    </button>
-                    <h1 class="page-title" id="pageTitle">Dashboard</h1>
-                </div>
+                <button class="menu-toggle" style="display:none;" onclick="document.getElementById('sidebar').classList.toggle('active')">☰</button>
+                <h1 class="page-title" id="pageTitle">Dashboard</h1>
                 <div class="header-right">
-                    <div class="header-actions">
-                        <button class="btn" style="padding: 8px 16px; background: var(--tecsitel-gray-100); color: var(--tecsitel-gray-700); font-size: 0.875rem;" onclick="refreshData()">
-                            🔄 Actualizar
-                        </button>
-                        <button class="btn" style="padding: 8px 16px; background: var(--tecsitel-gray-100); color: var(--tecsitel-gray-700); font-size: 0.875rem;" onclick="logout()">
-                            🚪 Salir
-                        </button>
-                    </div>
-                    <div class="user-menu" onclick="showUserMenu()">
-                        <div class="user-avatar" id="userAvatar">U</div>
-                        <div class="user-info">
-                            <div class="user-name" id="userName">Usuario</div>
-                            <div class="user-role" id="userRole">TECSITEL</div>
-                        </div>
+                    <div class="user-info-header">
+                        <span id="userNameDisplay">Usuario</span>
+                        <div class="user-avatar" id="userAvatar" onclick="logout()">A</div>
                     </div>
                 </div>
             </header>
 
-            <!-- Área de Contenido -->
-            <div class="content-area">
-                <!-- Dashboard -->
+            <div class="content">
+                <!-- Dashboard Tab -->
                 <div id="dashboard" class="tab-content active">
-                    <div class="dashboard-grid">
-                        <div class="metric-card" onclick="showTab('invoices')">
-                            <div class="metric-header">
-                                <div class="metric-icon">💰</div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-info">
+                                    <div class="stat-value" id="totalIncome">S/ 2500.00</div>
+                                    <div class="stat-label">Ingresos Totales</div>
+                                </div>
+                                <div class="stat-icon" style="background:var(--success-alpha);color:var(--success)">💰</div>
                             </div>
-                            <div class="metric-value" id="totalIncome">S/ 0.00</div>
-                            <div class="metric-label">Ingresos Totales</div>
-                            <div class="metric-change positive">
-                                <span class="metric-change-icon">↗</span>
-                                <span>Conectado al sistema</span>
-                            </div>
+                            <div class="stat-status" id="incomeStatus">✅ Conectado al sistema</div>
                         </div>
-
-                        <div class="metric-card" onclick="showTab('invoices')">
-                            <div class="metric-header">
-                                <div class="metric-icon">📋</div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-info">
+                                    <div class="stat-value" id="pendingInvoices">1</div>
+                                    <div class="stat-label">Facturas Pendientes</div>
+                                </div>
+                                <div class="stat-icon" style="background:var(--warning-alpha);color:var(--warning)">📋</div>
                             </div>
-                            <div class="metric-value" id="pendingInvoices">0</div>
-                            <div class="metric-label">Facturas Pendientes</div>
-                            <div class="metric-change warning">
-                                <span class="metric-change-icon">⚠</span>
-                                <span>Por gestionar</span>
-                            </div>
+                            <div class="stat-status" id="invoiceStatus">⚠️ Por gestionar</div>
                         </div>
-
-                        <div class="metric-card" onclick="showTab('employees')">
-                            <div class="metric-header">
-                                <div class="metric-icon">👥</div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-info">
+                                    <div class="stat-value" id="activeEmployees">3</div>
+                                    <div class="stat-label">Empleados Activos</div>
+                                </div>
+                                <div class="stat-icon" style="background:var(--info-alpha);color:var(--info)">👥</div>
                             </div>
-                            <div class="metric-value" id="totalEmployees">0</div>
-                            <div class="metric-label">Empleados Activos</div>
-                            <div class="metric-change positive">
-                                <span class="metric-change-icon">↗</span>
-                                <span>Base de datos</span>
-                            </div>
+                            <div class="stat-status" id="employeeStatus">✅ Base de datos</div>
                         </div>
-
-                        <div class="metric-card" onclick="showTab('compliance')">
-                            <div class="metric-header">
-                                <div class="metric-icon">⚖️</div>
+                        <div class="stat-card">
+                            <div class="stat-header">
+                                <div class="stat-info">
+                                    <div class="stat-value" id="compliance">100%</div>
+                                    <div class="stat-label">Cumplimiento</div>
+                                </div>
+                                <div class="stat-icon" style="background:var(--success-alpha);color:var(--success)">⚖️</div>
                             </div>
-                            <div class="metric-value" id="complianceScore">100%</div>
-                            <div class="metric-label">Cumplimiento</div>
-                            <div class="metric-change positive">
-                                <span class="metric-change-icon">✓</span>
-                                <span>Sistema activo</span>
-                            </div>
+                            <div class="stat-status" id="complianceStatus">✅ Sistema activo</div>
                         </div>
                     </div>
-
-                    <!-- Información de la empresa -->
+                    
                     <div class="panel">
                         <div class="panel-header">
-                            <h3 class="panel-title">🏢 TECSITEL PERU E.I.R.L.</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="alert alert-info" id="companyInfo">
-                                <span class="alert-icon">ℹ️</span>
-                                <div class="alert-content">
-                                    <strong>RUC: 20605908285</strong><br>
-                                    Sistema integrado de gestión empresarial con backend PostgreSQL (Neon) y cumplimiento normativo SUNAT y SUNAFIL.
-                                    <span id="connectionMode">Verificando conexión...</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Otras secciones se cargarán dinámicamente -->
-                <div id="invoices" class="tab-content">
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h3 class="panel-title">📄 Gestión de Facturas</h3>
-                            <button class="btn btn-primary" onclick="showCreateInvoice()">
-                                ➕ Nueva Factura
-                            </button>
-                        </div>
-                        <div class="panel-body">
-                            <div class="alert alert-success">
-                                <span class="alert-icon">✓</span>
-                                <div class="alert-content">
-                                    <strong>Facturación Electrónica 3.0 Activa</strong><br>
-                                    <span id="invoiceConnectionStatus">Conectado a backend con base de datos PostgreSQL.</span>
-                                </div>
-                            </div>
-                            <div id="invoicesTableContainer">
-                                <!-- Se carga dinámicamente -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="accounting" class="tab-content">
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h3 class="panel-title">💰 Análisis Contable</h3>
-                            <button class="btn btn-primary" onclick="refreshAccounting()">
-                                🔄 Actualizar Datos
-                            </button>
-                        </div>
-                        <div class="panel-body">
-                            <!-- Gráfico de Ingresos Responsive -->
-                            <div style="margin-bottom: 2rem;">
-                                <h4 style="margin-bottom: 1rem; text-align: center;">📈 Ingresos por Mes</h4>
-                                <div class="chart-container">
-                                    <canvas id="incomeChart" style="width: 100%; height: 100%;"></canvas>
-                                </div>
-                            </div>
-                            
-                            <!-- Balance Contable Responsive -->
-                            <div class="responsive-grid">
-                                <div class="metric-card">
-                                    <div class="metric-header">
-                                        <div class="metric-icon" style="background: var(--success);">💵</div>
-                                    </div>
-                                    <div class="metric-value" id="totalRevenue">S/ 0.00</div>
-                                    <div class="metric-label">Ingresos Totales</div>
-                                    <div class="metric-change positive">
-                                        <span class="metric-change-icon">✓</span>
-                                        <span>Facturas cobradas</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="metric-card">
-                                    <div class="metric-header">
-                                        <div class="metric-icon" style="background: var(--warning);">📊</div>
-                                    </div>
-                                    <div class="metric-value" id="pendingRevenue">S/ 0.00</div>
-                                    <div class="metric-label">Por Cobrar</div>
-                                    <div class="metric-change warning">
-                                        <span class="metric-change-icon">⏳</span>
-                                        <span>Facturas pendientes</span>
-                                    </div>
-                                </div>
-                                
-                                <div class="metric-card">
-                                    <div class="metric-header">
-                                        <div class="metric-icon" style="background: var(--info);">🧮</div>
-                                    </div>
-                                    <div class="metric-value" id="monthlyAverage">S/ 0.00</div>
-                                    <div class="metric-label">Promedio Mensual</div>
-                                    <div class="metric-change positive">
-                                        <span class="metric-change-icon">📈</span>
-                                        <span>Últimos 6 meses</span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Filtros de Reporte -->
-                            <div class="panel" style="margin-top: 2rem;">
-                                <div class="panel-header">
-                                    <h4 class="panel-title">📋 Filtros de Reporte</h4>
-                                    <button class="btn btn-secondary" onclick="exportAccountingReport()">
-                                        📤 Exportar PDF
-                                    </button>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="responsive-stack">
-                                        <div class="form-group">
-                                            <label class="form-label">Fecha Desde</label>
-                                            <input type="date" class="form-control" id="dateFrom">
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label">Fecha Hasta</label>
-                                            <input type="date" class="form-control" id="dateTo">
-                                        </div>
-                                        <div class="form-group">
-                                            <label class="form-label">Estado</label>
-                                            <select class="form-control" id="statusFilter">
-                                                <option value="">Todos los estados</option>
-                                                <option value="paid">Pagadas</option>
-                                                <option value="issued">Emitidas</option>
-                                                <option value="draft">Borradores</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group" style="display: flex; align-items: end;">
-                                            <button class="btn btn-primary" onclick="applyAccountingFilters()" style="width: 100%;">
-                                                🔍 Aplicar Filtros
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="timetracking" class="tab-content">
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h3 class="panel-title">⏰ Control de Asistencia</h3>
-                            <button class="btn btn-primary" onclick="showTimeEntryModal()">
-                                ➕ Nueva Marcación
-                            </button>
+                            <h3 class="panel-title">📊 Información del Sistema</h3>
                         </div>
                         <div class="panel-body">
                             <div class="alert alert-info">
                                 <span class="alert-icon">ℹ️</span>
                                 <div class="alert-content">
-                                    <strong>Cumplimiento SUNAFIL.</strong> El registro de control de asistencia es obligatorio.
+                                    <strong>TECSITEL PERU E.I.R.L.</strong><br>
+                                    RUC: 20605908285<br>
+                                    Sistema integrado de gestión empresarial con backend PostgreSQL (Neon) y cumplimiento normativo SUNAT y SUNAFIL.
+                                    Funcionando en modo local con datos de demostración.
                                 </div>
-                            </div>
-                            
-                            <!-- Marcación Rápida Responsive -->
-                            <div class="panel" style="margin-bottom: 2rem;">
-                                <div class="panel-header">
-                                    <h4 class="panel-title">🚀 Marcación Rápida</h4>
-                                </div>
-                                <div class="panel-body">
-                                    <div class="responsive-stack">
-                                        <select id="quickEmployeeSelect" class="form-control">
-                                            <option value="">Seleccionar empleado...</option>
-                                        </select>
-                                        <div class="time-quick-actions">
-                                            <button class="btn btn-success" onclick="quickTimeEntry('entrada')">
-                                                ⏰ Marcar Entrada
-                                            </button>
-                                            <button class="btn btn-danger" onclick="quickTimeEntry('salida')">
-                                                🚪 Marcar Salida
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div id="timeTrackingTableContainer">
-                                <!-- Se carga dinámicamente -->
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="employee-status" class="tab-content">
+                <!-- Facturas Tab -->
+                <div id="invoices" class="tab-content">
                     <div class="panel">
                         <div class="panel-header">
-                            <h3 class="panel-title">👤 Estados de Personal</h3>
+                            <h3 class="panel-title">📄 Gestión de Facturas</h3>
+                            <button class="btn btn-primary" onclick="showModal('newInvoice')">➕ Nueva Factura</button>
                         </div>
                         <div class="panel-body">
-                            <div class="alert alert-warning">
-                                <span class="alert-icon">⚠️</span>
+                            <div class="table-responsive">
+                                <table class="table" id="invoicesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>N° Factura</th>
+                                            <th>Cliente</th>
+                                            <th>Monto</th>
+                                            <th>Estado</th>
+                                            <th>Fecha</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contabilidad Tab -->
+                <div id="accounting" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">💰 Balance General</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="balance-sheet">
+                                <div class="balance-section">
+                                    <h4>ACTIVOS</h4>
+                                    <div class="balance-item"><span>Efectivo y Equivalentes</span><span>S/ 25,150.00</span></div>
+                                    <div class="balance-item"><span>Cuentas por Cobrar</span><span id="accountsReceivable">S/ 8,500.00</span></div>
+                                    <div class="balance-item"><span>Inventario</span><span>S/ 12,300.00</span></div>
+                                    <div class="balance-total"><span>Total Activos</span><span id="totalAssets">S/ 45,950.00</span></div>
+                                </div>
+                                <div class="balance-section">
+                                    <h4>PASIVOS</h4>
+                                    <div class="balance-item"><span>Cuentas por Pagar</span><span>S/ 15,800.00</span></div>
+                                    <div class="balance-item"><span>Préstamos</span><span>S/ 10,000.00</span></div>
+                                    <div class="balance-total"><span>Total Pasivos</span><span id="totalLiabilities">S/ 25,800.00</span></div>
+                                </div>
+                                <div class="balance-section">
+                                    <h4>PATRIMONIO</h4>
+                                    <div class="balance-item"><span>Capital Social</span><span>S/ 15,000.00</span></div>
+                                    <div class="balance-item"><span>Utilidades Retenidas</span><span id="retainedEarnings">S/ 5,150.00</span></div>
+                                    <div class="balance-total"><span>Total Patrimonio</span><span id="totalEquity">S/ 20,150.00</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Tab -->
+                <div id="personnel" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">👥 Gestión de Personal</h3>
+                            <button class="btn btn-primary" onclick="showModal('newEmployee')">➕ Nuevo Empleado</button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table" id="employeesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>DNI</th>
+                                            <th>Nombre Completo</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Time Tracking Tab -->
+                <div id="timetracking" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">⏰ Control de Asistencia</h3>
+                            <button class="btn btn-primary" onclick="showModal('timeEntry')">➕ Marcar Tiempo</button>
+                        </div>
+                        <div class="panel-body">
+                            <div class="alert alert-info">
+                                <span class="alert-icon">ℹ️</span>
                                 <div class="alert-content">
-                                    <strong>Función exclusiva RRHH.</strong> Gestión de estados laborales según normativa.
+                                    <strong>Cumplimiento SUNAFIL:</strong> El registro de control de asistencia es obligatorio para empresas con más de 20 trabajadores.
                                 </div>
                             </div>
-                            
-                            <div id="employeeStatusContainer">
-                                <!-- Se carga dinámicamente -->
+                            <div class="table-responsive">
+                                <table class="table" id="timeEntriesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Empleado</th>
+                                            <th>Fecha</th>
+                                            <th>Entrada</th>
+                                            <th>Salida</th>
+                                            <th>Horas</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div id="employees" class="tab-content">
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h3 class="panel-title">👥 Gestión de Empleados</h3>
-                            <button class="btn btn-primary" onclick="showCreateEmployee()">
-                                ➕ Nuevo Empleado
-                            </button>
-                        </div>
-                        <div class="panel-body">
-                            <div id="employeesTableContainer">
-                                <!-- Se carga dinámicamente -->
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                <!-- Cumplimiento Tab -->
                 <div id="compliance" class="tab-content">
                     <div class="panel">
                         <div class="panel-header">
                             <h3 class="panel-title">⚖️ Cumplimiento Normativo</h3>
                         </div>
                         <div class="panel-body">
+                            <div class="compliance-grid">
+                                <div class="compliance-card">
+                                    <div class="compliance-header">
+                                        <h4>SUNAT</h4>
+                                        <span class="compliance-status success">✅ Al día</span>
+                                    </div>
+                                    <p>Declaraciones tributarias actualizadas</p>
+                                </div>
+                                <div class="compliance-card">
+                                    <div class="compliance-header">
+                                        <h4>SUNAFIL</h4>
+                                        <span class="compliance-status success">✅ Cumple</span>
+                                    </div>
+                                    <p>Registro de asistencia implementado</p>
+                                </div>
+                                <div class="compliance-card">
+                                    <div class="compliance-header">
+                                        <h4>MINTRA</h4>
+                                        <span class="compliance-status success">✅ Cumple</span>
+                                    </div>
+                                    <p>Derechos laborales garantizados</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Respaldos Tab -->
+                <div id="sharepoint" class="tab-content">
+                    <div class="panel">
+                        <div class="panel-header">
+                            <h3 class="panel-title">☁️ Respaldos y Seguridad</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="backup-actions">
+                                <button class="btn btn-primary" onclick="downloadFullBackup()">📥 Descargar Respaldo Completo</button>
+                                <button class="btn btn-secondary" onclick="downloadInvoicesCSV()">📊 Exportar Facturas</button>
+                            </div>
                             <div class="alert alert-success">
                                 <span class="alert-icon">✅</span>
                                 <div class="alert-content">
-                                    <strong>Estado Excelente:</strong> TECSITEL mantiene cumplimiento total con normativas SUNAT y SUNAFIL.
+                                    <strong>Último respaldo:</strong> Sistema funcionando correctamente
                                 </div>
                             </div>
                         </div>
@@ -2077,2224 +342,171 @@
         </main>
     </div>
 
-    <!-- Estado de Conexión -->
-    <div class="connection-status" id="connectionStatus">
-        <div class="connection-dot"></div>
-        <span id="connectionText">Verificando conexión...</span>
-    </div>
-
-    <!-- Contenedor de Toasts -->
-    <div class="toast-container" id="toastContainer"></div>
-
-    <!-- Modal Nueva Factura Responsive -->
+    <!-- Modales -->
+    <!-- Modal Nueva Factura -->
     <div class="modal" id="newInvoice">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">📄 Nueva Factura</h3>
-                <button class="modal-close" onclick="closeModal('newInvoice')">×</button>
+                <h3 class="modal-title">➕ Nueva Factura</h3>
+                <button class="modal-close" onclick="closeModal('newInvoice')">&times;</button>
             </div>
-            <form id="invoiceForm" onsubmit="createInvoice(event)">
-                <div class="responsive-grid">
-                    <div class="form-group">
-                        <label class="form-label">Cliente *</label>
-                        <input type="text" class="form-control" name="client_name" placeholder="Nombre del cliente" required>
+            <div class="modal-body">
+                <form id="invoiceForm" onsubmit="saveInvoice(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">RUC Cliente*</label>
+                            <input type="text" class="form-input" name="clientRuc" placeholder="20123456789" pattern="[0-9]{11}" required>
+                            <div class="form-error" id="rucError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Nombre Cliente*</label>
+                            <input type="text" class="form-input" name="clientName" placeholder="Empresa SAC" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">RUC/DNI *</label>
-                        <input type="text" class="form-control" name="client_document" placeholder="20123456789" required>
+                        <label class="form-label">Descripción*</label>
+                        <textarea class="form-textarea" name="description" placeholder="Descripción del servicio o producto..." required></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Moneda*</label>
+                            <select class="form-select" name="currency" required>
+                                <option value="PEN">Soles (PEN)</option>
+                                <option value="USD">Dólares (USD)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Monto*</label>
+                            <input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" min="0" required>
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Servicio *</label>
-                        <select class="form-control" name="service_type" required>
-                            <option value="">Seleccionar servicio</option>
-                            <option value="Instalación FTTH">📡 Instalación FTTH</option>
-                            <option value="Cableado Estructurado">🔧 Cableado Estructurado</option>
-                            <option value="Enlaces Microondas">📶 Enlaces Microondas</option>
-                            <option value="Mantenimiento">🛠 Mantenimiento</option>
-                            <option value="Consultoría TI">💻 Consultoría TI</option>
-                            <option value="Soporte Técnico">🔧 Soporte Técnico</option>
-                        </select>
+                        <label class="form-checkbox">
+                            <input type="checkbox" name="isExportInvoice">
+                            <span class="form-checkbox-text">Factura de Exportación</span>
+                        </label>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Subtotal (S/) *</label>
-                        <input type="number" class="form-control" name="subtotal" placeholder="0.00" step="0.01" min="0" required oninput="calculateTotal()">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">IGV (18%)</label>
-                        <input type="number" class="form-control" name="igv" placeholder="0.00" step="0.01" readonly style="background: var(--tecsitel-gray-100);">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Total (S/)</label>
-                        <input type="number" class="form-control" name="total" placeholder="0.00" step="0.01" readonly style="background: var(--tecsitel-gray-100); font-weight: bold;">
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Observaciones</label>
-                    <textarea class="form-control" name="notes" rows="3" placeholder="Observaciones adicionales..."></textarea>
-                </div>
-                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('newInvoice')">
-                        ❌ Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        💾 Guardar Factura
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('newInvoice')">Cancelar</button>
+                <button type="submit" form="invoiceForm" class="btn btn-primary">Crear Factura</button>
+            </div>
         </div>
     </div>
-    
+
     <!-- Modal Nuevo Empleado -->
     <div class="modal" id="newEmployee">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">👤 Nuevo Empleado</h3>
-                <button class="modal-close" onclick="closeModal('newEmployee')">×</button>
+                <h3 class="modal-title">➕ Nuevo Empleado</h3>
+                <button class="modal-close" onclick="closeModal('newEmployee')">&times;</button>
             </div>
-            <form id="employeeForm" onsubmit="saveEmployee(event)">
-                <div class="responsive-grid">
+            <div class="modal-body">
+                <form id="employeeForm" onsubmit="saveEmployee(event)">
                     <div class="form-group">
-                        <label class="form-label">DNI *</label>
-                        <input type="text" class="form-control" name="employeeDni" placeholder="8 dígitos numéricos" required pattern="[0-9]{8}" maxlength="8">
-                        <small id="dniError" style="color: var(--danger); height: 1em; display: block;"></small>
+                        <label class="form-label">DNI*</label>
+                        <input type="text" class="form-input" name="dni" placeholder="12345678" pattern="[0-9]{8}" required>
+                        <div class="form-error" id="dniError"></div>
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Nombres *</label>
-                        <input type="text" class="form-control" name="employeeFirstName" placeholder="Nombres del empleado" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Apellidos *</label>
-                        <input type="text" class="form-control" name="employeeLastName" placeholder="Apellidos del empleado" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Estado *</label>
-                        <select class="form-control" name="employeeStatus" required>
-                            <option value="Activo">✅ Activo</option>
-                            <option value="Vacaciones">🏖️ Vacaciones</option>
-                            <option value="Descanso Médico">🏥 Descanso Médico</option>
-                            <option value="Suspendido">⏸️ Suspendido</option>
-                            <option value="Cesado">❌ Cesado</option>
-                        </select>
-                    </div>
-                </div>
-                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('newEmployee')">
-                        ❌ Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        💾 Guardar Empleado
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
-    <!-- Modal Nueva Marcación Responsive -->
-    <div class="modal" id="timeEntryModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">⏰ Nueva Marcación</h3>
-                <button class="modal-close" onclick="closeModal('timeEntryModal')">×</button>
-            </div>
-            <form id="timeEntryForm" onsubmit="createTimeEntry(event)">
-                <div class="responsive-grid">
-                    <div class="form-group">
-                        <label class="form-label">Empleado *</label>
-                        <select class="form-control" name="employee_id" required>
-                            <option value="">Seleccionar empleado</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Tipo *</label>
-                        <select class="form-control" name="entry_type" required>
-                            <option value="entrada">⏰ Entrada</option>
-                            <option value="salida">🚪 Salida</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Fecha *</label>
-                        <input type="date" class="form-control" name="entry_date" required>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Hora *</label>
-                        <input type="time" class="form-control" name="entry_time" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Observaciones</label>
-                    <textarea class="form-control" name="notes" rows="2" placeholder="Observaciones opcionales..."></textarea>
-                </div>
-                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('timeEntryModal')">
-                        ❌ Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        💾 Registrar Marcación
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal Cambiar Estado Empleado Responsive -->
-    <div class="modal" id="employeeStatusModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">👤 Cambiar Estado de Empleado</h3>
-                <button class="modal-close" onclick="closeModal('employeeStatusModal')">×</button>
-            </div>
-            <form id="employeeStatusForm" onsubmit="changeEmployeeStatus(event)">
-                <div class="form-group">
-                    <label class="form-label">Empleado</label>
-                    <input type="text" class="form-control" id="statusEmployeeName" readonly style="background: var(--tecsitel-gray-100);">
-                    <input type="hidden" name="employee_id" id="statusEmployeeId">
-                </div>
-                <div class="responsive-grid">
-                    <div class="form-group">
-                        <label class="form-label">Nuevo Estado *</label>
-                        <select class="form-control" name="new_status" required>
-                            <option value="">Seleccionar estado</option>
-                            <option value="Activo">✅ Activo</option>
-                            <option value="Vacaciones">🏖️ Vacaciones</option>
-                            <option value="Descanso Médico">🏥 Descanso Médico</option>
-                            <option value="Suspendido">⏸️ Suspendido</option>
-                            <option value="Cesado">❌ Cesado</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Fecha de cambio *</label>
-                        <input type="date" class="form-control" name="change_date" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Motivo/Observaciones *</label>
-                    <textarea class="form-control" name="reason" rows="3" placeholder="Motivo del cambio de estado..." required></textarea>
-                </div>
-                <div style="margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: flex-end; flex-wrap: wrap;">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('employeeStatusModal')">
-                        ❌ Cancelar
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        💾 Cambiar Estado
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // =============================================
-        // CONFIGURACIÓN Y ESTADO GLOBAL
-        // =============================================
-        const API_CONFIG = {
-            baseURL: window.location.hostname === 'localhost' 
-                ? 'http://localhost:8888/.netlify/functions'
-                : 'https://tecsitel.netlify.app/.netlify/functions',
-            timeout: 10000,
-            retryAttempts: 2,
-            fallbackMode: false
-        };
-
-        // Usuarios de fallback para cuando el backend no esté disponible
-        const FALLBACK_USERS = {
-            'admin': {
-                password: 'admin123',
-                id: '1',
-                username: 'admin',
-                full_name: 'Administrador General',
-                role: 'Administrador',
-                email: 'admin@tecsitel.pe'
-            },
-            'contable': {
-                password: 'cont123',
-                id: '2',
-                username: 'contable',
-                full_name: 'Contador Principal',
-                role: 'Contador',
-                email: 'contable@tecsitel.pe'
-            },
-            'supervisor': {
-                password: 'super123',
-                id: '3',
-                username: 'supervisor',
-                full_name: 'Supervisor General',
-                role: 'Supervisor',
-                email: 'supervisor@tecsitel.pe'
-            },
-            'rrhh': {
-                password: 'rrhh123',
-                id: '4',
-                username: 'rrhh',
-                full_name: 'Recursos Humanos',
-                role: 'RRHH',
-                email: 'rrhh@tecsitel.pe'
-            }
-        };
-
-        const AppState = {
-            isAuthenticated: false,
-            user: null,
-            token: null,
-            invoices: [],
-            employees: [],
-            timeEntries: [],
-            sessionStart: null,
-            isOnline: navigator.onLine,
-            lastSync: null,
-            pendingOperations: [],
-            nextId: {
-                invoice: 1,
-                employee: 1,
-                timeEntry: 1
-            }
-        };
-
-        let sidebarCollapsed = false;
-        let connectionCheckInterval;
-
-        // =============================================
-        // UTILIDADES DE API
-        // =============================================
-        async function makeAPICall(endpoint, options = {}) {
-            // Si estamos en modo fallback, no intentar llamadas API
-            if (API_CONFIG.fallbackMode && !options.forceAPI) {
-                throw new Error('Modo local activado - Backend no disponible');
-            }
-
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.timeout);
-
-            try {
-                updateConnectionStatus('connecting');
-
-                const config = {
-                    method: options.method || 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        ...options.headers
-                    },
-                    signal: controller.signal,
-                    ...options
-                };
-
-                if (AppState.token && !options.skipAuth) {
-                    config.headers['Authorization'] = `Bearer ${AppState.token}`;
-                }
-
-                if (options.body && typeof options.body === 'object') {
-                    config.body = JSON.stringify(options.body);
-                }
-
-                const response = await fetch(`${API_CONFIG.baseURL}${endpoint}`, config);
-                clearTimeout(timeoutId);
-
-                if (!response.ok) {
-                    // Si es 404, activar modo fallback
-                    if (response.status === 404) {
-                        console.warn('Backend no encontrado, activando modo local');
-                        API_CONFIG.fallbackMode = true;
-                        updateConnectionStatus('offline');
-                        throw new Error('Backend no disponible - Modo local activado');
-                    }
-                    
-                    const errorData = await response.json().catch(() => ({}));
-                    throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                updateConnectionStatus('online');
-                AppState.lastSync = new Date();
-                API_CONFIG.fallbackMode = false; // Restaurar modo normal si funciona
-                
-                return await response.json();
-            } catch (error) {
-                clearTimeout(timeoutId);
-                
-                if (error.name === 'AbortError' || error.message.includes('fetch')) {
-                    updateConnectionStatus('offline');
-                    API_CONFIG.fallbackMode = true;
-                    throw new Error('Backend no disponible - Modo local activado');
-                }
-
-                updateConnectionStatus('offline');
-                console.error('Error en API:', error);
-                
-                // Activar modo fallback en errores de red
-                if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                    API_CONFIG.fallbackMode = true;
-                }
-                
-                throw error;
-            }
-        }
-
-        // =============================================
-        // SISTEMA DE AUTENTICACIÓN INTEGRADO
-        // =============================================
-        async function handleLogin(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const loginBtn = document.getElementById('loginBtn');
-            
-            if (!username || !password) {
-                showToast('⚠️ Por favor completa todos los campos', 'warning');
-                return;
-            }
-            
-            // UI Loading state
-            loginBtn.disabled = true;
-            loginBtn.innerHTML = '<div class="loading-spinner"></div><span>Validando...</span>';
-            
-            try {
-                let response;
-                let usingFallback = false;
-
-                try {
-                    // Intentar autenticación con backend
-                    response = await makeAPICall('/api/auth/login', {
-                        method: 'POST',
-                        body: { username, password },
-                        skipAuth: true
-                    });
-                } catch (backendError) {
-                    console.warn('Backend no disponible, usando modo local:', backendError.message);
-                    
-                    // Usar sistema de fallback
-                    const fallbackUser = FALLBACK_USERS[username];
-                    if (!fallbackUser || fallbackUser.password !== password) {
-                        throw new Error('Credenciales incorrectas');
-                    }
-                    
-                    // Simular respuesta del backend
-                    response = {
-                        success: true,
-                        token: 'fallback_token_' + Date.now(),
-                        user: {
-                            id: fallbackUser.id,
-                            username: fallbackUser.username,
-                            full_name: fallbackUser.full_name,
-                            role: fallbackUser.role,
-                            email: fallbackUser.email
-                        }
-                    };
-                    
-                    usingFallback = true;
-                    API_CONFIG.fallbackMode = true;
-                }
-
-                if (response.success) {
-                    // Autenticación exitosa
-                    AppState.isAuthenticated = true;
-                    AppState.user = response.user;
-                    AppState.token = response.token;
-                    AppState.sessionStart = Date.now();
-                    
-                    // Guardar token en sessionStorage
-                    sessionStorage.setItem('tecsitel_token', response.token);
-                    sessionStorage.setItem('tecsitel_user', JSON.stringify(response.user));
-                    sessionStorage.setItem('tecsitel_fallback', usingFallback.toString());
-                    
-                    // Mostrar pantalla de carga
-                    document.getElementById('loginScreen').classList.add('hidden');
-                    document.getElementById('loadingScreen').classList.add('active');
-                    
-                    if (usingFallback) {
-                        showToast('🔄 Modo local activado - Backend no disponible', 'warning');
-                    }
-                    
-                    startLoadingSequence(usingFallback);
-                } else {
-                    throw new Error(response.error || 'Error de autenticación');
-                }
-                
-            } catch (error) {
-                console.error('Error de login:', error);
-                showToast(`❌ ${error.message}`, 'error');
-                
-                // Marcar campos con error
-                document.getElementById('username').classList.add('error');
-                document.getElementById('password').classList.add('error');
-                
-            } finally {
-                // Restaurar botón
-                loginBtn.disabled = false;
-                loginBtn.innerHTML = '<span>🚀</span><span>Acceder al Sistema</span>';
-            }
-        }
-
-        function startLoadingSequence(usingFallback = false) {
-            const statusMessages = usingFallback ? [
-                'Modo local activado...',
-                'Cargando datos locales...',
-                'Verificando permisos de usuario...',
-                'Preparando módulos del sistema...',
-                'Inicializando datos de demostración...',
-                'Configurando interfaz...',
-                '¡Sistema listo en modo local!'
-            ] : [
-                'Autenticación exitosa...',
-                'Conectando con base de datos PostgreSQL...',
-                'Verificando permisos de usuario...',
-                'Cargando módulos del sistema...',
-                'Sincronizando datos empresariales...',
-                'Verificando cumplimiento SUNAT...',
-                'Verificando cumplimiento SUNAFIL...',
-                'Preparando interfaz de usuario...',
-                '¡Bienvenido a TECSITEL!'
-            ];
-            
-            let currentIndex = 0;
-            const statusElement = document.getElementById('loadingStatus');
-            
-            const updateStatus = () => {
-                if (currentIndex < statusMessages.length) {
-                    statusElement.textContent = statusMessages[currentIndex];
-                    currentIndex++;
-                    setTimeout(updateStatus, 300);
-                } else {
-                    setTimeout(showMainApp, 500);
-                }
-            };
-            
-            updateStatus();
-        }
-
-        async function showMainApp() {
-            try {
-                document.getElementById('loadingScreen').classList.remove('active');
-                document.getElementById('appContainer').classList.add('active');
-                
-                await initializeApp();
-                showToast(`🎉 Bienvenido ${AppState.user.full_name || AppState.user.username}`, 'success');
-                
-            } catch (error) {
-                console.error('Error inicializando app:', error);
-                showToast('❌ Error cargando la aplicación', 'error');
-            }
-        }
-
-        async function logout() {
-            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                // Limpiar estado
-                AppState.isAuthenticated = false;
-                AppState.user = null;
-                AppState.token = null;
-                AppState.sessionStart = null;
-                
-                // Limpiar almacenamiento
-                sessionStorage.removeItem('tecsitel_token');
-                sessionStorage.removeItem('tecsitel_user');
-                
-                // Limpiar intervalos
-                if (connectionCheckInterval) {
-                    clearInterval(connectionCheckInterval);
-                }
-                
-                // Resetear UI
-                document.getElementById('appContainer').classList.remove('active');
-                document.getElementById('loginScreen').classList.remove('hidden');
-                
-                // Limpiar formulario
-                document.getElementById('loginForm').reset();
-                document.querySelectorAll('.form-input').forEach(input => {
-                    input.classList.remove('error');
-                });
-                document.querySelectorAll('.user-demo').forEach(card => {
-                    card.classList.remove('selected');
-                });
-                
-                showToast('👋 Sesión cerrada exitosamente', 'info');
-            }
-        }
-
-        // Verificar sesión existente al cargar la página
-        async function checkExistingSession() {
-            const token = sessionStorage.getItem('tecsitel_token');
-            const userData = sessionStorage.getItem('tecsitel_user');
-            const wasFallback = sessionStorage.getItem('tecsitel_fallback') === 'true';
-            
-            if (token && userData) {
-                try {
-                    AppState.token = token;
-                    AppState.user = JSON.parse(userData);
-                    
-                    if (wasFallback || token.startsWith('fallback_token_')) {
-                        // Estábamos en modo fallback
-                        API_CONFIG.fallbackMode = true;
-                        AppState.isAuthenticated = true;
-                        AppState.sessionStart = Date.now();
-                        
-                        // Mostrar app directamente en modo local
-                        document.getElementById('loginScreen').classList.add('hidden');
-                        document.getElementById('appContainer').classList.add('active');
-                        
-                        await initializeApp();
-                        showToast('🔄 Sesión restaurada (modo local)', 'info');
-                        return true;
-                    } else {
-                        // Verificar si el token del backend sigue siendo válido
-                        try {
-                            const response = await makeAPICall('/api/auth/verify');
-                            
-                            if (response.valid) {
-                                AppState.isAuthenticated = true;
-                                AppState.sessionStart = Date.now();
-                                
-                                // Mostrar app directamente
-                                document.getElementById('loginScreen').classList.add('hidden');
-                                document.getElementById('appContainer').classList.add('active');
-                                
-                                await initializeApp();
-                                showToast('🔄 Sesión restaurada', 'success');
-                                return true;
-                            }
-                        } catch (error) {
-                            console.warn('Backend no disponible, cambiando a modo local:', error);
-                            
-                            // Cambiar a modo fallback si el backend no responde
-                            API_CONFIG.fallbackMode = true;
-                            sessionStorage.setItem('tecsitel_fallback', 'true');
-                            
-                            AppState.isAuthenticated = true;
-                            AppState.sessionStart = Date.now();
-                            
-                            document.getElementById('loginScreen').classList.add('hidden');
-                            document.getElementById('appContainer').classList.add('active');
-                            
-                            await initializeApp();
-                            showToast('🔄 Sesión restaurada (modo local)', 'warning');
-                            return true;
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error verificando sesión:', error);
-                    // Token inválido, limpiar y mostrar login
-                    sessionStorage.clear();
-                }
-            }
-            
-            return false;
-        }
-
-        // =============================================
-        // INICIALIZACIÓN DE LA APLICACIÓN
-        // =============================================
-        function initializeApp() {
-            document.getElementById('loadingScreen').style.display = 'none';
-            document.getElementById('appContainer').style.display = 'flex';
-            
-            // Configurar información del usuario
-            if (AppState.user) {
-                document.getElementById('userAvatar').textContent = AppState.user.avatar || AppState.user.full_name?.charAt(0).toUpperCase() || 'U';
-                document.getElementById('userName').textContent = AppState.user.full_name || AppState.user.name || 'Usuario';
-                document.getElementById('userRole').textContent = AppState.user.role || 'Usuario';
-            }
-            
-            // Aplicar restricciones de interfaz según el rol
-            applyRoleRestrictions();
-            
-            // Cargar datos iniciales
-            loadInitialData();
-            renderDashboard();
-            showTab('dashboard');
-        }
-
-        function setupUserInterface() {
-            const avatar = AppState.user.full_name 
-                ? AppState.user.full_name.charAt(0).toUpperCase()
-                : AppState.user.username.charAt(0).toUpperCase();
-                
-            document.getElementById('userAvatar').textContent = avatar;
-            document.getElementById('userName').textContent = AppState.user.full_name || AppState.user.username;
-            document.getElementById('userRole').textContent = `${AppState.user.role} - TECSITEL`;
-        }
-
-        function setupNavigation() {
-            const modules = getAvailableModules();
-            const sidebarNav = document.getElementById('sidebarNav');
-            sidebarNav.innerHTML = '';
-            
-            modules.forEach(moduleId => {
-                const navItem = document.createElement('a');
-                navItem.href = '#';
-                navItem.className = `nav-item ${moduleId === 'dashboard' ? 'active' : ''}`;
-                navItem.dataset.tab = moduleId;
-                navItem.onclick = (e) => { e.preventDefault(); showTab(moduleId); };
-                
-                const moduleConfig = getModuleConfig(moduleId);
-                navItem.innerHTML = `
-                    <span class="nav-icon">${moduleConfig.icon}</span>
-                    <span class="nav-text">${moduleConfig.name}</span>
-                `;
-                
-                sidebarNav.appendChild(navItem);
-            });
-        }
-
-        function getAvailableModules() {
-            // Módulos disponibles según el rol del usuario
-            const roleModules = {
-                'Administrador': ['dashboard', 'invoices', 'accounting', 'employees', 'timetracking', 'compliance', 'personnel'],
-                'Contador': ['dashboard', 'invoices', 'accounting'],
-                'RRHH': ['dashboard', 'employees', 'timetracking', 'employee-status', 'personnel'],
-                'Supervisor': ['dashboard', 'employees', 'timetracking', 'personnel']
-            };
-            
-            return roleModules[AppState.user.role] || ['dashboard'];
-        }
-
-        function getModuleConfig(moduleId) {
-            const modules = {
-                'dashboard': { name: 'Dashboard', icon: '📊' },
-                'invoices': { name: 'Facturas', icon: '📄' },
-                'accounting': { name: 'Contabilidad', icon: '💰' },
-                'employees': { name: 'Personal', icon: '👥' },
-                'timetracking': { name: 'Marcaje', icon: '⏰' },
-                'employee-status': { name: 'Estados Personal', icon: '👤' },
-                'compliance': { name: 'Cumplimiento', icon: '⚖️' },
-                'personnel': { name: 'Personal', icon: '👥' }
-            };
-            
-            return modules[moduleId] || { name: 'Módulo', icon: '📋' };
-        }
-
-        async function loadInitialData() {
-            try {
-                if (API_CONFIG.fallbackMode) {
-                    // Cargar datos de demostración locales
-                    loadFallbackData();
-                } else {
-                    // Intentar cargar datos del backend
-                    try {
-                        await Promise.all([
-                            loadInvoices(),
-                            loadEmployees()
-                        ]);
-                    } catch (error) {
-                        console.warn('Error cargando desde backend, usando datos locales:', error);
-                        API_CONFIG.fallbackMode = true;
-                        loadFallbackData();
-                    }
-                }
-                
-                updateDashboardMetrics();
-                
-            } catch (error) {
-                console.error('Error cargando datos:', error);
-                showToast('⚠️ Algunos datos no se pudieron cargar', 'warning');
-            }
-        }
-
-        function loadFallbackData() {
-            // Datos de demostración para modo local
-            AppState.invoices = [
-                {
-                    id: '1',
-                    invoice_number: 'F001-000001',
-                    client_name: 'CLIENTE EJEMPLO S.A.C.',
-                    client_document: '20123456789',
-                    service_type: 'Instalación FTTH',
-                    issue_date: '2024-01-15',
-                    subtotal: 1271.19,
-                    igv: 228.81,
-                    total: 1500.00,
-                    status: 'paid',
-                    notes: 'Instalación completada satisfactoriamente'
-                },
-                {
-                    id: '2',
-                    invoice_number: 'F001-000002',
-                    client_name: 'SERVICIOS GLOBALES E.I.R.L.',
-                    client_document: '20987654321',
-                    service_type: 'Cableado Estructurado',
-                    issue_date: '2024-01-20',
-                    subtotal: 1949.15,
-                    igv: 350.85,
-                    total: 2300.00,
-                    status: 'issued',
-                    notes: 'Pendiente de instalación'
-                },
-                {
-                    id: '3',
-                    invoice_number: 'F001-000003',
-                    client_name: 'TECH SOLUTIONS S.A.',
-                    client_document: '20111222333',
-                    service_type: 'Consultoría TI',
-                    issue_date: '2024-01-25',
-                    subtotal: 847.46,
-                    igv: 152.54,
-                    total: 1000.00,
-                    status: 'paid',
-                    notes: 'Consultoría completada'
-                }
-            ];
-
-            AppState.employees = [
-                { dni: '12345678', firstName: 'Juan Carlos', lastName: 'Pérez López', avatar: 'JP', status: 'Activo', notes: '' },
-                { dni: '87654321', firstName: 'María Elena', lastName: 'García Rojas', avatar: 'MG', status: 'Activo', notes: '' },
-                { dni: '11223344', firstName: 'Carlos Alberto', lastName: 'Mendoza Silva', avatar: 'CM', status: 'Vacaciones', notes: '' },
-                { dni: '44332211', firstName: 'Ana Sofía', lastName: 'Ramírez Torres', avatar: 'AR', status: 'Activo', notes: '' }
-            ];
-
-            // Marcaciones de tiempo
-            AppState.timeEntries = [
-                { id: '1', employee_id: '1', entry_type: 'entrada', entry_date: new Date().toISOString().split('T')[0], entry_time: '08:00', notes: 'Entrada normal' },
-                { id: '2', employee_id: '1', entry_type: 'salida', entry_date: new Date().toISOString().split('T')[0], entry_time: '17:00', notes: 'Salida normal' },
-                { id: '3', employee_id: '2', entry_type: 'entrada', entry_date: new Date().toISOString().split('T')[0], entry_time: '08:15', notes: 'Llegada tardía' },
-                { id: '4', employee_id: '4', entry_type: 'entrada', entry_date: new Date().toISOString().split('T')[0], entry_time: '07:45', notes: 'Entrada temprana' }
-            ];
-
-            updateConnectionStatus('offline');
-            showToast('📱 Modo local - Datos de demostración cargados', 'info');
-        }
-
-        async function loadInvoices() {
-            try {
-                const response = await makeAPICall('/api/invoices');
-                AppState.invoices = response || [];
-            } catch (error) {
-                console.error('Error cargando facturas:', error);
-                AppState.invoices = [];
-                throw error;
-            }
-        }
-
-        async function loadEmployees() {
-            try {
-                const response = await makeAPICall('/api/employees');
-                AppState.employees = response || [];
-            } catch (error) {
-                console.error('Error cargando empleados:', error);
-                AppState.employees = [];
-                throw error;
-            }
-        }
-
-        // =============================================
-        // NAVEGACIÓN Y TABS
-        // =============================================
-        function showTab(tabName) {
-            // Verificar permisos para ciertas pestañas
-            const tabPermissions = {
-                'accounting': ['Administrador', 'Contador'],
-                'compliance': ['Administrador', 'RRHH'],
-                'employees': ['Administrador', 'RRHH', 'Supervisor'],
-                'personnel': ['Administrador', 'RRHH', 'Supervisor']
-            };
-            
-            const allowedRoles = tabPermissions[tabName];
-            if (allowedRoles && !allowedRoles.includes(AppState.user?.role)) {
-                showToast('⚠️ No tienes permisos para acceder a esta sección', 'warning');
-                return;
-            }
-            
-            // Ocultar todas las pestañas
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            
-            // Mostrar pestaña seleccionada
-            const activeTab = document.getElementById(tabName);
-            if (activeTab) {
-                activeTab.classList.add('active');
-            }
-            
-            // Actualizar navegación
-            document.querySelectorAll('.sidebar-nav a').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('data-tab') === tabName) {
-                    link.classList.add('active');
-                }
-            });
-            
-             // Actualizar título
-            const moduleConfig = getModuleConfig(tabName);
-            document.getElementById('pageTitle').textContent = moduleConfig.name;
-            
-            // Cargar datos específicos de la pestaña
-            switch(tabName) {
-                case 'invoices':
-                    renderInvoices();
-                    updateInvoiceConnectionStatus();
-                    break;
-                case 'accounting':
-                    renderAccounting();
-                    break;
-                case 'employees':
-                case 'personnel':
-                    renderEmployees();
-                    break;
-                case 'timetracking':
-                    renderTimeTracking();
-                    populateEmployeeSelects();
-                    break;
-                case 'employee-status':
-                    renderEmployeeStatus();
-                    break;
-                case 'compliance':
-                    renderCompliance();
-                    break;
-            }
-        }
-
-        function hasPermissionForModule(moduleId) {
-            const availableModules = getAvailableModules();
-            return availableModules.includes(moduleId);
-        }
-
-        // =============================================
-        // PERMISOS
-        // =============================================
-        function hasPermission(action) {
-            const permissions = {
-                'Administrador': ['all'], // Todos los permisos
-                'Contador': ['view_invoices', 'create_invoices', 'view_employees', 'view_accounting'],
-                'Supervisor': ['view_employees', 'view_invoices', 'time_tracking'], // Sin create_employees
-                'RRHH': ['view_employees', 'create_employees', 'edit_employees', 'time_tracking']
-            };
-            
-            const userRole = AppState.user?.role || '';
-            const rolePermissions = permissions[userRole] || [];
-            
-            return rolePermissions.includes('all') || rolePermissions.includes(action);
-        }
-
-        function applyRoleRestrictions() {
-            const userRole = AppState.user?.role || '';
-            
-            // Ocultar elementos según el rol
-            if (userRole === 'Supervisor') {
-                // Ocultar botones de crear empleado en todas las ubicaciones
-                document.querySelectorAll('button').forEach(btn => {
-                    if (btn.textContent.includes('Nuevo Empleado')) {
-                        btn.style.display = 'none';
-                    }
-                });
-                
-                // Ocultar opción en quick actions si existe
-                document.querySelectorAll('.action-card').forEach(card => {
-                    if (card.querySelector('.action-title')?.textContent.includes('Nuevo Empleado')) {
-                        card.style.display = 'none';
-                    }
-                });
-            }
-            
-            // Aplicar otras restricciones según sea necesario
-            if (userRole === 'Contador') {
-                // El contador no debería poder editar empleados
-                document.querySelectorAll('.sidebar-nav a').forEach(link => {
-                    if (link.textContent.includes('Cumplimiento')) {
-                        link.style.opacity = '0.5';
-                        link.style.pointerEvents = 'none';
-                    }
-                });
-            }
-        }
-
-        // =============================================
-        // DASHBOARD Y MÉTRICAS
-        // =============================================
-        function renderDashboard() {
-            updateDashboardMetrics();
-            updateConnectionInfo();
-        }
-
-        function updateConnectionInfo() {
-            const connectionModeElement = document.getElementById('connectionMode');
-            const companyInfoElement = document.getElementById('companyInfo');
-            
-            if (API_CONFIG.fallbackMode) {
-                connectionModeElement.textContent = 'Funcionando en modo local con datos de demostración.';
-                companyInfoElement.className = 'alert alert-warning';
-                companyInfoElement.querySelector('.alert-icon').textContent = '⚠️';
-            } else {
-                connectionModeElement.textContent = 'Conectado a base de datos en la nube con autenticación JWT.';
-                companyInfoElement.className = 'alert alert-info';
-                companyInfoElement.querySelector('.alert-icon').textContent = 'ℹ️';
-            }
-        }
-
-        function updateDashboardMetrics() {
-            // Calcular ingresos totales
-            const totalIncome = AppState.invoices
-                .filter(inv => inv.status === 'paid')
-                .reduce((sum, inv) => sum + (parseFloat(inv.total) || 0), 0);
-            
-            // Facturas pendientes
-            const pendingInvoices = AppState.invoices.filter(inv => inv.status === 'issued').length;
-            
-            // Empleados activos
-            const activeEmployees = AppState.employees.filter(emp => emp.status === 'Activo').length;
-            
-            // Actualizar DOM
-            document.getElementById('totalIncome').textContent = `S/ ${totalIncome.toFixed(2)}`;
-            document.getElementById('pendingInvoices').textContent = pendingInvoices;
-            document.getElementById('totalEmployees').textContent = activeEmployees;
-        }
-
-        // =============================================
-        // GESTIÓN DE FACTURAS
-        // =============================================
-        function renderInvoices() {
-            const container = document.getElementById('invoicesTableContainer');
-            
-            if (!AppState.invoices || AppState.invoices.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; color: var(--tecsitel-gray-600);">
-                        📄 No hay facturas registradas en la base de datos.
-                    </div>
-                `;
-                return;
-            }
-            
-            container.innerHTML = `
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>N° Factura</th>
-                                <th>Cliente</th>
-                                <th class="hide-mobile">Servicio</th>
-                                <th class="hide-mobile">Fecha</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${AppState.invoices.map(invoice => `
-                                <tr>
-                                    <td><strong>${invoice.invoice_number}</strong></td>
-                                    <td>${invoice.client_name || 'Cliente N/A'}</td>
-                                    <td class="hide-mobile">${invoice.service_type || 'N/A'}</td>
-                                    <td class="hide-mobile">${formatDate(invoice.issue_date)}</td>
-                                    <td><strong>S/ ${parseFloat(invoice.total || 0).toFixed(2)}</strong></td>
-                                    <td>
-                                        <span class="badge badge-${getStatusClass(invoice.status)}">
-                                            ${getStatusText(invoice.status)}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-secondary" onclick="viewInvoice('${invoice.id}')">
-                                            👁 Ver
-                                        </button>
-                                        ${invoice.status === 'issued' ? `
-                                            <button class="btn btn-sm btn-success" onclick="markAsPaid('${invoice.id}')">
-                                                💰 Marcar Pagado
-                                            </button>
-                                        ` : ''}
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
-
-        function showCreateInvoice() {
-            showModal('newInvoice');
-        }
-
-        function calculateTotal() {
-            const subtotalInput = document.querySelector('#newInvoice [name="subtotal"]');
-            const igvInput = document.querySelector('#newInvoice [name="igv"]');
-            const totalInput = document.querySelector('#newInvoice [name="total"]');
-            
-            const subtotal = parseFloat(subtotalInput.value) || 0;
-            const igv = subtotal * 0.18; // 18% IGV
-            const total = subtotal + igv;
-            
-            igvInput.value = igv.toFixed(2);
-            totalInput.value = total.toFixed(2);
-        }
-
-        async function createInvoice(event) {
-            event.preventDefault();
-            
-            if (!hasPermissionForModule('invoices')) {
-                showToast('❌ No tienes permisos para crear facturas', 'error');
-                return;
-            }
-            
-            const formData = new FormData(event.target);
-            const invoiceData = {
-                id: Date.now().toString(),
-                invoice_number: `F001-${String(AppState.invoices.length + 1).padStart(6, '0')}`,
-                client_name: formData.get('client_name'),
-                client_document: formData.get('client_document'),
-                service_type: formData.get('service_type'),
-                issue_date: new Date().toISOString().split('T')[0],
-                subtotal: parseFloat(formData.get('subtotal')),
-                igv: parseFloat(formData.get('igv')),
-                total: parseFloat(formData.get('total')),
-                status: 'issued',
-                notes: formData.get('notes') || '',
-                created_by: AppState.user.username,
-                created_at: new Date().toISOString()
-            };
-            
-            try {
-                if (API_CONFIG.fallbackMode) {
-                    // Modo local
-                    AppState.invoices.push(invoiceData);
-                    showToast(`✅ Factura ${invoiceData.invoice_number} creada (modo local)`, 'success');
-                } else {
-                    // Intentar crear en backend
-                    await makeAPICall('/api/invoices', {
-                        method: 'POST',
-                        body: invoiceData
-                    });
-                    
-                    AppState.invoices.push(invoiceData);
-                    showToast(`✅ Factura ${invoiceData.invoice_number} creada`, 'success');
-                }
-                
-                closeModal('newInvoice');
-                document.getElementById('invoiceForm').reset();
-                renderInvoices();
-                updateDashboardMetrics();
-                
-            } catch (error) {
-                console.error('Error creando factura:', error);
-                showToast('❌ Error creando factura', 'error');
-            }
-        }
-
-        async function markAsPaid(invoiceId) {
-            if (!hasPermissionForModule('invoices')) {
-                showToast('❌ No tienes permisos para marcar facturas como pagadas', 'error');
-                return;
-            }
-
-            if (!confirm('¿Marcar esta factura como pagada?')) return;
-
-            try {
-                const invoice = AppState.invoices.find(inv => inv.id === invoiceId);
-                if (invoice) {
-                    invoice.status = 'paid';
-                    invoice.paid_date = new Date().toISOString().split('T')[0];
-                    
-                    showToast('💰 Factura marcada como pagada', 'success');
-                    renderInvoices();
-                    updateDashboardMetrics();
-                }
-            } catch (error) {
-                console.error('Error actualizando factura:', error);
-                showToast('❌ Error actualizando factura', 'error');
-            }
-        }
-
-        function updateInvoiceConnectionStatus() {
-            const statusElement = document.getElementById('invoiceConnectionStatus');
-            if (statusElement) {
-                statusElement.textContent = API_CONFIG.fallbackMode 
-                    ? 'Modo local - Datos almacenados temporalmente.'
-                    : 'Conectado a backend con base de datos PostgreSQL.';
-            }
-        }
-
-        // =============================================
-        // CONTABILIDAD Y GRÁFICOS
-        // =============================================
-        function renderAccounting() {
-            if (!hasPermissionForModule('accounting')) {
-                showToast('❌ No tienes permisos para ver datos contables', 'error');
-                return;
-            }
-
-            updateAccountingMetrics();
-            renderIncomeChart();
-        }
-
-        function updateAccountingMetrics() {
-            // Calcular métricas contables
-            const paidInvoices = AppState.invoices.filter(inv => inv.status === 'paid');
-            const pendingInvoices = AppState.invoices.filter(inv => inv.status === 'issued');
-            
-            const totalRevenue = paidInvoices.reduce((sum, inv) => sum + (parseFloat(inv.total) || 0), 0);
-            const pendingRevenue = pendingInvoices.reduce((sum, inv) => sum + (parseFloat(inv.total) || 0), 0);
-            
-            // Calcular promedio mensual (últimos 6 meses)
-            const monthlyAverage = totalRevenue / 6; // Simplificado
-            
-            // Actualizar DOM
-            document.getElementById('totalRevenue').textContent = `S/ ${totalRevenue.toFixed(2)}`;
-            document.getElementById('pendingRevenue').textContent = `S/ ${pendingRevenue.toFixed(2)}`;
-            document.getElementById('monthlyAverage').textContent = `S/ ${monthlyAverage.toFixed(2)}`;
-        }
-
-        function renderIncomeChart() {
-            const canvas = document.getElementById('incomeChart');
-            if (!canvas) return;
-            
-            const ctx = canvas.getContext('2d');
-            
-            // Hacer el canvas responsive
-            const container = canvas.parentElement;
-            const containerWidth = container.clientWidth;
-            const containerHeight = container.clientHeight;
-            
-            // Ajustar el tamaño del canvas
-            canvas.width = containerWidth;
-            canvas.height = containerHeight;
-            
-            // Limpiar canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Datos mejorados basados en facturas reales
-            const currentDate = new Date();
-            const months = [];
-            const incomeData = [];
-            
-            // Generar últimos 6 meses
-            for (let i = 5; i >= 0; i--) {
-                const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
-                const monthName = date.toLocaleDateString('es-PE', { month: 'short' });
-                months.push(monthName.charAt(0).toUpperCase() + monthName.slice(1));
-                
-                // Calcular ingresos reales del mes
-                const monthIncome = AppState.invoices
-                    .filter(inv => {
-                        const invDate = new Date(inv.issue_date);
-                        return invDate.getMonth() === date.getMonth() && 
-                               invDate.getFullYear() === date.getFullYear() && 
-                               inv.status === 'paid';
-                    })
-                    .reduce((sum, inv) => sum + (parseFloat(inv.total) || 0), 0);
-                
-                incomeData.push(monthIncome);
-            }
-            
-            // Si no hay datos reales, usar datos de ejemplo
-            if (incomeData.every(val => val === 0)) {
-                incomeData.splice(0, 6, 1200, 1800, 1500, 2300, 1900, 2100);
-            }
-            
-            const maxIncome = Math.max(...incomeData, 1000); // Mínimo 1000 para escala
-            const chartHeight = canvas.height - 100;
-            const chartWidth = canvas.width - 120;
-            const barWidth = chartWidth / months.length;
-            
-            // Configurar estilos responsivos
-            const fontSize = Math.max(12, Math.min(16, canvas.width / 40));
-            ctx.font = `${fontSize}px Arial`;
-            
-            // Dibujar título
-            ctx.fillStyle = '#334155';
-            ctx.font = `bold ${fontSize + 2}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.fillText('Ingresos Mensuales (S/)', canvas.width/2, 30);
-            
-            // Dibujar barras
-            incomeData.forEach((income, index) => {
-                const barHeight = Math.max((income / maxIncome) * chartHeight, 5);
-                const x = 60 + (index * barWidth) + (barWidth * 0.1);
-                const y = canvas.height - 50 - barHeight;
-                const width = barWidth * 0.8;
-                
-                // Gradiente para las barras
-                const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
-                gradient.addColorStop(0, index % 2 === 0 ? '#dc143c' : '#ff4757');
-                gradient.addColorStop(1, index % 2 === 0 ? '#b91c3c' : '#dc143c');
-                
-                // Barra
-                ctx.fillStyle = gradient;
-                ctx.fillRect(x, y, width, barHeight);
-                
-                // Borde de la barra
-                ctx.strokeStyle = '#ffffff';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(x, y, width, barHeight);
-                
-                // Etiqueta mes
-                ctx.fillStyle = '#334155';
-                ctx.font = `${fontSize - 2}px Arial`;
-                ctx.textAlign = 'center';
-                ctx.fillText(months[index], x + width/2, canvas.height - 25);
-                
-                // Valor sobre la barra
-                if (income > 0) {
-                    ctx.fillStyle = '#ffffff';
-                    ctx.font = `bold ${fontSize - 3}px Arial`;
-                    const valueText = income >= 1000 ? `${(income/1000).toFixed(1)}k` : income.toFixed(0);
-                    ctx.fillText(valueText, x + width/2, y - 8);
-                }
-            });
-            
-            // Línea base
-            ctx.beginPath();
-            ctx.moveTo(60, canvas.height - 50);
-            ctx.lineTo(canvas.width - 60, canvas.height - 50);
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 2;
-            ctx.stroke();
-            
-            // Eje Y con valores
-            ctx.fillStyle = '#64748b';
-            ctx.font = `${fontSize - 4}px Arial`;
-            ctx.textAlign = 'right';
-            
-            for (let i = 0; i <= 4; i++) {
-                const value = (maxIncome / 4) * i;
-                const y = canvas.height - 50 - (chartHeight / 4) * i;
-                ctx.fillText(value >= 1000 ? `${(value/1000).toFixed(1)}k` : value.toFixed(0), 50, y + 4);
-                
-                // Líneas de guía
-                if (i > 0) {
-                    ctx.beginPath();
-                    ctx.moveTo(60, y);
-                    ctx.lineTo(canvas.width - 60, y);
-                    ctx.strokeStyle = '#f1f5f9';
-                    ctx.lineWidth = 1;
-                    ctx.stroke();
-                }
-            }
-        }
-
-        // =============================================
-        // FUNCIONES DE FILTROS Y EXPORTACIÓN
-        // =============================================
-        function applyAccountingFilters() {
-            const dateFrom = document.getElementById('dateFrom').value;
-            const dateTo = document.getElementById('dateTo').value;
-            const statusFilter = document.getElementById('statusFilter').value;
-            
-            let filteredInvoices = [...AppState.invoices];
-            
-            // Filtrar por fecha
-            if (dateFrom) {
-                filteredInvoices = filteredInvoices.filter(inv => inv.issue_date >= dateFrom);
-            }
-            
-            if (dateTo) {
-                filteredInvoices = filteredInvoices.filter(inv => inv.issue_date <= dateTo);
-            }
-            
-            // Filtrar por estado
-            if (statusFilter) {
-                filteredInvoices = filteredInvoices.filter(inv => inv.status === statusFilter);
-            }
-            
-            // Mostrar resultados
-            const total = filteredInvoices.reduce((sum, inv) => sum + (parseFloat(inv.total) || 0), 0);
-            const count = filteredInvoices.length;
-            
-            showToast(`🔍 Filtros aplicados: ${count} facturas, Total: S/ ${total.toFixed(2)}`, 'info');
-            
-            // Actualizar métricas temporalmente
-            updateFilteredMetrics(filteredInvoices);
-        }
-
-        function updateFilteredMetrics(invoices) {
-            const paidInvoices = invoices.filter(inv => inv.status === 'paid');
-            const pendingInvoices = invoices.filter(inv => inv.status === 'issued');
-            
-            const totalRevenue = paidInvoices.reduce((sum, inv) => sum + (parseFloat(inv.total) || 0), 0);
-            const pendingRevenue = pendingInvoices.reduce((sum, inv) => sum + (parseFloat(inv.total) || 0), 0);
-            const monthlyAverage = totalRevenue / 6;
-            
-            document.getElementById('totalRevenue').textContent = `S/ ${totalRevenue.toFixed(2)}`;
-            document.getElementById('pendingRevenue').textContent = `S/ ${pendingRevenue.toFixed(2)}`;
-            document.getElementById('monthlyAverage').textContent = `S/ ${monthlyAverage.toFixed(2)}`;
-            
-            // Mostrar botón para resetear
-            const resetBtn = document.createElement('button');
-            resetBtn.className = 'btn btn-secondary';
-            resetBtn.textContent = '🔄 Resetear Filtros';
-            resetBtn.onclick = () => {
-                updateAccountingMetrics();
-                resetBtn.remove();
-                document.getElementById('dateFrom').value = '';
-                document.getElementById('dateTo').value = '';
-                document.getElementById('statusFilter').value = '';
-                showToast('✅ Filtros reseteados', 'success');
-            };
-            
-            const filterSection = document.querySelector('#accounting .panel:last-child .panel-body');
-            if (!filterSection.querySelector('.btn-secondary[onclick*="resetear"]')) {
-                filterSection.appendChild(resetBtn);
-            }
-        }
-
-        async function exportAccountingReport() {
-            if (!hasPermissionForModule('accounting')) {
-                showToast('❌ No tienes permisos para exportar reportes', 'error');
-                return;
-            }
-
-            showToast('📤 Generando reporte contable...', 'info');
-            
-            // Simular generación de PDF
-            setTimeout(() => {
-                const reportData = {
-                    empresa: 'TECSITEL PERU E.I.R.L.',
-                    ruc: '20605908285',
-                    fecha_reporte: new Date().toLocaleDateString('es-PE'),
-                    generado_por: AppState.user.full_name || AppState.user.username,
-                    periodo: 'Últimos 6 meses',
-                    resumen: {
-                        total_ingresos: AppState.invoices
-                            .filter(inv => inv.status === 'paid')
-                            .reduce((sum, inv) => sum + (parseFloat(inv.total) || 0), 0),
-                        facturas_pendientes: AppState.invoices.filter(inv => inv.status === 'issued').length,
-                        total_facturas: AppState.invoices.length
-                    },
-                    facturas: AppState.invoices.map(inv => ({
-                        numero: inv.invoice_number,
-                        cliente: inv.client_name,
-                        fecha: inv.issue_date,
-                        total: inv.total,
-                        estado: getStatusText(inv.status)
-                    }))
-                };
-                
-                // Crear y descargar archivo JSON (simula PDF)
-                const dataStr = JSON.stringify(reportData, null, 2);
-                const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
-                
-                const fileName = `TECSITEL_Reporte_Contable_${new Date().toISOString().split('T')[0]}.json`;
-                
-                const linkElement = document.createElement('a');
-                linkElement.setAttribute('href', dataUri);
-                linkElement.setAttribute('download', fileName);
-                linkElement.click();
-                
-                showToast('✅ Reporte contable exportado', 'success');
-            }, 2000);
-        }
-
-        function refreshAccounting() {
-            if (!hasPermissionForModule('accounting')) {
-                showToast('❌ No tienes permisos para actualizar datos contables', 'error');
-                return;
-            }
-
-            showToast('🔄 Actualizando datos contables...', 'info');
-            
-            setTimeout(() => {
-                updateAccountingMetrics();
-                renderIncomeChart();
-                showToast('✅ Datos contables actualizados', 'success');
-            }, 1000);
-        }
-        
-        // =============================================
-        // GESTIÓN DE EMPLEADOS
-        // =============================================
-        function renderEmployees() {
-            const container = document.getElementById('employeesTableContainer');
-            if (!container) return;
-            
-            // Actualizar el botón de nuevo empleado según permisos
-            const newEmployeeBtn = document.querySelector('#employees .panel-header button');
-            if (newEmployeeBtn) {
-                if (!hasPermission('create_employees')) {
-                    newEmployeeBtn.style.display = 'none';
-                } else {
-                    newEmployeeBtn.style.display = 'inline-flex';
-                }
-            }
-            
-            const tbody = document.querySelector('#employeesTable tbody');
-            if (!tbody) {
-                 container.innerHTML = `
-                    <div class="table-responsive">
-                        <table class="table" id="employeesTable">
-                            <thead>
-                                <tr>
-                                    <th>DNI</th>
-                                    <th>Nombre Completo</th>
-                                    <th>Estado</th>
-                                    <th>Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                `;
-            }
-            
-            const tableBody = container.querySelector('#employeesTable tbody');
-            tableBody.innerHTML = '';
-            
-            if (AppState.employees.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No hay empleados registrados.</td></tr>';
-                return;
-            }
-            
-            AppState.employees.forEach(emp => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${emp.dni}</td>
-                    <td>
-                        <div class="employee-info">
-                            <div class="avatar avatar-sm">${emp.avatar}</div>
-                            <span>${emp.firstName} ${emp.lastName}</span>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Nombres*</label>
+                            <input type="text" class="form-input" name="firstName" required>
                         </div>
-                    </td>
-                    <td><span class="badge badge-${emp.status === 'Activo' ? 'success' : 'warning'}">${emp.status}</span></td>
-                    <td>
-                        ${hasPermission('edit_employees') ? 
-                            `<button class="btn btn-sm btn-secondary" onclick="editEmployee('${emp.dni}')">Editar</button>` 
-                            : '<span class="text-muted">Sin permisos</span>'}
-                    </td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        }
-        
-        function showCreateEmployee() {
-            // Verificar permisos antes de mostrar el modal
-            if (AppState.user && AppState.user.role === 'Supervisor') {
-                showToast('⚠️ No tienes permisos para registrar nuevos empleados', 'warning');
-                return;
-            }
-            showModal('newEmployee');
-        }
-        
-        async function saveEmployee(event) {
-            event.preventDefault();
-            
-            // Verificación de permisos
-            if (AppState.user && AppState.user.role === 'Supervisor') {
-                showToast('⚠️ No tienes permisos para registrar nuevos empleados', 'warning');
-                closeModal('newEmployee');
-                return;
-            }
-            
-            const form = event.target;
-            const dni = form.employeeDni.value;
-            const dniErrorEl = document.getElementById('dniError');
-            dniErrorEl.textContent = '';
-            form.employeeDni.classList.remove('error');
-            
-            // Validación de DNI
-            if (!validateDNI(dni)) {
-                dniErrorEl.textContent = 'DNI debe tener 8 dígitos';
-                form.employeeDni.classList.add('error');
-                return;
-            }
-            
-            if (AppState.employees.some(e => e.dni === dni)) {
-                dniErrorEl.textContent = `El DNI ${dni} ya está registrado`;
-                form.employeeDni.classList.add('error');
-                return;
-            }
-            
-            const firstName = sanitizeInput(form.employeeFirstName.value);
-            const lastName = sanitizeInput(form.employeeLastName.value);
-            const status = form.employeeStatus.value;
-            const avatar = `${firstName[0] || ''}${lastName[0] || ''}`.toUpperCase();
-            const newEmployee = { dni, firstName, lastName, avatar, status, notes: '' };
-            AppState.employees.push(newEmployee);
-            
-            renderEmployees();
-            // renderEmployeeOptions(); // Esta función no está definida, se omite
-            showToast(`✅ Empleado ${firstName} ${lastName} registrado.`, 'success');
-            closeModal('newEmployee');
-            form.reset();
-        }
-
-
-        // =============================================
-        // CUMPLIMIENTO NORMATIVO
-        // =============================================
-        function renderCompliance() {
-            // Función para mostrar información de cumplimiento
-            // Ya está implementada en el HTML estático
-        }
-
-        // =============================================
-        // FUNCIONES DE MODALES
-        // =============================================
-        function showModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if(modal) {
-                modal.classList.add('active');
-            }
-        }
-
-        function closeModal(modalId) {
-            const modal = document.getElementById(modalId);
-            if (modal) {
-                modal.classList.remove('active');
-            }
-        }
-
-        // =============================================
-        // FUNCIONES AUXILIARES Y PLACEHOLDER
-        // =============================================
-        function viewInvoice(id) {
-            const invoice = AppState.invoices.find(inv => inv.id === id);
-            if (invoice) {
-                const details = `
-Factura: ${invoice.invoice_number}
-Cliente: ${invoice.client_name}
-Servicio: ${invoice.service_type || 'N/A'}
-Subtotal: S/ ${invoice.subtotal?.toFixed(2) || '0.00'}
-IGV: S/ ${invoice.igv?.toFixed(2) || '0.00'}
-Total: S/ ${invoice.total?.toFixed(2) || '0.00'}
-Estado: ${getStatusText(invoice.status)}
-Fecha: ${formatDate(invoice.issue_date)}
-${invoice.notes ? 'Notas: ' + invoice.notes : ''}
-                `.trim();
-                
-                alert(details);
-            } else {
-                showToast(`❌ Factura no encontrada`, 'error');
-            }
-        }
-
-        function viewEmployee(id) {
-            const employee = AppState.employees.find(emp => emp.id === id);
-            if (employee) {
-                const details = `
-Empleado: ${employee.firstName} ${employee.lastName}
-DNI: ${employee.dni}
-Estado: ${employee.status}
-                `.trim();
-                
-                alert(details);
-            } else {
-                showToast(`❌ Empleado no encontrado`, 'error');
-            }
-        }
-        
-        function editEmployee(dni) {
-            showToast(`🚧 Función en desarrollo - Editar empleado DNI: ${dni}`, 'info');
-        }
-        
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('mainContent');
-            
-            if (window.innerWidth <= 1024) {
-                sidebar.classList.toggle('active');
-            } else {
-                sidebarCollapsed = !sidebarCollapsed;
-                
-                if (sidebarCollapsed) {
-                    sidebar.classList.add('collapsed');
-                    mainContent.classList.add('expanded');
-                } else {
-                    sidebar.classList.remove('collapsed');
-                    mainContent.classList.remove('expanded');
-                }
-            }
-        }
-
-        function showUserMenu() {
-            showToast(`👤 ${AppState.user.full_name || AppState.user.username} - ${AppState.user.role}`, 'info');
-        }
-
-        async function refreshData() {
-            try {
-                showToast('🔄 Actualizando datos...', 'info');
-                
-                // Si estamos en modo fallback, intentar reconectar
-                if (API_CONFIG.fallbackMode) {
-                    try {
-                        // Intentar una llamada simple para verificar conectividad
-                        await makeAPICall('/api/auth/verify', { forceAPI: true });
-                        
-                        // Si llegamos aquí, el backend está funcionando
-                        API_CONFIG.fallbackMode = false;
-                        sessionStorage.setItem('tecsitel_fallback', 'false');
-                        
-                        showToast('🌐 ¡Conexión restaurada! Recargando datos del servidor...', 'success');
-                        
-                        // Recargar datos del backend
-                        await loadInitialData();
-                    } catch (error) {
-                        // Seguir en modo local
-                        showToast('📱 Modo local - Backend no disponible', 'warning');
-                        loadFallbackData();
-                    }
-                } else {
-                    // Modo normal, actualizar desde backend
-                    await loadInitialData();
-                }
-                
-                // Recargar la vista actual
-                const activeTab = document.querySelector('.nav-item.active');
-                if (activeTab) {
-                    const tabName = activeTab.dataset.tab;
-                    showTab(tabName);
-                }
-                
-                if (!API_CONFIG.fallbackMode) {
-                    showToast('✅ Datos actualizados desde servidor', 'success');
-                }
-                
-            } catch (error) {
-                console.error('Error actualizando datos:', error);
-                showToast('❌ Error actualizando datos', 'error');
-            }
-        }
-
-        // =============================================
-        // MONITOREO DE CONEXIÓN
-        // =============================================
-        function setupConnectionMonitoring() {
-            // Monitorear estado de conexión
-            window.addEventListener('online', () => {
-                AppState.isOnline = true;
-                updateConnectionStatus('online');
-                showToast('🌐 Conexión restaurada', 'success');
-            });
-            
-            window.addEventListener('offline', () => {
-                AppState.isOnline = false;
-                updateConnectionStatus('offline');
-                showToast('📡 Sin conexión a internet', 'warning');
-            });
-            
-            // Verificar conexión periódicamente
-            connectionCheckInterval = setInterval(checkConnectionHealth, 30000);
-            
-            // Verificar inmediatamente
-            checkConnectionHealth();
-        }
-
-        async function checkConnectionHealth() {
-            try {
-                await makeAPICall('/api/auth/verify');
-                updateConnectionStatus('online');
-            } catch (error) {
-                updateConnectionStatus('offline');
-            }
-        }
-
-        function updateConnectionStatus(status) {
-            const statusElement = document.getElementById('connectionStatus');
-            const textElement = document.getElementById('connectionText');
-            
-            statusElement.className = `connection-status ${status}`;
-            
-            switch (status) {
-                case 'online':
-                    textElement.textContent = API_CONFIG.fallbackMode ? 'Modo local' : 'Conectado';
-                    statusElement.className = `connection-status ${API_CONFIG.fallbackMode ? 'offline' : 'online'}`;
-                    break;
-                case 'offline':
-                    textElement.textContent = API_CONFIG.fallbackMode ? 'Modo local' : 'Sin conexión';
-                    break;
-                case 'connecting':
-                    textElement.textContent = 'Conectando...';
-                    break;
-            }
-        }
-
-        // =============================================
-        // UTILIDADES
-        // =============================================
-        function formatDate(dateString) {
-            if (!dateString) return 'N/A';
-            return new Date(dateString).toLocaleDateString('es-PE');
-        }
-
-        function getStatusClass(status) {
-            const statusMap = {
-                'draft': 'warning',
-                'issued': 'info',
-                'sent': 'info',
-                'paid': 'success',
-                'cancelled': 'danger'
-            };
-            return statusMap[status] || 'info';
-        }
-
-        function getStatusText(status) {
-            const statusMap = {
-                'draft': 'Borrador',
-                'issued': 'Emitida',
-                'sent': 'Enviada',
-                'paid': 'Pagada',
-                'cancelled': 'Cancelada'
-            };
-            return statusMap[status] || status;
-        }
-
-        function sanitizeInput(input) {
-            const div = document.createElement('div');
-            div.textContent = input;
-            return div.innerHTML;
-        }
-        
-        function validateDNI(dni) {
-            return /^[0-9]{8}$/.test(dni);
-        }
-
-        // =============================================
-        // CONTROL DE TIEMPO Y ASISTENCIA
-        // =============================================
-        function renderTimeTracking() {
-            if (!hasPermissionForModule('timetracking')) {
-                showToast('❌ No tienes permisos para ver marcaciones', 'error');
-                return;
-            }
-
-            const container = document.getElementById('timeTrackingTableContainer');
-            
-            if (!AppState.timeEntries || AppState.timeEntries.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 3rem; color: var(--tecsitel-gray-600);">
-                        ⏰ No hay marcaciones registradas.
+                        <div class="form-group">
+                            <label class="form-label">Apellidos*</label>
+                            <input type="text" class="form-input" name="lastName" required>
+                        </div>
                     </div>
-                `;
-                return;
-            }
-            
-            // Agrupar marcaciones por empleado y fecha
-            const groupedEntries = groupTimeEntriesByEmployeeAndDate();
-            
-            container.innerHTML = `
-                <div class="table-responsive">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Empleado</th>
-                                <th>Fecha</th>
-                                <th>Entrada</th>
-                                <th>Salida</th>
-                                <th>Horas</th>
-                                <th>Estado</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${groupedEntries.map(entry => {
-                                const hoursWorked = calculateHoursWorked(entry.entryTime, entry.exitTime);
-                                const statusClass = entry.exitTime !== '--:--' ? 'success' : 'warning';
-                                const statusText = entry.exitTime !== '--:--' ? 'Completo' : 'En jornada';
-                                
-                                return `
-                                    <tr>
-                                        <td>
-                                            <div class="employee-info">
-                                                <div class="avatar avatar-sm">
-                                                    ${entry.avatar}
-                                                </div>
-                                                <div>
-                                                    <div style="font-weight: 600;">${entry.name}</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td><strong>${formatDate(entry.date)}</strong></td>
-                                        <td><span style="color: var(--success);">${entry.entryTime}</span></td>
-                                        <td><span style="color: var(--danger);">${entry.exitTime}</span></td>
-                                        <td><strong>${hoursWorked}</strong></td>
-                                        <td>
-                                            <span class="badge badge-${statusClass}">
-                                                ${statusText}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <button class="btn btn-sm btn-danger" onclick="deleteTimeEntry('${entry.employeeId}', '${entry.date}')">
-                                                🗑 Eliminar
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `;
-                            }).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
-        }
+                    <div class="form-group">
+                        <label class="form-label">Estado*</label>
+                        <select class="form-select" name="status" required>
+                            <option value="Activo">Activo</option>
+                            <option value="Vacaciones">Vacaciones</option>
+                            <option value="Descanso Médico">Descanso Médico</option>
+                            <option value="Cesado">Cesado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notas / Observaciones</label>
+                        <textarea class="form-textarea" name="notes" placeholder="Observaciones adicionales..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('newEmployee')">Cancelar</button>
+                <button type="submit" form="employeeForm" class="btn btn-primary">Agregar Empleado</button>
+            </div>
+        </div>
+    </div>
 
-        function groupTimeEntriesByEmployeeAndDate() {
-            const grouped = {};
-            
-            AppState.timeEntries.forEach(entry => {
-                const employee = AppState.employees.find(emp => emp.dni === entry.employee_id);
-                if (!employee) return;
-                
-                const key = `${entry.employee_id}-${entry.entry_date}`;
-                
-                if (!grouped[key]) {
-                    grouped[key] = {
-                        employeeId: entry.employee_id,
-                        name: `${employee.firstName} ${employee.lastName}`,
-                        avatar: employee.avatar,
-                        date: entry.entry_date,
-                        entryTime: '--:--',
-                        exitTime: '--:--'
-                    };
-                }
-                
-                if (entry.entry_type === 'entrada') {
-                    grouped[key].entryTime = entry.entry_time;
-                } else if (entry.entry_type === 'salida') {
-                    grouped[key].exitTime = entry.entry_time;
-                }
-            });
-            
-            return Object.values(grouped).sort((a, b) => new Date(b.date) - new Date(a.date));
-        }
+    <!-- Modal Marcaje de Tiempo -->
+    <div class="modal" id="timeEntry">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">⏰ Marcaje de Tiempo</h3>
+                <button class="modal-close" onclick="closeModal('timeEntry')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="timeEntryForm" onsubmit="saveTimeEntry(event)">
+                    <div class="form-group">
+                        <label class="form-label">Empleado*</label>
+                        <select class="form-select" name="employeeDni" id="employeeSelect" required>
+                            <option value="">Seleccionar empleado...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Fecha*</label>
+                        <input type="date" class="form-input" name="date" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Hora de Entrada</label>
+                            <input type="time" class="form-input" name="entryTime">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hora de Salida</label>
+                            <input type="time" class="form-input" name="exitTime">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Notas</label>
+                        <textarea class="form-textarea" name="notes" placeholder="Observaciones del marcaje..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('timeEntry')">Cancelar</button>
+                <button type="submit" form="timeEntryForm" class="btn btn-primary">Guardar Marcaje</button>
+            </div>
+        </div>
+    </div>
 
-        function calculateHoursWorked(entryTime, exitTime) {
-            if (entryTime === '--:--' || exitTime === '--:--') return '--:--';
-            
-            const [entryHour, entryMin] = entryTime.split(':').map(Number);
-            const [exitHour, exitMin] = exitTime.split(':').map(Number);
-            
-            const entryMinutes = entryHour * 60 + entryMin;
-            const exitMinutes = exitHour * 60 + exitMin;
-            
-            const diffMinutes = exitMinutes - entryMinutes;
-            const hours = Math.floor(diffMinutes / 60);
-            const minutes = diffMinutes % 60;
-            
-            return `${hours}:${minutes.toString().padStart(2, '0')}`;
-        }
+    <!-- Container de Toasts -->
+    <div class="toast-container" id="toastContainer"></div>
 
-        function showTimeEntryModal() {
-            document.getElementById('timeEntryModal').classList.add('active');
-            
-            // Establecer fecha y hora actual
-            const now = new Date();
-            document.querySelector('[name="entry_date"]').value = now.toISOString().split('T')[0];
-            document.querySelector('[name="entry_time"]').value = now.toTimeString().slice(0, 5);
-        }
+    <!-- Bottom Navigation (Mobile) -->
+    <div class="bottom-nav" id="bottomNav" style="display: none;">
+        <a href="#" class="bottom-nav-item active" data-tab="dashboard">
+            <span class="bottom-nav-icon">📊</span>
+            Dashboard
+        </a>
+        <a href="#" class="bottom-nav-item" data-tab="invoices">
+            <span class="bottom-nav-icon">📄</span>
+            Facturas
+        </a>
+        <a href="#" class="bottom-nav-item" data-tab="personnel">
+            <span class="bottom-nav-icon">👥</span>
+            Personal
+        </a>
+        <a href="#" class="bottom-nav-item" data-tab="compliance">
+            <span class="bottom-nav-icon">⚖️</span>
+            Cumplimiento
+        </a>
+    </div>
 
-        function populateEmployeeSelects() {
-            const selects = [
-                document.querySelector('#timeEntryModal [name="employee_id"]'),
-                document.getElementById('quickEmployeeSelect')
-            ];
-            
-            selects.forEach(select => {
-                if (!select) return;
-                
-                const currentValue = select.value;
-                select.innerHTML = '<option value="">Seleccionar empleado...</option>';
-                
-                AppState.employees.filter(emp => emp.status === 'Activo').forEach(employee => {
-                    const option = document.createElement('option');
-                    option.value = employee.dni;
-                    option.textContent = `${employee.firstName} ${employee.lastName}`;
-                    select.appendChild(option);
-                });
-                select.value = currentValue;
-            });
-        }
-
-        async function createTimeEntry(event) {
-            event.preventDefault();
-            
-            if (!hasPermissionForModule('timetracking')) {
-                showToast('❌ No tienes permisos para registrar marcaciones', 'error');
-                return;
-            }
-            
-            const formData = new FormData(event.target);
-            const timeEntryData = {
-                id: Date.now().toString(),
-                employee_id: formData.get('employee_id'),
-                entry_type: formData.get('entry_type'),
-                entry_date: formData.get('entry_date'),
-                entry_time: formData.get('entry_time'),
-                notes: formData.get('notes') || '',
-                created_by: AppState.user.username,
-                created_at: new Date().toISOString()
-            };
-            
-            // Validar que no exista ya una marcación del mismo tipo
-            const existingEntry = AppState.timeEntries.find(entry => 
-                entry.employee_id === timeEntryData.employee_id && 
-                entry.entry_date === timeEntryData.entry_date && 
-                entry.entry_type === timeEntryData.entry_type
-            );
-            
-            if (existingEntry) {
-                showToast(`❌ Ya existe una marcación de ${timeEntryData.entry_type} para este empleado en esta fecha`, 'error');
-                return;
-            }
-            
-            try {
-                AppState.timeEntries.push(timeEntryData);
-                
-                const employee = AppState.employees.find(emp => emp.dni === timeEntryData.employee_id);
-                showToast(`✅ Marcación de ${timeEntryData.entry_type} registrada para ${employee.firstName}`, 'success');
-                
-                closeModal('timeEntryModal');
-                document.getElementById('timeEntryForm').reset();
-                renderTimeTracking();
-                
-            } catch (error) {
-                console.error('Error creando marcación:', error);
-                showToast('❌ Error registrando marcación', 'error');
-            }
-        }
-
-        async function quickTimeEntry(type) {
-            const employeeId = document.getElementById('quickEmployeeSelect').value;
-            
-            if (!employeeId) {
-                showToast('⚠️ Selecciona un empleado primero', 'warning');
-                return;
-            }
-            
-            const now = new Date();
-            const timeEntryData = {
-                id: Date.now().toString(),
-                employee_id: employeeId,
-                entry_type: type,
-                entry_date: now.toISOString().split('T')[0],
-                entry_time: now.toTimeString().slice(0, 5),
-                notes: 'Marcación rápida',
-                created_by: AppState.user.username,
-                created_at: now.toISOString()
-            };
-            
-            // Validar que no exista ya una marcación del mismo tipo
-            const existingEntry = AppState.timeEntries.find(entry => 
-                entry.employee_id === timeEntryData.employee_id && 
-                entry.entry_date === timeEntryData.entry_date && 
-                entry.entry_type === timeEntryData.entry_type
-            );
-            
-            if (existingEntry) {
-                showToast(`❌ Ya existe una marcación de ${type} para este empleado hoy`, 'error');
-                return;
-            }
-            
-            try {
-                AppState.timeEntries.push(timeEntryData);
-                
-                const employee = AppState.employees.find(emp => emp.dni === timeEntryData.employee_id);
-                showToast(`⚡ ${type.toUpperCase()} registrada para ${employee.firstName} a las ${timeEntryData.entry_time}`, 'success');
-                
-                renderTimeTracking();
-                
-                // Limpiar selección
-                document.getElementById('quickEmployeeSelect').value = '';
-                
-            } catch (error) {
-                console.error('Error en marcación rápida:', error);
-                showToast('❌ Error en marcación rápida', 'error');
-            }
-        }
-
-        function deleteTimeEntry(employeeId, date) {
-            if (!hasPermissionForModule('timetracking')) {
-                showToast('❌ No tienes permisos para eliminar marcaciones', 'error');
-                return;
-            }
-            
-            if (confirm('¿Eliminar todas las marcaciones de este empleado para esta fecha?')) {
-                AppState.timeEntries = AppState.timeEntries.filter(entry => 
-                    !(entry.employee_id == employeeId && entry.entry_date === date)
-                );
-                showToast('🗑 Marcaciones eliminadas', 'info');
-                renderTimeTracking();
-            }
-        }
-
-        // =============================================
-        // SISTEMA DE NOTIFICACIONES
-        // =============================================
-        function showToast(message, type = 'info') {
-            const toastContainer = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            
-            const icons = {
-                success: '✅',
-                error: '❌',
-                warning: '⚠️',
-                info: 'ℹ️'
-            };
-            
-            toast.innerHTML = `
-                <div class="toast-icon">${icons[type] || icons.info}</div>
-                <div class="toast-content">${message}</div>
-                <button class="toast-close" onclick="this.parentElement.remove()">×</button>
-            `;
-            
-            toastContainer.appendChild(toast);
-            
-            // Auto-remove después de 4 segundos
-            setTimeout(() => {
-                if (toast.parentElement) {
-                    toast.style.opacity = '0';
-                    toast.style.transform = 'translateX(100%)';
-                    setTimeout(() => toast.remove(), 300);
-                }
-            }, 4000);
-        }
-
-        // =============================================
-        // EVENT LISTENERS Y SETUP
-        // =============================================
-        function setupEventListeners() {
-            // Click en tarjetas de usuario para autocompletar
-            document.querySelectorAll('.user-demo').forEach(card => {
-                card.addEventListener('click', function() {
-                    const username = this.dataset.user;
-                    const password = this.dataset.pass;
-                    
-                    document.getElementById('username').value = username;
-                    document.getElementById('password').value = password;
-                    
-                    // Limpiar errores
-                    document.querySelectorAll('.form-input').forEach(input => {
-                        input.classList.remove('error');
-                    });
-                    
-                    // Marcar como seleccionado
-                    document.querySelectorAll('.user-demo').forEach(c => c.classList.remove('selected'));
-                    this.classList.add('selected');
-                });
-            });
-            
-            // Limpiar errores al escribir
-            document.addEventListener('input', function(e) {
-                if (e.target.classList.contains('form-input')) {
-                    e.target.classList.remove('error');
-                }
-            });
-            
-            // Responsive sidebar
-            function handleResize() {
-                if (window.innerWidth <= 1024) {
-                    const sidebar = document.getElementById('sidebar');
-                    if (sidebar && !sidebar.classList.contains('active')) {
-                        sidebar.classList.remove('active');
-                    }
-                }
-            }
-            
-            window.addEventListener('resize', handleResize);
-            
-            // Click fuera del sidebar en móvil
-            document.addEventListener('click', function(e) {
-                const sidebar = document.getElementById('sidebar');
-                const sidebarToggle = document.getElementById('sidebarToggle');
-                
-                if (window.innerWidth <= 1024 && sidebar && sidebarToggle &&
-                    !sidebar.contains(e.target) && 
-                    !sidebarToggle.contains(e.target)) {
-                    sidebar.classList.remove('active');
-                }
-            });
-        }
-
-        // =============================================
-        // INICIALIZACIÓN
-        // =============================================
-        document.addEventListener('DOMContentLoaded', async function() {
-            console.log(`
-🏢 TECSITEL PERU E.I.R.L. - Sistema v4.0 Integrado
-================================================
-RUC: 20605908285
-Backend: PostgreSQL (Neon) + Netlify Functions  
-Autenticación: JWT + Modo Local de Respaldo
-Fallback: Datos locales si backend no disponible
-
-✨ FUNCIONALIDADES IMPLEMENTADAS:
-📄 Sistema de Facturas: Crear, IGV automático, Estados
-💰 Contabilidad: Gráficos responsive, Filtros, Exportación
-⏰ Control Asistencia: Marcación rápida, Validaciones
-👤 Estados Personal: Solo RRHH, Historial, Filtros
-🎯 Todo completamente responsive y funcional
-
-👥 Usuarios disponibles:
-• admin / admin123 - Administrador (acceso total)
-• contable / cont123 - Contador (facturas + contabilidad)
-• supervisor / super123 - Supervisor (personal + marcaje)
-• rrhh / rrhh123 - RRHH (personal + marcaje + estados)
-
-🚀 Sistema listo - Funciona online y offline!
-            `);
-            
-            setupEventListeners();
-            setupResponsiveHandlers();
-            
-            // Verificar sesión existente
-            const hasSession = await checkExistingSession();
-            
-            if (!hasSession) {
-                // Enfocar campo de usuario
-                document.getElementById('username').focus();
-            }
-        });
-
-        // Exponer funciones globales necesarias
-        window.handleLogin = handleLogin;
-        window.logout = logout;
-        window.showTab = showTab;
-        window.toggleSidebar = toggleSidebar;
-        window.showUserMenu = showUserMenu;
-        window.refreshData = refreshData;
-        
-        // Funciones de facturas
-        window.showCreateInvoice = showCreateInvoice;
-        window.calculateTotal = calculateTotal;
-        window.createInvoice = createInvoice;
-        window.markAsPaid = markAsPaid;
-        window.viewInvoice = viewInvoice;
-        
-        // Funciones de contabilidad
-        window.refreshAccounting = refreshAccounting;
-        window.applyAccountingFilters = applyAccountingFilters;
-        window.exportAccountingReport = exportAccountingReport;
-        
-        // Funciones de empleados
-        window.showCreateEmployee = showCreateEmployee;
-        window.saveEmployee = saveEmployee;
-        window.viewEmployee = viewEmployee;
-        window.editEmployee = editEmployee;
-        
-        // Funciones de marcación de tiempo
-        window.showTimeEntryModal = showTimeEntryModal;
-        window.createTimeEntry = createTimeEntry;
-        window.quickTimeEntry = quickTimeEntry;
-        window.deleteTimeEntry = deleteTimeEntry;
-        
-        // Funciones de estados de empleados (placeholders)
-        window.showEmployeeStatusModal = () => showToast('🚧 Función en desarrollo', 'info');
-        window.changeEmployeeStatus = () => showToast('🚧 Función en desarrollo', 'info');
-        window.filterEmployeesByStatus = () => showToast('🚧 Función en desarrollo', 'info');
-        window.showAllEmployees = () => showToast('🚧 Función en desarrollo', 'info');
-        window.viewEmployeeHistory = () => showToast('🚧 Función en desarrollo', 'info');
-        window.renderEmployeeStatus = () => {};
-        
-        // Funciones de modales
-        window.closeModal = closeModal;
-        window.showModal = showModal;
-
-        // =============================================
-        // FUNCIÓN DE INICIALIZACIÓN CON RESIZE HANDLER
-        // =============================================
-        function setupResponsiveHandlers() {
-            // Redimensionar gráfico cuando cambia el tamaño de ventana
-            let resizeTimeout;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimeout);
-                resizeTimeout = setTimeout(() => {
-                    if (document.getElementById('accounting').classList.contains('active')) {
-                        renderIncomeChart();
-                    }
-                }, 300);
-            });
-            
-            // Hacer gráfico responsive cuando se muestra la pestaña
-            const originalShowTab = window.showTab;
-            window.showTab = function(tabName) {
-                originalShowTab(tabName);
-                
-                if (tabName === 'accounting') {
-                    setTimeout(() => {
-                        renderIncomeChart();
-                    }, 100);
-                }
-            };
-        }
-    </script>
+    <!-- JavaScript External File -->
+    <script src="script.js"></script>
 </body>
 </html>
