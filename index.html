@@ -457,46 +457,57 @@
     </div>
 
     <!-- Modales -->
-    <!-- Modal Nueva Factura -->
-    <div class="modal" id="newInvoice">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">➕ Nueva Factura</h3>
-                <button class="modal-close" onclick="closeModal('newInvoice')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="invoiceForm" onsubmit="saveInvoice(event)">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Nombres*</label>
-                            <input type="text" class="form-input" name="firstName" id="editFirstName" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Apellidos*</label>
-                            <input type="text" class="form-input" name="lastName" id="editLastName" required>
-                        </div>
+<!-- Modal Nueva Factura -->
+<div class="modal" id="newInvoice">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">➕ Nueva Factura</h3>
+            <button class="modal-close" onclick="closeModal('newInvoice')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="invoiceForm" onsubmit="saveInvoice(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">RUC Cliente*</label>
+                        <input type="text" class="form-input" name="clientRuc" placeholder="20123456789" pattern="[0-9]{11}" required>
+                        <div class="form-error" id="rucError"></div>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Estado*</label>
-                        <select class="form-select" name="status" id="editStatus" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Vacaciones">Vacaciones</option>
-                            <option value="Descanso Médico">Descanso Médico</option>
-                            <option value="Cesado">Cesado</option>
+                        <label class="form-label">Nombre Cliente*</label>
+                        <input type="text" class="form-input" name="clientName" placeholder="Empresa SAC" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Descripción*</label>
+                    <textarea class="form-textarea" name="description" placeholder="Descripción del servicio o producto..." required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Moneda*</label>
+                        <select class="form-select" name="currency" required>
+                            <option value="PEN">Soles (PEN)</option>
+                            <option value="USD">Dólares (USD)</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label">Notas / Observaciones</label>
-                        <textarea class="form-textarea" name="notes" id="editNotes" placeholder="Observaciones adicionales..."></textarea>
+                        <label class="form-label">Monto*</label>
+                        <input type="number" class="form-input" name="amount" placeholder="0.00" step="0.01" min="0" required>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('editEmployee')">Cancelar</button>
-                <button type="submit" form="editEmployeeForm" class="btn btn-primary">Actualizar Empleado</button>
-            </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-checkbox">
+                        <input type="checkbox" name="isExportInvoice">
+                        <span class="form-checkbox-text">Factura de Exportación</span>
+                    </label>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('newInvoice')">Cancelar</button>
+            <button type="submit" form="invoiceForm" class="btn btn-primary">Crear Factura</button>
         </div>
     </div>
+</div>
 
     <!-- Modal Marcaje de Tiempo -->
     <div class="modal" id="timeEntry">
