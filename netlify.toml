@@ -5,82 +5,16 @@
 [functions]
   directory = "netlify/functions"
 
+# Redirección simple para la API
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
 
-# Headers de seguridad mejorados
-[[headers]]
-  for = "/*"
-  [headers.values]
-    # Prevenir clickjacking
-    X-Frame-Options = "DENY"
-    
-    # Prevenir MIME type sniffing
-    X-Content-Type-Options = "nosniff"
-    
-    # Activar protección XSS
-    X-XSS-Protection = "1; mode=block"
-    
-    # Forzar HTTPS (solo en producción)
-    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
-    
-    # Política de referrer
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    
-    # Permisos de funcionalidades
-    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
-    
-    # CSP más permisivo para desarrollo
-    Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' https://i.imgur.com data:; connect-src 'self' https://*.netlify.app https://*.neon.tech; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval';"
-
+# Headers básicos - SIN restricciones que puedan causar problemas
 [[headers]]
   for = "/.netlify/functions/*"
   [headers.values]
     Access-Control-Allow-Origin = "*"
-    Access-Control-Allow-Headers = "Authorization, Content-Type, X-Requested-With"
+    Access-Control-Allow-Headers = "Authorization, Content-Type"
     Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
-    Access-Control-Max-Age = "86400"
-
-# Headers específicos para archivos estáticos
-[[headers]]
-  for = "/assets/*"
-  [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
-
-[[headers]]
-  for = "/*.css"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-    Content-Type = "text/css"
-
-[[headers]]
-  for = "/*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=86400"
-    Content-Type = "application/javascript"
-
-[[headers]]
-  for = "/*.html"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-
-# Configuración para SPA
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["admin"], Country = ["!US"]}
-
-# Variables de entorno para desarrollo
-[dev]
-  command = "echo 'Desarrollo local'"
-  port = 8888
-  publish = "."
-  
-[context.production.environment]
-  NODE_ENV = "production"
-
-[context.deploy-preview.environment]
-  NODE_ENV = "preview"
