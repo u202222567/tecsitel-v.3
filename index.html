@@ -56,6 +56,7 @@
                 <img src="logo.png" alt="Tecsitel Logo">
             </div>
             <h2 class="login-title">TECSITEL - Acceso Seguro v4.0</h2>
+            <p class="login-subtitle" style="text-align: center; color: var(--gray-600); margin-top: -1.5rem; margin-bottom: 1.5rem;">Plataforma de Gestión Empresarial</p>
             <form id="loginForm" onsubmit="handleLogin(event)">
                 <div class="form-group">
                     <label class="form-label">Usuario</label>
@@ -72,14 +73,11 @@
                     <input type="password" class="form-input" id="password" placeholder="••••••••" required>
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
-                <div class="login-demo-info">
-                    <p><strong>Usuarios Demo:</strong></p>
-                    <p>• Admin General: admin / admin123</p>
-                    <p>• Contabilidad: contabilidad / conta123</p>
-                    <p>• RR.HH.: rrhh / rrhh123</p>
-                    <p>• Supervisor: supervisor / super123</p>
-                </div>
             </form>
+            <div class="login-footer" style="margin-top: 1.5rem; text-align: center; font-size: 12px; color: var(--gray-500);">
+                <p>Sistema de uso exclusivo para personal autorizado.</p>
+                <p>&copy; 2025 TECSITEL PERU E.I.R.L. | RUC: 20605908285</p>
+            </div>
         </div>
     </div>
 
@@ -552,3 +550,6 @@
     <script src="script.js"></script>
 </body>
 </html>
+```
+
+Ahora, sube esta nueva versión a Netlify. Una vez que el sitio esté actualizado, te recomiendo que solicites una revisión a Google a través de [este enlace](https://safebrowsing.google.com/safebrowsing/report_error/?hl=es) para que eliminen la advertenc
