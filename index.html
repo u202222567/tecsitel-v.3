@@ -4,30 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="Tecsitel - Sistema de Gestión Empresarial Integrado con facturación electrónica, contabilidad y cumplimiento normativo">
+    <meta name="description" content="Tecsitel - Sistema de Gestión Empresarial Integrado">
     <meta name="author" content="Tecsitel">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#dc143c">
-    
-    <!-- CSP más permisivo - COMENTADO TEMPORALMENTE -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://i.imgur.com data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"> -->
     
     <title>Tecsitel - Sistema de Gestión Empresarial v4.0</title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/png" href="https://i.imgur.com/6XXdcPR.png">
-    <link rel="apple-touch-icon" href="https://i.imgur.com/6XXdcPR.png">
+    <!-- Favicon local -->
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
     
     <!-- CSS External File -->
     <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        /* Logo SVG interno para evitar recursos externos */
+        .logo-svg {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #dc143c, #a3102d);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .loading-logo-svg {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #dc143c, #a3102d);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 32px;
+        }
+    </style>
 </head>
 <body>
     <!-- Pantalla de Login -->
     <div class="login-screen" id="loginScreen">
         <div class="login-form">
             <div class="login-logo">
-                <img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel Logo">
+                <!-- Logo PNG local -->
+                <img src="logo.png" alt="Tecsitel Logo">
             </div>
             <h2 class="login-title">TECSITEL - Acceso Seguro v4.0</h2>
             <form id="loginForm" onsubmit="handleLogin(event)">
@@ -62,7 +88,8 @@
         <div class="loading-particles" id="loadingParticles"></div>
         <div class="loading-content">
             <div class="loading-logo">
-                <img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel Logo">
+                <!-- Logo PNG local -->
+                <img src="logo.png" alt="Tecsitel Logo">
             </div>
             <h1 class="loading-title">TECSITEL v4.0</h1>
             <p class="loading-status" id="loadingStatus">Validando credenciales...</p>
@@ -74,7 +101,8 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo" onclick="showTab('dashboard')">
-                    <img src="https://i.imgur.com/6XXdcPR.png" alt="Tecsitel">
+                    <!-- Logo PNG local -->
+                    <img src="logo.png" alt="Tecsitel">
                 </div>
                 <h2 class="sidebar-title">TECSITEL</h2>
                 <p class="sidebar-subtitle">Sistema de Gestión v4.0</p>
@@ -171,8 +199,7 @@
                                 <div class="alert-content">
                                     <strong>TECSITEL PERU E.I.R.L.</strong><br>
                                     RUC: 20605908285<br>
-                                    Sistema integrado de gestión empresarial con backend PostgreSQL (Neon) y cumplimiento normativo SUNAT y SUNAFIL.
-                                    Funcionando en modo local con datos de demostración.
+                                    Sistema integrado de gestión empresarial con backend PostgreSQL y cumplimiento normativo SUNAT y SUNAFIL.
                                 </div>
                             </div>
                         </div>
