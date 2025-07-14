@@ -93,9 +93,16 @@ app.get('/test-db', async (req, res) => {
 
         // Verificar usuarios si existe la tabla
         let userCount = 0;
+        let sampleUser = null;
         try {
             const usersResult = await client.query('SELECT COUNT(*) as count FROM users');
             userCount = parseInt(usersResult.rows[0].count);
+            
+            // Obtener un usuario de muestra para debug
+            if (userCount > 0) {
+                const sampleResult = await client.query('SELECT username, password_hash FROM users LIMIT 1');
+                sampleUser = sampleResult.rows[0];
+            }
         } catch (error) {
             console.log('Tabla users no existe:', error.message);
         }
@@ -111,7 +118,10 @@ app.get('/test-db', async (req, res) => {
                 postgres_version: result.rows[0].version.split(' ')[0],
                 connection_successful: true,
                 tables_found: tablesResult.rows.map(row => row.table_name),
-                user_count: userCount
+                user_count: userCount,
+                sample_user_exists: !!sampleUser,
+                sample_username: sampleUser?.username,
+                password_hash_length: sampleUser?.password_hash?.length
             }
         });
 
@@ -175,22 +185,24 @@ app.post('/init-db', async (req, res) => {
 
         for (const user of users) {
             try {
-                const hashedPassword = await bcrypt.hash(user.password, 10);
+                console.log(`Hasheando contraseña para ${user.username}...`);
+                const hashedPassword = await bcrypt.hash(user.password, 12);
+                console.log(`Hash creado para ${user.username}, longitud: ${hashedPassword.length}`);
+                
                 const result = await client.query(`
                     INSERT INTO users (username, password_hash, full_name, role, permissions)
                     VALUES ($1, $2, $3, $4, $5)
-                    ON CONFLICT (username) DO NOTHING
+                    ON CONFLICT (username) DO UPDATE SET
+                        password_hash = EXCLUDED.password_hash,
+                        full_name = EXCLUDED.full_name,
+                        role = EXCLUDED.role
                     RETURNING id
                 `, [user.username, hashedPassword, user.name, user.role, JSON.stringify([])]);
                 
-                if (result.rows.length > 0) {
-                    usersCreated++;
-                    console.log(`Usuario creado: ${user.username}`);
-                } else {
-                    console.log(`Usuario ya existe: ${user.username}`);
-                }
+                usersCreated++;
+                console.log(`Usuario procesado: ${user.username}`);
             } catch (error) {
-                console.error(`Error creando usuario ${user.username}:`, error);
+                console.error(`Error procesando usuario ${user.username}:`, error);
             }
         }
 
@@ -205,7 +217,7 @@ app.post('/init-db', async (req, res) => {
             success: true,
             message: 'Base de datos inicializada correctamente',
             data: {
-                users_created: usersCreated,
+                users_processed: usersCreated,
                 total_users: totalUsers,
                 available_users: users.map(u => ({ username: u.username, role: u.role }))
             }
@@ -221,13 +233,15 @@ app.post('/init-db', async (req, res) => {
     }
 });
 
-// Login básico
+// Login con debug mejorado
 app.post('/auth/login', async (req, res) => {
     try {
         const { username, password } = req.body;
-        console.log(`Intento de login: ${username}`);
+        console.log(`🔐 Intento de login: ${username}`);
+        console.log(`🔑 Password recibido: ${password ? 'SI' : 'NO'} (longitud: ${password?.length})`);
 
         if (!username || !password) {
+            console.log('❌ Username o password faltante');
             return res.status(400).json({
                 success: false,
                 error: 'Usuario y contraseña requeridos'
@@ -245,10 +259,13 @@ app.post('/auth/login', async (req, res) => {
         });
 
         const client = await pool.connect();
+        console.log(`🔍 Buscando usuario: ${username}`);
+        
         const result = await client.query('SELECT * FROM users WHERE username = $1 AND is_active = true', [username]);
+        console.log(`👥 Usuarios encontrados: ${result.rows.length}`);
 
         if (result.rows.length === 0) {
-            console.log(`Usuario no encontrado: ${username}`);
+            console.log(`❌ Usuario no encontrado: ${username}`);
             client.release();
             await pool.end();
             return res.status(401).json({
@@ -258,15 +275,36 @@ app.post('/auth/login', async (req, res) => {
         }
 
         const user = result.rows[0];
+        console.log(`✅ Usuario encontrado: ${user.username}`);
+        console.log(`🔑 Hash en DB longitud: ${user.password_hash?.length}`);
+        console.log(`🔑 Hash en DB preview: ${user.password_hash?.substring(0, 20)}...`);
+
+        console.log(`🔍 Comparando contraseñas...`);
+        console.log(`🔍 Contraseña plana: "${password}"`);
+        console.log(`🔍 Hash almacenado: "${user.password_hash}"`);
+        
         const validPassword = await bcrypt.compare(password, user.password_hash);
+        console.log(`🔐 Resultado de comparación: ${validPassword}`);
 
         if (!validPassword) {
-            console.log(`Contraseña incorrecta para: ${username}`);
+            console.log(`❌ Contraseña incorrecta para: ${username}`);
+            
+            // Debug adicional: intentar hash manual
+            const testHash = await bcrypt.hash(password, 12);
+            console.log(`🧪 Hash de prueba: ${testHash}`);
+            const testCompare = await bcrypt.compare(password, testHash);
+            console.log(`🧪 Test de bcrypt funciona: ${testCompare}`);
+            
             client.release();
             await pool.end();
             return res.status(401).json({
                 success: false,
-                error: 'Credenciales incorrectas'
+                error: 'Credenciales incorrectas',
+                debug: {
+                    user_found: true,
+                    password_comparison: false,
+                    bcrypt_test: testCompare
+                }
             });
         }
 
@@ -279,7 +317,7 @@ app.post('/auth/login', async (req, res) => {
             { expiresIn: '8h' }
         );
 
-        console.log(`Login exitoso para: ${username}`);
+        console.log(`✅ Login exitoso para: ${username}`);
 
         client.release();
         await pool.end();
@@ -297,7 +335,7 @@ app.post('/auth/login', async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error en login:', error);
+        console.error('❌ Error en login:', error);
         res.status(500).json({
             success: false,
             error: 'Error interno del servidor',
