@@ -10,8 +10,8 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="theme-color" content="#dc143c">
     
-    <!-- Mejoras de Seguridad: Content Security Policy -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://i.imgur.com data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';">
+    <!-- CSP más permisivo - COMENTADO TEMPORALMENTE -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://i.imgur.com data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"> -->
     
     <title>Tecsitel - Sistema de Gestión Empresarial v4.0</title>
     
@@ -172,7 +172,7 @@
                                     <strong>TECSITEL PERU E.I.R.L.</strong><br>
                                     RUC: 20605908285<br>
                                     Sistema integrado de gestión empresarial con backend PostgreSQL (Neon) y cumplimiento normativo SUNAT y SUNAFIL.
-                                    Funcionando correctamente con datos reales.
+                                    Funcionando en modo local con datos de demostración.
                                 </div>
                             </div>
                         </div>
@@ -296,7 +296,7 @@
                     </div>
                 </div>
 
-                <!-- Cumplimiento Tab - CONTENIDO COMPLETO -->
+                <!-- Cumplimiento Tab -->
                 <div id="compliance" class="tab-content">
                     <div class="panel">
                         <div class="panel-header">
@@ -343,93 +343,6 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h3 class="panel-title">📋 Checklist de Cumplimiento</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="compliance-checklist">
-                                <div class="checklist-item completed">
-                                    <span class="checklist-icon">✅</span>
-                                    <div class="checklist-content">
-                                        <strong>Registro de Control de Asistencia</strong>
-                                        <p>Sistema digital implementado según normativa SUNAFIL</p>
-                                    </div>
-                                </div>
-                                <div class="checklist-item completed">
-                                    <span class="checklist-icon">✅</span>
-                                    <div class="checklist-content">
-                                        <strong>Facturación Electrónica SUNAT</strong>
-                                        <p>Certificado digital activo y sistema funcionando correctamente</p>
-                                    </div>
-                                </div>
-                                <div class="checklist-item completed">
-                                    <span class="checklist-icon">✅</span>
-                                    <div class="checklist-content">
-                                        <strong>Libros Contables Electrónicos</strong>
-                                        <p>PLE generado y enviado mensualmente a SUNAT</p>
-                                    </div>
-                                </div>
-                                <div class="checklist-item completed">
-                                    <span class="checklist-icon">✅</span>
-                                    <div class="checklist-content">
-                                        <strong>Registro de Empleados</strong>
-                                        <p>Base de datos actualizada con información completa de personal</p>
-                                    </div>
-                                </div>
-                                <div class="checklist-item pending">
-                                    <span class="checklist-icon">⏳</span>
-                                    <div class="checklist-content">
-                                        <strong>Declaración Jurada Anual</strong>
-                                        <p>Pendiente para el próximo período fiscal 2025</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="panel">
-                        <div class="panel-header">
-                            <h3 class="panel-title">📅 Calendario de Obligaciones</h3>
-                        </div>
-                        <div class="panel-body">
-                            <div class="obligations-calendar">
-                                <div class="obligation-item urgent">
-                                    <div class="obligation-date">15<br>AGO</div>
-                                    <div class="obligation-content">
-                                        <strong>Declaración IGV Julio 2025</strong>
-                                        <p>Vencimiento declaración mensual - SUNAT</p>
-                                    </div>
-                                    <div class="obligation-status">🔴 Urgente</div>
-                                </div>
-                                <div class="obligation-item normal">
-                                    <div class="obligation-date">31<br>AGO</div>
-                                    <div class="obligation-content">
-                                        <strong>Libros Electrónicos PLE</strong>
-                                        <p>Envío Programa de Libros Electrónicos Julio 2025</p>
-                                    </div>
-                                    <div class="obligation-status">🟡 Pendiente</div>
-                                </div>
-                                <div class="obligation-item completed">
-                                    <div class="obligation-date">12<br>JUL</div>
-                                    <div class="obligation-content">
-                                        <strong>Planilla Electrónica PDT</strong>
-                                        <p>Envío PDT 601 correspondiente a Junio 2025</p>
-                                    </div>
-                                    <div class="obligation-status">🟢 Completado</div>
-                                </div>
-                                <div class="obligation-item normal">
-                                    <div class="obligation-date">15<br>SEP</div>
-                                    <div class="obligation-content">
-                                        <strong>Declaración IGV Agosto</strong>
-                                        <p>Próxima declaración mensual programada</p>
-                                    </div>
-                                    <div class="obligation-status">📅 Programado</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Respaldos Tab -->
@@ -446,7 +359,7 @@
                             <div class="alert alert-success">
                                 <span class="alert-icon">✅</span>
                                 <div class="alert-content">
-                                    <strong>Último respaldo:</strong> Sistema funcionando correctamente con base de datos PostgreSQL
+                                    <strong>Último respaldo:</strong> Sistema funcionando correctamente
                                 </div>
                             </div>
                         </div>
@@ -526,16 +439,16 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label">Nombres*</label>
-                            <input type="text" class="form-input" name="firstName" id="editFirstName" required>
+                            <input type="text" class="form-input" name="firstName" required>
                         </div>
                         <div class="form-group">
                             <label class="form-label">Apellidos*</label>
-                            <input type="text" class="form-input" name="lastName" id="editLastName" required>
+                            <input type="text" class="form-input" name="lastName" required>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Estado*</label>
-                        <select class="form-select" name="status" id="editStatus" required>
+                        <select class="form-select" name="status" required>
                             <option value="Activo">Activo</option>
                             <option value="Vacaciones">Vacaciones</option>
                             <option value="Descanso Médico">Descanso Médico</option>
@@ -544,13 +457,13 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Notas / Observaciones</label>
-                        <textarea class="form-textarea" name="notes" id="editNotes" placeholder="Observaciones adicionales..."></textarea>
+                        <textarea class="form-textarea" name="notes" placeholder="Observaciones adicionales..."></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('editEmployee')">Cancelar</button>
-                <button type="submit" form="editEmployeeForm" class="btn btn-primary">Actualizar Empleado</button>
+                <button type="button" class="btn btn-secondary" onclick="closeModal('newEmployee')">Cancelar</button>
+                <button type="submit" form="employeeForm" class="btn btn-primary">Agregar Empleado</button>
             </div>
         </div>
     </div>
@@ -612,50 +525,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-                            <input type="text" class="form-input" name="firstName" required>
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Apellidos*</label>
-                            <input type="text" class="form-input" name="lastName" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Estado*</label>
-                        <select class="form-select" name="status" required>
-                            <option value="Activo">Activo</option>
-                            <option value="Vacaciones">Vacaciones</option>
-                            <option value="Descanso Médico">Descanso Médico</option>
-                            <option value="Cesado">Cesado</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">Notas / Observaciones</label>
-                        <textarea class="form-textarea" name="notes" placeholder="Observaciones adicionales..."></textarea>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="closeModal('newEmployee')">Cancelar</button>
-                <button type="submit" form="employeeForm" class="btn btn-primary">Agregar Empleado</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Editar Empleado -->
-    <div class="modal" id="editEmployee">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">✏️ Editar Empleado</h3>
-                <button class="modal-close" onclick="closeModal('editEmployee')">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="editEmployeeForm" onsubmit="updateEmployee(event)">
-                    <input type="hidden" name="originalDni" id="originalDni">
-                    <div class="form-group">
-                        <label class="form-label">DNI*</label>
-                        <input type="text" class="form-input" name="dni" id="editDni" pattern="[0-9]{8}" readonly>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label class="form-label">Nombres*</label>
-                
